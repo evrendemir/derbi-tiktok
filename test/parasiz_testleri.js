@@ -15,16 +15,16 @@
   check('Güç çubuğu yüzdesi yazar', /%\d+/.test(document.querySelector('#pbGt').textContent), document.querySelector('#pbGt').textContent);
   h({ type: 'comment', user: U('Beğenici'), text: 'hadi cimbom' });
   check('Yorum da güç verir', D.power.gs === 5, D.power.gs);
-  join('Beğenici2', 'GS'); D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 15 }); await wait(100);
-  check('Güç dolunca sıfırlanır', D.power.gs < 10, D.power.gs);
+  join('Beğenici2', 'GS'); D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 200 }); await wait(100);
+  check('Güç dolunca sıfırlanır', D.power.gs < 200, D.power.gs);
   check('Güç dolunca tezahürat yazısı çıkar', document.querySelector('#chant').classList.contains('show') && /GÜCÜ DOLDU/.test(document.querySelector('#chant').textContent));
-  check('En çok beğenen ekranda görünür', shouts().some(t => /Beğenici2.*15 beğeni/.test(t)), shouts().join(' | '));
+  check('En çok beğenen ekranda görünür', shouts().some(t => /Beğenici2.*200 beğeni/.test(t)), shouts().join(' | '));
 
   // 1b) bazen marş yerine taraftar gücü golü
   await D.idle(); S.start = Date.now() - 60000; S.kicked = true; await wait(1100); D.CONFIG.powerGoalChance = 1; D.CONFIG.powerGoalGap = 0; const pg0 = S.goals.gs; D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 60 });
   await wait(100); check('Güç dolunca bazen gol olur', D.busy()); await D.idle(); check('Taraftar gücü golü skora eklenir', S.goals.gs === pg0 + 1, pg0 + ' → ' + S.goals.gs); D.CONFIG.powerGoalChance = 0;
 
-  D.CONFIG.shotGoalChance = 0;
+  D.CONFIG.shotGoalChance = 0; D.CONFIG.shotGap = 0; D.CONFIG.shotPerViewers = 1000;
   // 2) ŞUT: 3 çağrıda şut, kaleci kurtarır, gol olmaz
   await D.idle();
   const g0 = S.goals.gs + S.goals.fb;
@@ -43,6 +43,14 @@
   D.CONFIG.shotGoalChance = 1; D.CONFIG.shotGoalGap = 0; S.start = Date.now() - 60000; S.kicked = true; const sg0 = S.goals.fb;
   for (const n of ['ŞG1', 'ŞG2', 'ŞG3']) { join(n, 'FB'); h({ type: 'comment', user: U(n), text: 'şut' }); }
   await D.idle(); check('ŞUT bazen gol olur', S.goals.fb === sg0 + 1, sg0 + ' → ' + S.goals.fb); D.CONFIG.shotGoalChance = 0;
+
+  // 2c) şut animasyonları arasında bekleme: maç ilerlesin
+  D.CONFIG.shotGap = 60; D.resetShot(); for (const n of ['B1', 'B2', 'B3']) { join(n, 'GS'); h({ type: 'comment', user: U(n), text: 'şut' }); }
+  await D.idle(); for (const n of ['B4', 'B5', 'B6']) { join(n, 'GS'); h({ type: 'comment', user: U(n), text: 'şut' }); } await wait(60);
+  check('Bekleme süresinde yeni şut animasyonu başlamaz', !D.busy() && shouts().some(t => /sn sonra çeker/.test(t)), shouts().join(' | '));
+  D.CONFIG.shotPerViewers = 1; const before = D.shotCalls.gs.length; join('B7', 'GS'); h({ type: 'comment', user: U('B7'), text: 'şut' });
+  check('Kalabalıkta daha çok şut gerekir', shouts().some(t => /B7.*şut daha/.test(t)), shouts().join(' | '));
+  D.CONFIG.shotGap = 0; D.CONFIG.shotPerViewers = 1000; D.shotCalls.gs.length = 0; D.resetShot();
 
   // 3) skor tahmini
   join('Tahminci', 'GS'); h({ type: 'comment', user: U('Tahminci'), text: '2-1' });
