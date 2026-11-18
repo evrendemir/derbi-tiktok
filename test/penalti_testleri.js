@@ -14,7 +14,7 @@
   h({ type: 'comment', user: U('GSci1'), text: 'sağ' }); // ikinci oy sayılmaz
   check('Oylar doğru tarafa sayılır', D.pen.votes.kick.sol === 2 && D.pen.votes.keep['sağ'] === 1 && D.pen.votes.kick['sağ'] === 0, JSON.stringify(D.pen.votes));
   await wait(2500);
-  check('Farklı yön seçilince gol olur', /ASLAN 1 – 0 KANARYA|✅/.test(document.querySelector('#pen').textContent), document.querySelector('#pen').textContent.slice(0, 80));
+  check('Farklı yön seçilince gol olur', /GS 1 – 0 FB|✅/.test(document.querySelector('#pen').textContent), document.querySelector('#pen').textContent.slice(0, 80));
   // düello bitene ve yeni maç başlayana kadar bekle
   let t0 = Date.now(); while (document.querySelector('#pen').classList.contains('show') && Date.now() - t0 < 40000) await wait(300);
   check('Penaltılar biter', !document.querySelector('#pen').classList.contains('show'));
