@@ -522,7 +522,7 @@ function hud(){leaderboard();fanbar();$('#sGs').textContent=S.goals.gs;$('#sFb')
   $('#cntG').textContent=members('gs').length;$('#cntF').textContent=members('fb').length;
   
   const set=(el,v,hint)=>{el.textContent=v||hint;el.className=v?'':'emp'};
-  set($('#rRef'),nm(S.refId),'boş · Corgi ile al');set($('#rTdG'),nm(S.td.gs),'boş · Corgi ile al');set($('#rTdF'),nm(S.td.fb),'boş · Corgi ile al')}
+  set($('#rRef'),nm(S.refId),'BOŞ – 🐶 Corgi gönder, sen ol');set($('#rTdG'),nm(S.td.gs),'BOŞ – 🐶 Corgi gönder, sen ol');set($('#rTdF'),nm(S.td.fb),'BOŞ – 🐶 Corgi gönder, sen ol')}
 let halfShown=false,ftBusy=false;
 function clock(){if(ftBusy)return;const real=(Date.now()-S.start)/1000;const gsec=Math.floor(real*90*60/(CONFIG.matchMin*60)); // oyun saniyesi
   const m=Math.floor(gsec/60);$('#clk').textContent=String(Math.min(90,m)).padStart(2,'0')+':'+String(m>=90?0:gsec%60).padStart(2,'0');
