@@ -30,7 +30,7 @@
   const a = [...D.actors.values()].find(x => x.zone === 'field');
   const say = async f => { for (let i = 0; i < 8; i++) { await D.idle(); D.NAR.last = 0; D.SPK.q.length = 0; D.SPK.busy = false; D.SPK.log.length = 0; f(); if (D.SPK.log[0]) return D.SPK.log[0]; await wait(700); } return ''; }; // VAR/penaltı anında anlatım susar, tekrar dene
   check('Atak anlatılır', /(atakta|ilerliyor|geliyor|yaklaşıyor)/.test(await say(() => D.narAttack(a))));
-  check('Direk anlatılır', /direk/i.test(await say(() => D.narShot('post', a))));
+  check('Direk anlatılır', /dire[kğ]/i.test(await say(() => D.narShot('post', a))));
   check("Anlatımda bozuk ek yok ('in şutu gibi)", !/oyuncusu'/.test(await say(() => D.narShot('post', a))));
   h({ type: 'comment', user: { id: 's9', name: 'Zeynep', avatar: null }, text: 'FB' });
   D.NAR.arrAt = 0; D.NAR.last = 0; D.SPK.busy = false; D.SPK.q.length = 0; D.SPK.log.length = 0;

@@ -460,6 +460,11 @@ class Actor{
     const U=this.fig.userData,sw=moving?Math.sin(t*11+this.pos.x)*0.8:Math.sin(t*2+this.pos.z)*0.05;
     U.legL.rotation.x=sw;U.legR.rotation.x=-sw;U.armL.rotation.x=-sw*0.8;U.armR.rotation.x=sw*0.8;
     if(this.jump>0){U.armL.rotation.z=-2.6;U.armR.rotation.z=2.6}else{U.armL.rotation.z=-0.1;U.armR.rotation.z=0.1}
+    if(this.opts.num===1&&this.dive&&this.dive.t0!=null){const e=t-this.dive.t0,dur=this.dive.until-this.dive.t0;const sz=Math.sign(this.dive.z-this.pos.z)||1;
+      const k=e<0.28?e/0.28:e<dur-0.35?1:Math.max(0,(dur-e)/0.35); // uzan → yerde kal → kalk
+      const sf=Math.sin(this.face)||1;this.fig.rotation.z=1.25*k*sz*Math.sign(sf);this.fig.position.y+=Math.sin(Math.min(1,e/0.5)*Math.PI)*0.9*k;
+      U.armL.rotation.z=-2.9*k-0.1*(1-k);U.armR.rotation.z=2.9*k+0.1*(1-k);U.legL.rotation.x=0.3*k;U.legR.rotation.x=-0.2*k}
+    else if(this.opts.num===1)this.fig.rotation.z=0;
     // vuruş: sağ bacak geri alınır, sonra sertçe öne savrulur
     if(this.kickT>0){this.kickT-=dt;const q=1-Math.max(0,this.kickT)/0.45;U.legR.rotation.x=q<0.45?0.9*q/0.45:0.9-2.4*(q-0.45)/0.55}
     const P=this.pose&&t<this.poseUntil?this.pose:null;this.fig.rotation.x=0;
@@ -517,10 +522,16 @@ const dirOf=t=>t==='gs'?1:-1;const oppOf=t=>t==='gs'?'fb':'gs';
 const gkOf=t=>fieldActors(t).find(a=>a.opts.num===1);
 const clampX=x=>THREE.MathUtils.clamp(x,-PL/2+2,PL/2-2),clampZ=z=>THREE.MathUtils.clamp(z,-PW/2+2,PW/2-2);
 function startBuild(t,team,h){play.phase='build';play.team=team;play.passes=0;play.next=t+1+Math.random();play.shot=null;if(h)passTo(h,0.35)}
+let shotCamAt=0;
+function shotCam(dir,out){const now=performance.now();if(goalBusy||camOverride||now-shotCamAt<9000||isWarm())return;shotCamAt=now;
+  camOverride={fn:o=>{const b=ball.m.position;o.pos.set(b.x-dir*20,15,b.z*0.4+(b.z>0?-15:15));o.look.set(dir*(PL/2-3),1.2,b.z*0.3);o.fov=34},cut:true,k:7,until:now+(FAST?200:1500),pos:new THREE.Vector3(),look:new THREE.Vector3(),shot:true};
+  TS=0.42;trailOn=true;setTimeout(()=>{if(TS===0.42&&!goalBusy)TS=1;trailOn=false},FAST?50:700);
+  if(out==='save')setTimeout(()=>{if(goalBusy||(camOverride&&!camOverride.shot))return;const gk=gkOf(oppOf(dir===1?'gs':'fb'));
+    camOverride={fn:o=>{const g=gk?gk.pos:ball.m.position;o.pos.set(dir*(PL/2+14),8,g.z*0.4);o.look.set(g.x-dir*2,1.4,g.z);o.fov=38},cut:true,k:6,until:performance.now()+(FAST?100:1300),pos:new THREE.Vector3(),look:new THREE.Vector3(),shot:true}},FAST?60:1100)}
 function shoot(h,t,force){const team=h.u.team,dir=dirOf(team),gk=gkOf(oppOf(team));const r=Math.random();const out=force?'goal':r<.55?'save':r<.7?'post':'miss';
   const z=out==='goal'?(Math.random()-.5)*4:out==='save'?(Math.random()-.5)*5:out==='post'?(Math.random()<.5?-1:1)*3:(Math.random()<.5?-1:1)*(4.5+Math.random()*3);
   kickTo(dir*(PL/2+(out==='goal'?1.2:out==='miss'?3:-0.5)),z,0.65+Math.random()*0.2);SFX.kick(true);play.phase='shot';play.shot={out,h,gk,team};play.next=t+ball.dur+0.05;
-  if(gk)gk.dive={z:out==='save'?z:(Math.random()-.5)*5,until:t+1.3}}
+  if(gk)gk.dive={z:out==='save'?z:(Math.random()-.5)*5,until:t+1.3,t0:t};if(!force)shotCam(dir,out)}
 function resolveShot(t){const s=play.shot;if(!s){startBuild(t,'gs',gkOf('gs'));return}const def=oppOf(s.team),gk=s.gk||gkOf(def);narShot(s.out,s.h);
   if(s.out==='save'){SFX.save();if(gk){startBuild(t,def,gk);play.next=t+1.5}}
   else if(s.out==='post'||s.out==='miss'){SFX.ooh();if(gk){startBuild(t,def,gk);play.next=t+1.8}}
@@ -548,15 +559,21 @@ const CAM_MAIN={pos:new THREE.Vector3(-186,97,0),look:new THREE.Vector3(6,0,0)};
 const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.look.clone();let camOverride=null;
 let camFov=30,camZoom=false;const zoomLook=new THREE.Vector3();
 let zoomActor=null,zoomI=0;setInterval(()=>{const v=fieldActors().filter(a=>!a.u.isDefault);camZoom=v.length?!camZoom||Math.random()<0.35:!camZoom;zoomActor=camZoom&&v.length?v[(zoomI++)%v.length]:null},(CONFIG.zoomEvery-2)*1000); // maç kamerası: geniş ↔ yakın (top ya da katılımcı oyuncu)
-function updateCam(dt){let tp=CAM_MAIN.pos,tl=CAM_MAIN.look,fovT=30,k=2.2;
-  if(camOverride&&performance.now()<camOverride.until){
+/* TV kamerası: zamanın ~%70'inde topu takip eder (FC yayın açısı), kalan zamanda geniş saha + katılımcı yakın planı */
+const TV={p:new THREE.Vector3(),l:new THREE.Vector3(),tmp:new THREE.Vector3(),on:true,next:0};const tvPos=new THREE.Vector3();let rdtCam=0.016;
+function tvMode(){const t=performance.now();if(t>TV.next){TV.on=!TV.on||Math.random()<0.4;TV.next=t+(TV.on?14000+Math.random()*8000:6000+Math.random()*3000)}return TV.on}
+function updateCam(dt){rdtCam=dt;let tp=CAM_MAIN.pos,tl=CAM_MAIN.look,fovT=30,k=2.2;
+  if(camOverride&&performance.now()<camOverride.until){TV.cutBack=!!camOverride.shot;
     if(camOverride.fn){camOverride.fn(camOverride);tp=camOverride.pos;tl=camOverride.look;fovT=camOverride.fov||30;k=camOverride.k||5;
       if(camOverride.cut){camOverride.cut=false;camPos.copy(tp);camLook.copy(tl);camFov=fovT}}
     else if(camOverride.follow){ // gol sevinci: ana kamera yerinde kalır, golcüye döner ve yakınlaştırır (tribüne girmez, kimse önünü kesmez)
       const p=camOverride.follow.pos;camOverride.look.set(p.x,3.2,p.z);tp=CAM_MAIN.pos;tl=camOverride.look;
       const dist=camPos.distanceTo(p);fovT=THREE.MathUtils.clamp(2*Math.atan((camOverride.span||9)/dist)*180/Math.PI,7,30);k=4}
     else{tp=camOverride.pos;tl=camOverride.look}}
-  else{camOverride=null;if(camZoom&&!goalBusy){const b=zoomActor&&zoomActor.added&&zoomActor.zone==='field'?zoomActor.pos:ball.m.position;zoomLook.set(b.x,1.2,b.z);tl=zoomLook;fovT=THREE.MathUtils.clamp(2*Math.atan((zoomActor?7:17)/camPos.distanceTo(b))*180/Math.PI,(zoomActor?7:13),30);k=1.6}}
+  else if(!goalBusy&&!isWarm()&&tvMode()){camOverride=null;const b=ball.m.position,hot=play.phase==='attack'||play.phase==='shot';
+    tvPos.lerp(TV.tmp.set(b.x,0,b.z),Math.min(1,rdtCam*1.6)); // yumuşak takip (top sektiğinde kamera titremez)
+    const dx=THREE.MathUtils.clamp(tvPos.x,-2,PL/2-12); /* alt kaleye çok kayarsa stadın dışı görünür */tp=TV.p.set(CAM_MAIN.pos.x+dx*0.9,CAM_MAIN.pos.y,tvPos.z*0.3);tl=TV.l.set(dx+(hot?dirOf(play.team)*4:0),0,tvPos.z*0.5);fovT=hot?17:21;k=1.3;if(TV.cutBack){TV.cutBack=false;camPos.copy(tp);camLook.copy(tl);camFov=fovT}} // yayın kamerası; şut tekrarından sonra kesme ile döner: ana açıdan kaymadan topu takip eder, telefoto
+  else{camOverride=null;if(TV.cutBack){TV.cutBack=false;camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);camFov=30}if(camZoom&&!goalBusy){const b=zoomActor&&zoomActor.added&&zoomActor.zone==='field'?zoomActor.pos:ball.m.position;zoomLook.set(b.x,1.2,b.z);tl=zoomLook;fovT=THREE.MathUtils.clamp(2*Math.atan((zoomActor?7:17)/camPos.distanceTo(b))*180/Math.PI,(zoomActor?7:13),30);k=1.6}}
   camPos.lerp(tp,Math.min(1,dt*k));camLook.lerp(tl,Math.min(1,dt*k));
   camFov+=(fovT-camFov)*Math.min(1,dt*3);if(Math.abs(camera.fov-camFov)>0.01){camera.fov=camFov;camera.updateProjectionMatrix()}
   camera.position.copy(camPos);look.copy(camLook);
@@ -1211,7 +1228,7 @@ function startSim(N){
     for(const s of script)if(!s.done&&t>=s[0]){s.done=true;const v=viewers[s[2]];if(!v)continue;if(!v.in)join(v);if(s[1]==='comment'){log(`<b>${v.u.name}</b>: ${s[3]}`);send(v,{type:'comment',text:s[3]})}else gift(v,s[3])}
     $('#simN').textContent=count},400)}
 if(SIM)startSim(SIM);
-window.derbi={narAttack,narShot,narSteal,playTTS,NAR,narTick,camOv:()=>camOverride,SPK,spk,spotlight,spkName,resetShot:()=>{shotNextAt=0},CONFIG,varRun:(team,kind)=>queueMoment(()=>kind==='offside'?varOffside(team):varPenalty(team,kind)),VARV,varMoment,varOffside,varPenalty,planMatch,decorShow,newMatch,isWarm,trophyState:()=>trophy,race,pen,startRace,penaltyShootout,shotCalls,crowd:t=>{endCrowd();startCrowd(t);return crowdShow},crowdState:()=>crowdShow,power,shotCd,idle:async(max=120000)=>{const t0=Date.now();await sleep(0);while((goalBusy||await Promise.race([goalChain.then(()=>false),new Promise(r=>setTimeout(()=>r(true),50))]))&&Date.now()-t0<max)await new Promise(r=>setTimeout(r,100));return !goalBusy},handle,S,actors,squad,layout,dropRoles,busy:()=>goalBusy,cam:()=>({pos:camera.position.toArray().map(v=>+v.toFixed(1)),look:look.toArray().map(v=>+v.toFixed(1)),fov:+camera.fov.toFixed(1),TS}),ballPos:()=>ball.m.position.toArray().map(v=>+v.toFixed(1)),proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
+window.derbi={shotCam,tvMode,TV,narAttack,narShot,narSteal,playTTS,NAR,narTick,camOv:()=>camOverride,SPK,spk,spotlight,spkName,resetShot:()=>{shotNextAt=0},CONFIG,varRun:(team,kind)=>queueMoment(()=>kind==='offside'?varOffside(team):varPenalty(team,kind)),VARV,varMoment,varOffside,varPenalty,planMatch,decorShow,newMatch,isWarm,trophyState:()=>trophy,race,pen,startRace,penaltyShootout,shotCalls,crowd:t=>{endCrowd();startCrowd(t);return crowdShow},crowdState:()=>crowdShow,power,shotCd,idle:async(max=120000)=>{const t0=Date.now();await sleep(0);while((goalBusy||await Promise.race([goalChain.then(()=>false),new Promise(r=>setTimeout(()=>r(true),50))]))&&Date.now()-t0<max)await new Promise(r=>setTimeout(r,100));return !goalBusy},handle,S,actors,squad,layout,dropRoles,busy:()=>goalBusy,cam:()=>({pos:camera.position.toArray().map(v=>+v.toFixed(1)),look:look.toArray().map(v=>+v.toFixed(1)),fov:+camera.fov.toFixed(1),TS}),ballPos:()=>ball.m.position.toArray().map(v=>+v.toFixed(1)),proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
 </script>
 </body>
 </html>
