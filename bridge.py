@@ -211,7 +211,9 @@ async def main(unique_id: str):
 
 if __name__ == "__main__":
     uid = sys.argv[1] if len(sys.argv) > 1 else None
-    if not uid:
+    if uid:  # yanlışlıkla yazılan ':' boşluk ya da '@' işaretlerini temizle
+        uid = "@" + uid.strip().lstrip(":@ ").rstrip(": ")
+    if not uid or uid == "@":
         print("Kullanım: python bridge.py @kullaniciadi")
         sys.exit(1)
     try:
