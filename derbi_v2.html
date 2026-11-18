@@ -619,10 +619,10 @@ function shotCall(u){const now=Date.now();if(shotCd[u.id]&&now-shotCd[u.id]<CONF
   const wait=Math.ceil(((shotNextAt||0)-now)/1000);const left=need-q.length;const T=u.team==='gs'?'GS':'FB';
   if(left>0){shout(u,`⚡ <b>şut istedi!</b> ${left} şut daha → ${T} şut çeker`);return}
   if(wait>0){shout(u,`⚡ <b>${T} şuta hazır!</b> ${wait} sn sonra çeker`);return}
-  shotNextAt=now+(CONFIG.shotGap??60)*1000;shout(u,`⚡ <b>${T} ŞUT ÇEKİYOR!</b>`);const callers=q.splice(0);saveMoment(u.team,callers)}
+  shotNextAt=now+(CONFIG.shotGap??30)*1000;shout(u,`⚡ <b>${T} ŞUT ÇEKİYOR!</b>`);const callers=q.splice(0);saveMoment(u.team,callers)}
 let shotNextAt=0;
 setInterval(()=>{if(Date.now()<shotNextAt||goalBusy||isWarm())return;for(const t of ['gs','fb']){const q=shotCalls[t];const active=Object.values(S.users).filter(x=>Date.now()-(x.seen||0)<120000).length;
-  if(q.length&&q.length>=Math.max(CONFIG.shotCalls,Math.ceil(active/(CONFIG.shotPerViewers??4)))){shotNextAt=Date.now()+(CONFIG.shotGap??60)*1000;saveMoment(t,q.splice(0));break}}},2000); // bekleyen şut, süre dolunca kendiliğinden çekilir
+  if(q.length&&q.length>=Math.max(CONFIG.shotCalls,Math.ceil(active/(CONFIG.shotPerViewers??4)))){shotNextAt=Date.now()+(CONFIG.shotGap??30)*1000;saveMoment(t,q.splice(0));break}}},2000); // bekleyen şut, süre dolunca kendiliğinden çekilir
 let shotGoalAt=0;
 function saveMoment(team,callers){if(saveQueued)return;saveQueued=true;queueMoment(async()=>{saveQueued=false;goalBusy=true;const s=team==='gs'?1:-1;
   // bazen gol: ~%30, en az 3 dk arayla; senaryodaki bir sonraki golün yerine geçer (skor dengesi korunur)
