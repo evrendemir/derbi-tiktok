@@ -378,6 +378,7 @@ function layout(){
     if(td)put(td,'td',-31,tz,{td:true,tie:t,label:'🧢 '+td.name},2.3);
     else put({id:'td_empty_'+t,name:(t==='gs'?'GS':'FB')+' hocası: BOŞ',team:t,coins:0,placeholder:true},'td',-31,tz,{td:true,tie:t,label:'🧢 '+(t==='gs'?'GS':'FB')+' HOCASI: BOŞ'},2.3)}
   const ref=S.refId&&S.users[S.refId];if(ref)put(ref,'ref',0,-8,{ref:true,label:'🟨 '+ref.name},2.3);
+  else put({id:'ref_empty',name:'Hakem: BOŞ',team:null,coins:0,placeholder:true},'ref',0,-8,{ref:true,label:'🟨 HAKEM: BOŞ'},2.3); // sahada hep bir hakem olsun
   for(const [id,a] of actors)if(!used.has(id)){if(a.zone==='field'&&!a.u.isDefault){a.zone='off';a.key='off';a.target.set(a.pos.x,0,PW/2+3);a.offAt=performance.now()+4000}else if(a.zone!=='off'){a.hide();actors.delete(id)}}
   return entered}
 

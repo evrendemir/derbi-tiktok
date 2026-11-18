@@ -32,6 +32,7 @@
   check('Hakem Corgi atınca GS hocası olur', S.td.gs === 't_Bora');
   check('Hoca olunca hakemlik boşalır', S.refId === null, String(S.refId));
   await wait(150); check('Figür hoca olarak durur (hakem değil)', zone('Bora') === 'td', zone('Bora'));
+  check('Hakem boşalınca sahada boş hakem figürü durur', D.actors.has('ref_empty') && D.actors.get('ref_empty').added);
 
   // 5) hoca → hakem geçişi (hocalık boşalmalı)
   gift('Bora', 199, 'Güneş Gözlüğü');
