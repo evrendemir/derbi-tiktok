@@ -7,6 +7,7 @@
   const shouts = () => [...document.querySelectorAll('#shouts .shout')].map(x => x.textContent);
   const join = (n, t) => { h({ type: 'join', user: U(n) }); if (t) h({ type: 'comment', user: U(n), text: t }); };
 
+  D.CONFIG.powerGoalChance = 0; // önce marşlı dolumu test et
   // 1) beğeni ve yorum → taraftar gücü (eşik izleyici sayısına göre, en az 10)
   join('Beğenici', 'GS'); D.power.gs = 0;
   h({ type: 'like', user: U('Beğenici'), count: 4 });
@@ -18,6 +19,10 @@
   check('Güç dolunca sıfırlanır', D.power.gs < 10, D.power.gs);
   check('Güç dolunca tezahürat yazısı çıkar', document.querySelector('#chant').classList.contains('show') && /GÜCÜ DOLDU/.test(document.querySelector('#chant').textContent));
   check('En çok beğenen ekranda görünür', shouts().some(t => /Beğenici2.*15 beğeni/.test(t)), shouts().join(' | '));
+
+  // 1b) bazen marş yerine taraftar gücü golü
+  await D.idle(); S.start = Date.now() - 60000; S.kicked = true; await wait(1100); D.CONFIG.powerGoalChance = 1; D.CONFIG.powerGoalGap = 0; const pg0 = S.goals.gs; D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 60 });
+  await wait(100); check('Güç dolunca bazen gol olur', D.busy()); await D.idle(); check('Taraftar gücü golü skora eklenir', S.goals.gs === pg0 + 1, pg0 + ' → ' + S.goals.gs); D.CONFIG.powerGoalChance = 0;
 
   // 2) ŞUT: 3 çağrıda şut, kaleci kurtarır, gol olmaz
   await D.idle();
@@ -71,6 +76,7 @@
   await D.idle();
 
   // 9) tezahürat yarışı
+  const pm = D.CONFIG.powerMin; D.CONFIG.powerMin = 1000; // yarış yazısı güç yazısıyla karışmasın
   D.startRace(); join('Yarışçı1', 'FB'); join('Yarışçı2', 'FB'); join('Yarışçı3', 'GS');
   for (let i = 0; i < 3; i++) { h({ type: 'comment', user: U('Yarışçı1'), text: 'fener' }); h({ type: 'comment', user: U('Yarışçı2'), text: 'FB' }); }
   h({ type: 'comment', user: U('Yarışçı3'), text: 'cimbom' });
@@ -79,6 +85,7 @@
   await wait(2600);
   check('Yarış biter, kazanan ilan edilir', !D.race.on && /FB KAZANDI/.test(document.querySelector('#chant').textContent), document.querySelector('#chant').textContent);
   check('Yarışın yıldızları ekranda', shouts().some(t => /Yarışçı(1|2).*yarışın yıldızı/.test(t)), shouts().join(' | '));
+  D.CONFIG.powerMin = pm;
 
   // 3+4) maç sonu: doğru tahmin ve maçın taraftarı
   await D.idle();
