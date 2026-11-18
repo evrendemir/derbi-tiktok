@@ -55,12 +55,12 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .cell .c{font-size:22px;color:#ffe08a}
 .cell .d{font-size:24px;margin-top:6px;font-weight:700;line-height:1.2}
 /* olay kutusu */
-.event{position:absolute;left:150px;right:150px;top:560px;background:#000e;border:5px solid var(--tc,#ffe08a);border-radius:22px;padding:18px 22px;display:flex;align-items:center;gap:20px;box-shadow:0 20px 50px #000c;opacity:0;transform:scale(.85);transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1);z-index:20}
+.event{position:absolute;left:30px;right:30px;top:1018px;background:#05070bf5;border:5px solid var(--tc,#ffe08a);border-radius:18px;padding:6px 18px;height:80px;display:flex;align-items:center;gap:20px;box-shadow:0 10px 30px #000c;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1);z-index:20}
 .event.show{opacity:1;transform:none}
-.event .av{position:relative;width:104px;height:104px;border-radius:50%;background:#374151;border:6px solid var(--tc,#ffe08a);display:grid;place-items:center;font-size:40px;font-weight:700;flex:none;overflow:hidden}
+.event .av{position:relative;width:62px;height:62px;border-radius:50%;background:#374151;border:6px solid var(--tc,#ffe08a);display:grid;place-items:center;font-size:24px;font-weight:700;flex:none;overflow:hidden}
 .event .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.event h2{margin:0;font-size:42px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:560px}
-.event p{margin:6px 0 0;font-size:30px;color:#ffe08a;font-weight:700}
+.event h2{margin:0;font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
+.event p{margin:2px 0 0;font-size:26px;color:#ffe08a;font-weight:700}
 /* gol */
 .goal{position:absolute;inset:0;display:none;place-items:center;z-index:50;text-align:center;pointer-events:none}
 .goal.show{display:grid}
@@ -158,9 +158,9 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'h
 renderer.setPixelRatio(1);renderer.setSize(1080,1920,false);
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x05070b);scene.fog=new THREE.FogExp2(0x070a10,0.0028);
-const camera=new THREE.PerspectiveCamera(25,1080/1920,1,900);
+const camera=new THREE.PerspectiveCamera(30,1080/1920,1,900);
 // Saha ekranın üst yarısında (talimat ile hocalar arası) dursun diye görüntüyü yukarı kaydır
-camera.setViewOffset(1080,1920,0,330,1080,1920);
+camera.setViewOffset(1080,1920,0,290,1080,1920);
 scene.add(new THREE.HemisphereLight(0xcfe0ff,0x1a2a1a,1.15));
 const sun=new THREE.DirectionalLight(0xfff4e0,1.6);sun.position.set(40,90,50);scene.add(sun);
 const sun2=new THREE.DirectionalLight(0xdde8ff,0.7);sun2.position.set(-60,60,-40);scene.add(sun2);
@@ -238,15 +238,57 @@ function drawCard(c,u,o){const x=c.getContext('2d'),W=c.width;x.clearRect(0,0,W,
 
 const actors=new Map();
 const shadowTex=(()=>{const c=cnv(128,128),x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'#000a');g.addColorStop(1,'#0000');x.fillStyle=g;x.fillRect(0,0,128,128);return tex(c)})();
+/* ---- 3B futbolcu figürü: forma, şort, tozluk, kol/bacak sallanır; başın üstünde isim etiketi ---- */
+const SKINS=['#f1c9a5','#e0ac82','#c68c5a','#8d5a3b','#f4d6b8'];const HAIRS=['#1b120c','#3b2416','#6b4423','#111','#c9a36b'];
+const KIT={gs:{a:'#f5b400',b:'#c8102e',shorts:'#c8102e',socks:'#c8102e',style:'half'},fb:{a:'#ffe600',b:'#002d72',shorts:'#ffffff',socks:'#002d72',style:'stripes'},
+  gk_gs:{a:'#1f9d55',b:'#0c5e31',shorts:'#0c5e31',socks:'#1f9d55',style:'plain'},gk_fb:{a:'#7c3aed',b:'#4c1d95',shorts:'#4c1d95',socks:'#7c3aed',style:'plain'},
+  ref:{a:'#111111',b:'#f5d90a',shorts:'#111111',socks:'#111111',style:'plain'},td:{a:'#1f2937',b:'#111827',shorts:'#1f2937',socks:'#111827',style:'plain'}};
+function jerseyTex(k,num){const c=cnv(256,256),x=c.getContext('2d');x.fillStyle=k.a;x.fillRect(0,0,256,256);x.fillStyle=k.b;
+  if(k.style==='half')x.fillRect(128,0,128,256);else if(k.style==='stripes'){for(let i=0;i<8;i+=2)x.fillRect(i*32+16,0,32,256)}else{x.fillRect(0,0,256,26)}
+  if(num){x.font='bold 120px Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineWidth=12;x.strokeStyle='#000';x.strokeText(num,128,140);x.fillStyle='#fff';x.fillText(num,128,140)}
+  return tex(c)}
+const boxG=new THREE.BoxGeometry(1,1,1);
+function limb(w,h,d,mat,px,py){const pivot=new THREE.Group();pivot.position.set(px,py,0);const m=new THREE.Mesh(boxG,mat);m.scale.set(w,h,d);m.position.y=-h/2;pivot.add(m);return pivot}
+function makeFigure(kitKey,num){const k=KIT[kitKey];const g=new THREE.Group();
+  const skin=new THREE.MeshLambertMaterial({color:SKINS[Math.floor(Math.random()*SKINS.length)]});
+  const jerseyFront=new THREE.MeshLambertMaterial({map:jerseyTex(k,null)}),jerseyBack=new THREE.MeshLambertMaterial({map:jerseyTex(k,num)});
+  const plain=new THREE.MeshLambertMaterial({color:k.a});
+  // gövde: arka yüzde numara (+z = arka, figür +x yönüne bakacak şekilde döndürülür)
+  const torso=new THREE.Mesh(boxG,[plain,plain,plain,plain,jerseyBack,jerseyFront]);torso.scale.set(0.95,1.05,0.55);torso.position.y=1.62;g.add(torso);
+  const shorts=new THREE.Mesh(boxG,new THREE.MeshLambertMaterial({color:k.shorts}));shorts.scale.set(0.95,0.42,0.58);shorts.position.y=0.92;g.add(shorts);
+  const sock=new THREE.MeshLambertMaterial({color:k.socks});
+  const legL=limb(0.34,0.8,0.34,sock,-0.24,0.78),legR=limb(0.34,0.8,0.34,sock,0.24,0.78);g.add(legL,legR);
+  const armL=limb(0.24,0.82,0.24,plain,-0.62,2.08),armR=limb(0.24,0.82,0.24,plain,0.62,2.08);g.add(armL,armR);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.3,14,10),skin);head.position.y=2.45;g.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(0.31,14,8,0,Math.PI*2,0,Math.PI/2),new THREE.MeshLambertMaterial({color:HAIRS[Math.floor(Math.random()*HAIRS.length)]}));hair.position.y=2.5;g.add(hair);
+  g.userData={legL,legR,armL,armR};return g}
+function drawTag(c,u,o){const x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);
+  const T=o.ref?{c:'#f5d90a'}:o.td?{c:'#e5e7eb'}:(TEAM[u.team]||{c:'#888'});
+  const label=o.label||u.name;let fs=64;x.textBaseline='middle';
+  do{x.font=`bold ${fs}px Arial,sans-serif`;if(x.measureText(label).width<=W-210)break;fs-=2}while(fs>40);
+  let nm=label;while(x.measureText(nm).width>W-210&&[...nm].length>3)nm=[...nm].slice(0,-2).join('')+'…';
+  const tw=x.measureText(nm).width,w=Math.min(W-8,tw+170+(o.cap?70:0)),x0=(W-w)/2,y0=16,h=H-40;
+  x.fillStyle='#000000e0';x.beginPath();x.roundRect(x0,y0,w,h,h/2);x.fill();x.lineWidth=8;x.strokeStyle=T.c;x.stroke();
+  // avatar
+  const ax=x0+h/2,ay=y0+h/2,r=h/2-12;x.save();x.beginPath();x.arc(ax,ay,r,0,7);x.clip();x.fillStyle='#374151';x.fillRect(ax-r,ay-r,2*r,2*r);
+  if(o.img)x.drawImage(o.img,ax-r,ay-r,2*r,2*r);else{x.fillStyle='#fff';x.font='bold 44px Arial,sans-serif';x.textAlign='center';x.fillText(o.ref?'🟨':o.td?'🧢':ini(u.name),ax,ay+3)}x.restore();
+  x.textAlign='left';x.fillStyle='#fff';x.font=`bold ${fs}px Arial,sans-serif`;x.fillText(nm,x0+h+14,ay+3);
+  if(o.cap){const cx=x0+w-58;x.fillStyle='#ffe08a';x.beginPath();x.arc(cx,ay,30,0,7);x.fill();x.fillStyle='#000';x.font='bold 40px Arial,sans-serif';x.textAlign='center';x.fillText('C',cx,ay+2)}
+  // alttaki ok
+  x.fillStyle=T.c;x.beginPath();x.moveTo(W/2-18,y0+h+2);x.lineTo(W/2+18,y0+h+2);x.lineTo(W/2,H-4);x.fill()}
+const TAG_H=0.026; // ekran yüksekliğine oranla etiket boyu (uzaklıktan bağımsız, hep okunur)
 class Actor{
-  constructor(u){this.u=u;this.c=cnv(380,420);this.t=tex(this.c);this.sp=new THREE.Sprite(new THREE.SpriteMaterial({map:this.t,transparent:true,depthWrite:false}));
+  constructor(u){this.u=u;this.c=cnv(640,150);this.t=tex(this.c);this.tag=new THREE.Sprite(new THREE.SpriteMaterial({map:this.t,transparent:true,depthWrite:false,depthTest:false,sizeAttenuation:false}));this.tag.renderOrder=10;
+    this.tag.scale.set(TAG_H*640/150,TAG_H,1);this.tag.center.set(0.5,0);
     this.sh=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,depthWrite:false}));this.sh.rotation.x=-Math.PI/2;
+    this.fig=null;this.figKey='';this.s=2.4;this.face=0;
     this.pos=new THREE.Vector3();this.target=new THREE.Vector3();this.home=new THREE.Vector3();this.zone=null;this.opts={};this.jump=0;this.nextMove=0;this.added=false;this.key=''}
-  setLook(o){this.opts=o;this.refresh()}
-  refresh(){const o=this.opts;drawCard(this.c,this.u,{...o,img:null});this.t.needsUpdate=true;loadImg(this.u.avatar).then(im=>{drawCard(this.c,this.u,{...o,img:im});this.t.needsUpdate=true}).catch(()=>{})}
-  setScale(s){this.sp.scale.set(s*380/420,s,1);this.sh.scale.set(s*0.5,s*0.3,1)}
-  show(){if(!this.added){scene.add(this.sp,this.sh);this.added=true}}
-  hide(){if(this.added){scene.remove(this.sp,this.sh);this.added=false}}
+  setLook(o){this.opts=o;const kk=o.ref?'ref':o.td?'td':o.num===1?'gk_'+this.u.team:this.u.team;const fk=kk+'|'+(o.num||'');
+    if(fk!==this.figKey){const was=this.added;if(was)this.hide();this.fig=makeFigure(kk,o.num||'');this.figKey=fk;if(was)this.show()}this.refresh()}
+  refresh(){const o=this.opts;drawTag(this.c,this.u,{...o,img:null});this.t.needsUpdate=true;loadImg(this.u.avatar).then(im=>{drawTag(this.c,this.u,{...o,img:im});this.t.needsUpdate=true}).catch(()=>{})}
+  setScale(s){this.s=s;if(this.fig)this.fig.scale.setScalar(s);this.sh.scale.set(s*1.3,s*0.9,1)}
+  show(){if(!this.added&&this.fig){this.fig.scale.setScalar(this.s);scene.add(this.fig,this.tag,this.sh);this.added=true}}
+  hide(){if(this.added){scene.remove(this.fig,this.tag,this.sh);this.added=false}}
   update(dt,t){const z=this.zone;let moving=false;
     if(z==='field'){const dir=dirOf(this.u.team),att=play.team===this.u.team,hot=play.phase==='attack'||play.phase==='shot';
       if(this.opts.num===1){if(this.dive&&t<this.dive.until)this.target.set(this.home.x,0,this.dive.z);else{this.dive=null;this.target.set(this.home.x+dir*1.2,0,THREE.MathUtils.clamp(ball.m.position.z*0.35,-3,3))}}
@@ -258,8 +300,15 @@ class Actor{
     const goal=this.target;const speed=z==='field'?(this.opts.num===1&&this.dive?9:ball.holder===this?4.6:3.8):z==='off'?3:3.2;
     const d=goal.clone().sub(this.pos);d.y=0;const L=d.length();if(L>0.08){d.multiplyScalar(Math.min(1,dt*speed/L));this.pos.add(d);moving=true}
     if(this.jump>0)this.jump-=dt;
-    const h=this.sp.scale.y;const bob=moving?Math.abs(Math.sin(t*7+this.pos.x))*0.2:Math.abs(Math.sin(t*3+this.pos.x))*0.06;const jy=this.jump>0?Math.abs(Math.sin(this.jump*9))*1.6:0;
-    this.sp.position.set(this.pos.x,h/2+bob+jy,this.pos.z);this.sh.position.set(this.pos.x,0.02,this.pos.z)}
+    if(!this.fig)return;
+    // yüz yönü: hareket ediyorsa gittiği yöne, duruyorsa topa
+    const lookV=moving?d:ball.m.position.clone().sub(this.pos);const want=Math.atan2(lookV.x,lookV.z)+Math.PI;let da=want-this.face;da=Math.atan2(Math.sin(da),Math.cos(da));this.face+=da*Math.min(1,dt*8);
+    const jy=this.jump>0?Math.abs(Math.sin(this.jump*9))*1.6:0;
+    this.fig.position.set(this.pos.x,jy,this.pos.z);this.fig.rotation.y=this.face;
+    const U=this.fig.userData,sw=moving?Math.sin(t*11+this.pos.x)*0.8:Math.sin(t*2+this.pos.z)*0.05;
+    U.legL.rotation.x=sw;U.legR.rotation.x=-sw;U.armL.rotation.x=-sw*0.8;U.armR.rotation.x=sw*0.8;
+    if(this.jump>0){U.armL.rotation.z=2.6;U.armR.rotation.z=-2.6}else{U.armL.rotation.z=0.08;U.armR.rotation.z=-0.08}
+    this.tag.position.set(this.pos.x,jy+2.9*this.s+0.4,this.pos.z);this.sh.position.set(this.pos.x,0.02,this.pos.z)}
 }
 /* 5'e 5 dizilişi (FB tarafı, x>0 kendi yarı sahası). GS aynalanır. */
 const SLOTS=[[PL/2-3,0],[23,-10],[23,10],[13,0],[4,-6]];const NUMS=[1,4,5,10,9];
@@ -275,9 +324,9 @@ function layout(){
     a.home.set(x,0,z);if(zone!=='field')a.target.set(x,0,z);a.show()};
   for(const t of ['gs','fb']){const sq=squad(t);const sl=slotsFor(t);const bySlot={};sq.forEach((u,i)=>bySlot[VIEWER_ORDER[i]]=u);
     const capId=sq[0]&&sq[0].id;
-    for(let s=0;s<5;s++){const u=bySlot[s]||DEF[t][s];put(u,'field',sl[s][0],sl[s][1],{num:NUMS[s],cap:u.id===capId},10);if(!u.isDefault&&!prev.has(u.id))entered.push(u)}
-    const td=S.td[t]&&S.users[S.td[t]];if(td)put(td,'td',TEAM[t].side*14,-(PW/2+1.6),{label:'🧢 '+td.name},8.5)}
-  const ref=S.refId&&S.users[S.refId];if(ref)put(ref,'ref',0,-8,{ref:true,label:'🟨 '+ref.name},9);
+    for(let s=0;s<5;s++){const u=bySlot[s]||DEF[t][s];put(u,'field',sl[s][0],sl[s][1],{num:NUMS[s],cap:u.id===capId},2.4);if(!u.isDefault&&!prev.has(u.id))entered.push(u)}
+    const td=S.td[t]&&S.users[S.td[t]];if(td)put(td,'td',TEAM[t].side*14,-(PW/2+1.6),{td:true,label:'🧢 '+td.name},2.2)}
+  const ref=S.refId&&S.users[S.refId];if(ref)put(ref,'ref',0,-8,{ref:true,label:'🟨 '+ref.name},2.3);
   for(const [id,a] of actors)if(!used.has(id)){if(a.zone==='field'&&!a.u.isDefault){a.zone='off';a.key='off';a.target.set(a.pos.x,0,PW/2+3);a.offAt=performance.now()+4000}else if(a.zone!=='off'){a.hide();actors.delete(id)}}
   return entered}
 
@@ -316,7 +365,7 @@ function updateBall(dt,t){
 
 /* ================= SABİT KAMERA ================= */
 // Saha boyuna ekranda dikey durur: GS aşağıdan yukarı, FB yukarıdan aşağı hücum eder.
-const CAM_MAIN={pos:new THREE.Vector3(-210,150,0),look:new THREE.Vector3(0,0,0)};
+const CAM_MAIN={pos:new THREE.Vector3(-150,78,0),look:new THREE.Vector3(6,0,0)};
 const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.look.clone();let camOverride=null;
 function updateCam(dt){let tp=CAM_MAIN.pos,tl=CAM_MAIN.look;
   if(camOverride&&performance.now()<camOverride.until){tp=camOverride.pos;tl=camOverride.look}else camOverride=null;
