@@ -39,8 +39,9 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 /* taraftar kayan şeridi */
 .fanbar{position:absolute;left:0;right:0;top:1124px;height:44px;background:#000000b0;border-top:2px solid #ffffff22;border-bottom:2px solid #ffffff22;overflow:hidden;white-space:nowrap;display:flex;align-items:center;z-index:4}
 .fanbar .lbl{flex:none;background:#ffe08a;color:#000;font-weight:900;font-size:20px;letter-spacing:2px;padding:0 14px;height:100%;display:flex;align-items:center;z-index:2}
-.fanbar .mv{display:inline-block;padding-left:100%;animation:fanmq 40s linear infinite;font-size:24px;font-weight:700}
-.fanbar .mv span{margin-right:30px}
+.fanbar .mvw{position:relative;flex:1;height:100%;overflow:hidden}
+.fanbar .mv{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:24px;font-weight:700;will-change:transform}
+.fanbar .mv span{padding-right:34px;flex:none}
 .fanbar .mv i{font-style:normal;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px}
 @keyframes fanmq{to{transform:translateX(-100%)}}
 /* yan paneller (örnek yayınlardaki gibi) */
@@ -51,8 +52,8 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .gr{display:flex;align-items:center;gap:6px;padding:3px 4px;border-radius:10px}
 .gr .e{font-size:28px;width:34px;text-align:center;flex:none}
 .gr .t{flex:1;min-width:0}
-.gr .t b{display:block;font-size:19px;line-height:1.1;white-space:nowrap}
-.gr .t i{display:block;font-size:16px;color:#cbd5e1;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr .t b{display:block;font-size:19px;line-height:1.1}
+.gr .t i{display:block;font-size:16px;line-height:1.15;color:#cbd5e1;font-style:italic}
 .gr .p{font-size:18px;color:#ffe08a;font-weight:700;white-space:nowrap}
 .gr.cmd .e{font-size:28px}
 .gr.hot{animation:hot 1.4s ease-out}
@@ -60,7 +61,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .lb .r{width:26px;text-align:center;color:#ffe08a}
 .lb .av{position:relative;width:32px;height:32px;border-radius:50%;background:#374151;display:grid;place-items:center;font-size:15px;flex:none;overflow:hidden;border:3px solid var(--tc)}
 .lb .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.lb .n{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .n{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:17px}
 .lb.emp{color:#9ca3af;font-weight:400;font-size:19px}
 .join{margin-top:8px;border-top:1px solid #ffffff22;padding-top:6px;text-align:center;font-size:18px;font-weight:700}
 .join b{background:#ffe08a;color:#000;padding:2px 10px;border-radius:8px}
@@ -113,7 +114,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
   <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 GS: <b id="rTdG"></b></div><div>🧢 FB: <b id="rTdF"></b></div></div>
   <div class="side l"><h4>🏆 ŞEREF KÜRSÜSÜ</h4><div id="lb"></div></div>
   <div class="side r"><h4>🎁 HEDİYE GÖNDER</h4><div id="giftList"></div></div>
-  <div class="fanbar"><div class="lbl">TRİBÜN</div><div class="mv" id="fanMv">Henüz kimse yok · sohbete GS ya da FB yaz, adın burada aksın!</div></div>
+  <div class="fanbar"><div class="lbl">TRİBÜN</div><div class="mvw" id="fanW"><div class="mv" id="fanMv"></div></div></div>
   <div class="event" id="event"><div class="av" id="evAv"></div><div><h2 id="evName"></h2><p id="evText"></p></div></div>
   <div class="snd" id="snd">🔇 Ses için tıkla</div>
   <div class="goal" id="goal"><div class="band"></div><h1>GOL!</h1><div class="who"><div class="star" id="gStar"></div><div class="tag">⭐ MAÇIN YILDIZI ⭐</div><b id="gName"></b><span id="gText"></span></div></div>
@@ -138,7 +139,7 @@ const GIFT_TABLE=[
   {e:'🌹',n:'Gül',c:'1 jeton',d:'Adın parlar'},
   {e:'🍩',n:'Donut',c:`${CONFIG.chant} jeton`,d:'Marş çalar'},
   {e:'🫶',n:'El Kalp',c:`${CONFIG.player} jeton`,d:'Sahaya çık'},
-  {e:'🐶',n:'Corgi',c:`${CONFIG.role} jeton`,d:'Hakemi ya da hocayı değiştir'},
+  {e:'🐶',n:'Corgi',c:`${CONFIG.role} jeton`,d:'Hakem / hoca koltuğu'},
   {e:'🔫',n:'Para Tabancası',c:`${CONFIG.goal} jeton`,d:'GOL at!'},
   {e:'👑',n:'En çok gönderen',c:'her takımda',d:'Kaptan olur'},
 ];
@@ -436,8 +437,8 @@ function evNext(){const el=$('#event');let it=evQ.shift();
 let goalBusy=false;const glowUntil={};
 function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date.now();const now=performance.now()/1000;
   switch(ev.type){
-    case 'join':if(!u.team)u.team=autoTeam();u.last=Date.now();event(u,`${TEAM[u.team].n} tribününe oturdu · değiştirmek için ${u.team==='gs'?'FB':'GS'} yaz`,0);break;
-    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();event(u,`${TEAM[t].n} taraftarı oldu`,1)}
+    case 'join':{const fresh=!u.team;if(!u.team)u.team=autoTeam();u.last=Date.now();if(fresh)fanPush(u)}event(u,`${TEAM[u.team].n} tribününe oturdu · değiştirmek için ${u.team==='gs'?'FB':'GS'} yaz`,0);break;
+    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();fanPush(u);event(u,`${TEAM[t].n} taraftarı oldu`,1)}
       const r=parseRole(ev.text);if(r){if(!u.team)u.team=autoTeam();u.want=r;
         if(r==='ref'&&!S.refId){S.refId=u.id;SFX.whistle(2);event(u,'🟨 Maçın hakemi oldu!',2)}
         else if(r==='td'&&!S.td[u.team]){S.td[u.team]=u.id;event(u,`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}
@@ -493,7 +494,7 @@ function confetti(t){const G=$('#goal');for(let i=0;i<90;i++){const c=document.c
 /* ================= PANELLER ================= */
 const GL=[...GIFT_TABLE.slice(0,5).map((g,i)=>`<div class="gr" id="gt${i}"><div class="e">${g.e}</div><div class="t"><b>${g.n}</b><i>${g.d}</i></div><div class="p">${g.c.replace(' jeton','')}</div></div>`),
   `<div class="gr cmd"><div class="e">👑</div><div class="t"><b>En çok gönderen</b><i>Kaptan olur</i></div></div>`,
-  `<div class="gr cmd"><div class="e">💬</div><div class="t"><b>"hakem" ya da "hoca" yaz</b><i>Koltuk boşsa bedava senin</i></div></div>`];
+  `<div class="gr cmd"><div class="e">💬</div><div class="t"><b>"hakem" / "hoca" yaz</b><i>Koltuk boşsa senin</i></div></div>`];
 $('#giftList').innerHTML=GL.join('');
 function hotTile(i){const el=document.getElementById('gt'+i);if(!el)return;el.classList.remove('hot');void el.offsetWidth;el.classList.add('hot')}
 function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins);const fresh=all.filter(u=>!u.coins).sort((a,b)=>b.last-a.last);
@@ -504,10 +505,21 @@ function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort
 const nm=id=>id&&S.users[id]?S.users[id].name:null;
 function leaderboard(){const top=Object.values(S.users).filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins).slice(0,6);
   $('#lb').innerHTML=top.length?top.map((u,i)=>`<div class="lb" style="--tc:${TEAM[u.team]?TEAM[u.team].c:'#888'}"><div class="r">${['🥇','🥈','🥉'][i]||i+1}</div><div class="av">${avHTML(u)}</div><div class="n">${u.name}</div></div>`).join(''):'<div class="lb emp">İlk hediyeyi gönder,<br>en üstte sen ol!</div>'}
-let fanSig='';
-function fanbar(){const all=Object.values(S.users).filter(u=>u.team).sort((a,b)=>(b.last||0)-(a.last||0)).slice(0,60);const sig=all.map(u=>u.id+u.team).join();if(sig===fanSig||!all.length)return;fanSig=sig;
-  const el=$('#fanMv');el.innerHTML=all.map(u=>`<span><i style="background:${TEAM[u.team].c};box-shadow:0 0 0 3px ${TEAM[u.team].c2}"></i>${u.name}</span>`).join('');
-  const d=Math.max(15,el.scrollWidth/90);el.style.animationDuration=d.toFixed(1)+'s'}
+/* tribün şeridi: sürekli akar. Yeni gelenler sıraya girer ve sona eklenir; sıra boşsa taraftarlar sırayla tekrar geçer. */
+const fanQ=[];let fanRot=0,fanX=0,fanLast=performance.now();
+function fanPush(u){if(u&&u.team)fanQ.push(u.id)}
+function fanNextId(){if(fanQ.length)return fanQ.shift();const all=Object.values(S.users).filter(u=>u.team);if(!all.length)return null;fanRot=(fanRot+1)%all.length;return all[fanRot].id}
+function fanTick(){requestAnimationFrame(fanTick);const now=performance.now(),dt=Math.min(.1,(now-fanLast)/1000);fanLast=now;
+  const el=$('#fanMv'),W=$('#fanW').clientWidth;fanX-=dt*80;
+  while(el.firstChild&&fanX+el.firstChild.offsetWidth<0){fanX+=el.firstChild.offsetWidth;el.firstChild.remove()}
+  let guard=0;while(el.scrollWidth+fanX<W+40&&guard++<5){const id=fanNextId();const u=id&&S.users[id];
+    const sp=document.createElement('span');
+    if(u){sp.innerHTML=`<i style="background:${TEAM[u.team].c};box-shadow:0 0 0 3px ${TEAM[u.team].c2}"></i>${u.name.replace(/</g,'&lt;')}`}
+    else{sp.textContent='Sohbete GS ya da FB yaz, adın burada aksın!'}
+    if(!el.childNodes.length&&fanX<=0)fanX=W;el.appendChild(sp);if(!u)break}
+  el.style.transform=`translateX(${fanX}px)`}
+requestAnimationFrame(fanTick);
+function fanbar(){}
 function hud(){leaderboard();fanbar();$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;
   $('#cntG').textContent=members('gs').length;$('#cntF').textContent=members('fb').length;
   
