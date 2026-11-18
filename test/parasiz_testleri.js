@@ -7,22 +7,31 @@
   const shouts = () => [...document.querySelectorAll('#shouts .shout')].map(x => x.textContent);
   const join = (n, t) => { h({ type: 'join', user: U(n) }); if (t) h({ type: 'comment', user: U(n), text: t }); };
 
-  // 1) beğeni → taraftar gücü
+  // 1) beğeni ve yorum → taraftar gücü (eşik izleyici sayısına göre, en az 10)
   join('Beğenici', 'GS'); D.power.gs = 0;
-  h({ type: 'like', user: U('Beğenici'), count: 50 });
-  check('Beğeni GS gücünü artırır', D.power.gs === 50, D.power.gs);
-  check('Güç çubuğu yüzdesi yazar', /%17/.test(document.querySelector('#pbGt').textContent), document.querySelector('#pbGt').textContent);
-  join('Beğenici2', 'GS'); h({ type: 'like', user: U('Beğenici2'), count: 260 }); await wait(100);
-  check('Güç dolunca sıfırlanır', D.power.gs < 300, D.power.gs);
+  h({ type: 'like', user: U('Beğenici'), count: 4 });
+  check('Beğeni GS gücünü artırır', D.power.gs === 4, D.power.gs);
+  check('Güç çubuğu yüzdesi yazar', /%\d+/.test(document.querySelector('#pbGt').textContent), document.querySelector('#pbGt').textContent);
+  h({ type: 'comment', user: U('Beğenici'), text: 'hadi cimbom' });
+  check('Yorum da güç verir', D.power.gs === 5, D.power.gs);
+  join('Beğenici2', 'GS'); D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 15 }); await wait(100);
+  check('Güç dolunca sıfırlanır', D.power.gs < 10, D.power.gs);
   check('Güç dolunca tezahürat yazısı çıkar', document.querySelector('#chant').classList.contains('show') && /GÜCÜ DOLDU/.test(document.querySelector('#chant').textContent));
-  check('En çok beğenen ekranda görünür', shouts().some(t => /Beğenici2.*260 beğeni/.test(t)), shouts().join(' | '));
+  check('En çok beğenen ekranda görünür', shouts().some(t => /Beğenici2.*15 beğeni/.test(t)), shouts().join(' | '));
 
-  // 2) ŞUT
-  join('Şutçu', 'FB'); h({ type: 'comment', user: U('Şutçu'), text: 'ŞUT' }); await wait(50);
-  check('ŞUT yazınca adı çıkar', shouts().some(t => /Şutçu.*şut istedi/.test(t)));
-  const n1 = shouts().filter(t => /Şutçu/.test(t)).length;
-  h({ type: 'comment', user: U('Şutçu'), text: 'şut' }); await wait(50);
-  check('ŞUT 30 sn içinde tekrar sayılmaz', shouts().filter(t => /Şutçu/.test(t)).length === n1);
+  // 2) ŞUT: 3 çağrıda şut, kaleci kurtarır, gol olmaz
+  await D.idle();
+  const g0 = S.goals.gs + S.goals.fb;
+  join('Şutçu1', 'FB'); h({ type: 'comment', user: U('Şutçu1'), text: 'ŞUT' }); await wait(50);
+  check('ŞUT yazınca adı ve kalan sayı çıkar', shouts().some(t => /Şutçu1.*2 şut daha/.test(t)), shouts().join(' | '));
+  h({ type: 'comment', user: U('Şutçu1'), text: 'şut' });
+  check('Aynı kişinin 5 sn içindeki tekrarı sayılmaz', D.shotCalls.fb.length === 1, D.shotCalls.fb.length);
+  join('Şutçu2', 'FB'); h({ type: 'comment', user: U('Şutçu2'), text: 'şut' });
+  join('Şutçu3', 'FB'); h({ type: 'comment', user: U('Şutçu3'), text: 'ŞUT!' }); await wait(30);
+  check('3. şutta animasyon başlar', D.busy());
+  check('Sayaç sıfırlanır', D.shotCalls.fb.length === 0);
+  await D.idle();
+  check('Kaleci kurtarır, gol olmaz', S.goals.gs + S.goals.fb === g0, `${g0} → ${S.goals.gs + S.goals.fb}`);
 
   // 3) skor tahmini
   join('Tahminci', 'GS'); h({ type: 'comment', user: U('Tahminci'), text: '2-1' });
@@ -30,11 +39,11 @@
   check('Tahmin ekranda görünür', shouts().some(t => /Tahminci.*GS 2 – 1 FB/.test(t)));
 
   // 5) paylaş / takip
-  D.power.fb = 0; join('Paylaşan', 'FB'); h({ type: 'share', user: U('Paylaşan') });
-  check('Paylaşım FB gücüne +50', D.power.fb === 50, D.power.fb);
+  D.power.fb = 0; join('Paylaşan', 'FB'); D.power.fb = 0; h({ type: 'share', user: U('Paylaşan') });
+  check('Paylaşım FB gücüne +5', D.power.fb === 5, D.power.fb);
   check('Paylaşan adı görünür', shouts().some(t => /Paylaşan.*paylaştı/.test(t)));
   h({ type: 'follow', user: U('Paylaşan') });
-  check('Takip FB gücüne +30', D.power.fb === 80, D.power.fb);
+  check('Takip FB gücüne +3', D.power.fb === 8, D.power.fb);
 
   // 6) tribün çekimi: isimli taraftarlar, çakışmayan etiketler
   const cs = D.crowd('gs');
@@ -46,9 +55,10 @@
   check('İsim etiketleri çakışmaz (aralık > etiket eni)', tags.length < 2 || minGap > tags[0].tag.scale.x, `aralık ${minGap.toFixed(2)} / en ${tags[0] && tags[0].tag.scale.x}`);
   check('Sahadaki oyuncu tribünde görünmez', !cs.figs.some(f => f.u && D.actors.get(f.u.id) && D.actors.get(f.u.id).zone === 'field'));
   const fb = D.crowd('fb'); check('FB tribününde atkı var', fb.figs.every(f => f.g.userData.scarf));
-  await wait(7200); check('Tribün çekimi kendiliğinden biter', !D.crowdState());
+  await wait(5000); check('Tribün çekimi kısa sürer ve biter', !D.crowdState());
 
   // 3+4) maç sonu: doğru tahmin ve maçın taraftarı
+  await D.idle();
   S.goals = { gs: 2, fb: 1 }; S.start = Date.now() - 10 * 60 * 1000 - 500;
   await wait(1500); check('Maç sonu başlar', /MAÇ SONU/.test(document.querySelector('#goal h1').textContent));
   await wait(6000); check('Doğru tahmin kartı çıkar', /DOĞRU TAHMİN/.test(document.querySelector('#cineLbl').textContent) && /Tahminci/.test(document.querySelector('#cineSub').textContent), document.querySelector('#cineSub').textContent);
