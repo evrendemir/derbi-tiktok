@@ -172,6 +172,8 @@ const TEAM={
 const params=new URLSearchParams(location.search);
 if(params.get('ws'))CONFIG.ws=params.get('ws'); // test için farklı köprü adresi
 if(params.get('key'))CONFIG.key=params.get('key'); // test için ayrı kayıt
+const SIM=+params.get('sim')||0; // ?sim=50 → 50 kişilik canlı yayın simülasyonu (gerçek kayda dokunmaz)
+if(SIM){CONFIG.key='derbi_sim';try{localStorage.removeItem('derbi_sim')}catch(e){}}
 const $=s=>document.querySelector(s);
 const PL=100,PW=64; // saha boyutu (birim ~ metre)
 
@@ -711,7 +713,7 @@ function connect(){let ws;try{ws=new WebSocket(CONFIG.ws)}catch(e){return setTim
   ws.onopen=()=>{$('#wsDot').classList.add('ok');$('#wsTxt').textContent='TikTok köprüsü bağlı'};
   ws.onmessage=m=>{try{handle(JSON.parse(m.data))}catch(e){}};
   ws.onclose=()=>{$('#wsDot').classList.remove('ok');$('#wsTxt').textContent='Köprü yok (ws://localhost:8765)';setTimeout(connect,4000)};ws.onerror=()=>ws.close()}
-connect();
+if(!SIM)connect(); // simülasyonda gerçek köprüye bağlanma
 
 /* ================= DEMO PANELİ ================= */
 const NAMES=['Ali K.','Merve T.','Can Y.','Zeynep A.','Burak S.','Elif D.','Emre Ç.','Selin O.','Kaan B.','Deniz U.','Mert G.','Ayşe N.','Oğuz P.','Ece R.','Hakan E.','Nil S.','Barış T.','Gizem K.','Tolga A.','İrem Y.','Serkan D.','Buse M.','Onur F.','Pınar L.','Ufuk Z.','Cansu V.','Arda H.','Tamer D.','Evren D.','Seda K.','Yusuf A.','Melis Ö.','Cem T.','Derya B.','Kerem S.','Nehir K.'];
@@ -733,6 +735,47 @@ $('#reset').onclick=()=>{if(confirm('Her şey sıfırlansın mı?')){S={users:{}
 $('#hide').onclick=()=>$('#panel').classList.add('hide');
 if(params.get('overlay')==='1')$('#panel').classList.add('hide');
 if(params.get('demo')==='1')autoDemo(true);
+
+/* ================= CANLI YAYIN SİMÜLASYONU (?sim=50) =================
+   Gerçek bir yayını taklit eder: izleyiciler yavaş yavaş gelir, takım seçer, sohbet eder, beğenir,
+   çoğu hiç hediye atmaz, bazıları küçük, nadiren biri büyük hediye atar. Solda TikTok sohbeti gibi bir akış görünür. */
+function startSim(N){
+  const NICKS=['cimbom_1905','Ahmet K.','zeynep.ylmz','fenerli_kaan','Elif🌸','Mert34','sarıkanarya07','Burak Aslan','ayse_dmr','UltrAslan','Kerem.FB','selinn','Hakan Çelik','gs_tarafı','Emre Yıldız','merve.k','fener_aşkı','Can B.','Deniz💙','oguz_1907',
+    'Büşra Ş.','tolgaa','Arda GS','Nil Ö.','kanarya_hakan','Seda Koç','barış.alper.fan','ece__','Murat Usta','sinan_fb','Gizem','yusuf.34','Melis Aydın','ali_cimbom','Kaan Ö.','Pınar🌙','ilkerr','Cansu B.','Tamer Abi','irem.s',
+    'Onur FB','Ufuk','Derya K.','hasan_gs','Nehir','serkan.1907','Buse M.','Volkan','Tuğba','Efe_06','Sevgi T.','Cem Abi','Yağız','Nazlı','Batu','Ozan K.','Gamze','Rıza Amca','Duru','Kemal'];
+  const GIFTS=[['Gül',1],['GG',1],['TikTok',1],['Parmak Kalp',5],['Parfüm',20],['Donut',30],['El Kalp',100],['Corgi',299],['Para Tabancası',500]];
+  const CHAT=['hadi be','gol olsun artık','😂😂','ne oluyor burada','nasıl oynanıyor?','cimbom!!!','fener ağlama','hakem nerde','👏👏','ben de sahaya çıkmak istiyorum','bu oyun güzelmiş','selam herkese','kaç kaç?','vay be','🔥🔥🔥'];
+  const R=a=>a[Math.floor(Math.random()*a.length)];
+  const viewers=[];const t0=performance.now()/1000;
+  for(let i=0;i<N;i++){const name=NICKS[i%NICKS.length]+(i>=NICKS.length?'_'+i:'');const lean=/fb|fener|kanarya|1907|💙/i.test(name)?'fb':/gs|cimbom|aslan|1905/i.test(name)?'gs':(Math.random()<.5?'gs':'fb');
+    const r=Math.random();const gen=r<.55?0:r<.82?1:r<.94?2:r<.985?3:4; // 0 hiç, 1 gül, 2 orta, 3 büyük, 4 balina
+    viewers.push({u:{id:'sim_'+i,name,avatar:`https://api.dicebear.com/9.x/avataaars/png?seed=${encodeURIComponent(name)}&size=160&backgroundColor=b6e3f4,c0aede,ffd5dc,ffdfbf`},
+      joinAt:i<12?Math.random()*15:10+Math.random()*150,lean,gen,in:false,picked:false,pickAt:0,next:0})}
+  // garantili senaryolar: biri hakem, iki hoca, biri ilk 11'e girer, biri gol atar
+  const script=[[45,'comment',2,'hakem olayım ben'],[70,'comment',0,'hoca benim'],[80,'comment',3,'ben hoca olurum'],[95,'gift',5,['El Kalp',100]],[150,'gift',1,['Para Tabancası',500]],[210,'gift',7,['El Kalp',100]],[260,'gift',9,['Corgi',299]],[300,'gift',3,['Para Tabancası',500]]];
+  // sol tarafta sohbet akışı
+  const box=document.createElement('div');box.id='simchat';box.innerHTML='<div class="sh">SİMÜLASYON · TikTok sohbeti <span id="simN">0</span> izleyici</div><div id="simLog"></div>';document.body.appendChild(box);
+  const st=document.createElement('style');st.textContent='#simchat{position:fixed;left:10px;top:10px;bottom:10px;width:300px;background:#111c;border:1px solid #333;border-radius:12px;font:14px Arial,sans-serif;color:#ddd;display:flex;flex-direction:column;z-index:98;overflow:hidden}#simchat .sh{padding:10px;background:#222;font-weight:700;color:#ffe08a}#simLog{flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;gap:4px}#simLog div{line-height:1.35}#simLog b{color:#fff}#simLog .g{color:#ff9bd2}#simLog .j{color:#8b96a8}#simLog .big{color:#ffe08a;font-weight:700}';document.head.appendChild(st);
+  const log=(html,cls)=>{const l=$('#simLog');const d=document.createElement('div');if(cls)d.className=cls;d.innerHTML=html;l.appendChild(d);while(l.children.length>60)l.firstChild.remove()};
+  const send=(v,ev)=>{handle({...ev,user:v.u})};
+  const gift=(v,g,n)=>{n=n||1;const c=g[1]*n;log(`<b>${v.u.name}</b> ${g[0]}${n>1?' x'+n:''} gönderdi <span class="g">(${c} jeton)</span>`,c>=100?'big':'g');send(v,{type:'gift',coins:c,gift:g[0]})};
+  setInterval(()=>{const t=performance.now()/1000-t0;let count=0;
+    for(const v of viewers){
+      if(!v.in&&t>=v.joinAt){v.in=true;v.pickAt=t+3+Math.random()*35;v.next=t+5+Math.random()*20;log(`<b>${v.u.name}</b> katıldı`,'j');send(v,{type:'join'})}
+      if(!v.in)continue;count++;
+      if(!v.picked&&t>=v.pickAt){v.picked=true;if(Math.random()<.75){const w=v.lean==='gs'?R(['GS','gs','Cimbom','GS 💛❤️']):R(['FB','fb','Fener','FB 💛💙']);log(`<b>${v.u.name}</b>: ${w}`);send(v,{type:'comment',text:w})}}
+      if(t>=v.next){v.next=t+6+Math.random()*25;const r=Math.random();
+        if(r<.25){const w=R(CHAT);log(`<b>${v.u.name}</b>: ${w}`);send(v,{type:'comment',text:w})}
+        else if(r<.55){send(v,{type:'like',count:1+Math.floor(Math.random()*15)})}
+        else if(v.gen===1&&r<.75)gift(v,R(GIFTS.slice(0,3)),1+Math.floor(Math.random()*5));
+        else if(v.gen===2&&r<.75)gift(v,R(GIFTS.slice(3,6)),1);
+        else if(v.gen===3&&r<.65)gift(v,GIFTS[6],1);
+        else if(v.gen===4&&r<.6)gift(v,R(GIFTS.slice(7)),1)}}
+    for(const s of script){if(!s.done&&t>=s[0]){s.done=true;const v=viewers[s[2]];if(!v.in){v.in=true;log(`<b>${v.u.name}</b> katıldı`,'j');send(v,{type:'join'})}
+      if(s[1]==='comment'){log(`<b>${v.u.name}</b>: ${s[3]}`);send(v,{type:'comment',text:s[3]})}else gift(v,s[3],1)}}
+    $('#simN').textContent=count},400);
+}
+if(SIM)startSim(SIM);
 addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='d')autoDemo(!autoT);if(e.key==='h')$('#panel').classList.toggle('hide');if(e.key==='m'){AU.muted=!AU.muted;if(AU.master)AU.master.gain.value=AU.muted?0:0.9}});
 window.derbi={handle,autoDemo,S,fanTour:()=>{const st=[...new Set([...actors.values()].filter(a=>a.zone==='fan').map(a=>a.stand))].filter(Boolean);if(st.length){queue.length=0;st.slice(1).forEach(s=>queue.push(SHOTS.fanPan(s)));startShot(SHOTS.fanPan(st[0]))}},debug:()=>({play:{phase:play.phase,team:play.team,passes:play.passes,holder:ball.holder&&ball.holder.u.name},cam:camera.position.toArray().map(v=>+v.toFixed(1)),look:look.toArray().map(v=>+v.toFixed(1)),actors:[...actors.values()].map(a=>[a.u.name,a.zone,a.added,...a.pos.toArray().map(v=>+v.toFixed(1))])}),shot:(n,arg)=>{if(n==='closeup'){const fa=fieldActors();if(fa.length)startShot(SHOTS.closeup(fa[0]))}else startShot(SHOTS[n](arg))}};
 </script>
