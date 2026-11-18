@@ -47,7 +47,7 @@
 
   // 6) tribün çekimi: isimli taraftarlar, çakışmayan etiketler
   const cs = D.crowd('gs');
-  check('Tribün çekimi açılır', cs && cs.figs.length === 8);
+  check('Tribün çekimi açılır (gerçek taraftar sayısı kadar, en çok 8)', cs && cs.figs.length > 0 && cs.figs.length <= 8 && cs.figs.length === cs.named, cs && cs.figs.length);
   const tags = cs.figs.filter(f => f.tag);
   check('İzleyici taraftarların isim etiketi var', tags.length === Math.min(8, cs.named) && tags.length > 0, tags.length);
   const xs = tags.map(f => f.tag.position.x).sort((a, b) => a - b);
@@ -56,6 +56,29 @@
   check('Sahadaki oyuncu tribünde görünmez', !cs.figs.some(f => f.u && D.actors.get(f.u.id) && D.actors.get(f.u.id).zone === 'field'));
   const fb = D.crowd('fb'); check('FB tribününde atkı var', fb.figs.every(f => f.g.userData.scarf));
   await wait(5000); check('Tribün çekimi kısa sürer ve biter', !D.crowdState());
+
+  // 7) tribün yalnızca gerçek taraftarları gösterir (bot yok)
+  const real = D.crowd('gs'); check('Tribünde sadece gerçek taraftar var', real && real.figs.every(f => f.u && f.tag), real && real.figs.length);
+  await wait(5000);
+
+  // 8) ŞUT: önce bağıran taraftarlar konuşma balonuyla gösterilir
+  await D.idle();
+  for (const n of ['Bağıran1', 'Bağıran2', 'Bağıran3']) { join(n, 'GS'); }
+  for (const n of ['Bağıran1', 'Bağıran2', 'Bağıran3']) h({ type: 'comment', user: U(n), text: 'şut' });
+  await wait(60);
+  const sc = D.crowdState();
+  check('ŞUT anında önce bağıranlar tribünde görünür', sc && sc.shout && sc.figs.length === 3 && sc.figs.every(f => f.bub), sc && sc.figs.length);
+  await D.idle();
+
+  // 9) tezahürat yarışı
+  D.startRace(); join('Yarışçı1', 'FB'); join('Yarışçı2', 'FB'); join('Yarışçı3', 'GS');
+  for (let i = 0; i < 3; i++) { h({ type: 'comment', user: U('Yarışçı1'), text: 'fener' }); h({ type: 'comment', user: U('Yarışçı2'), text: 'hadi' }); }
+  h({ type: 'comment', user: U('Yarışçı3'), text: 'cimbom' });
+  check('Yarış sırasında yorumlar sayılır', D.race.cnt.fb >= 6 && D.race.cnt.gs >= 1, JSON.stringify(D.race.cnt));
+  check('Yarış çubuğu görünür', document.querySelector('#race').classList.contains('show'));
+  await wait(2600);
+  check('Yarış biter, kazanan ilan edilir', !D.race.on && /FB KAZANDI/.test(document.querySelector('#chant').textContent), document.querySelector('#chant').textContent);
+  check('Yarışın yıldızları ekranda', shouts().some(t => /Yarışçı(1|2).*yarışın yıldızı/.test(t)), shouts().join(' | '));
 
   // 3+4) maç sonu: doğru tahmin ve maçın taraftarı
   await D.idle();
