@@ -79,7 +79,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .event p{margin:2px 0 0;font-size:26px;font-style:italic;color:#ffe08a;font-weight:700}
 /* gol */
 #stage .top,#stage .howto,#stage .roles,#stage .side,#stage .fanbar,#stage .event,#stage .chant{transition:opacity .45s}
-#stage.cinema .top,#stage.cinema .howto,#stage.cinema .roles,#stage.cinema .side,#stage.cinema .fanbar,#stage.cinema .event,#stage.cinema .chant{opacity:0!important}
+#stage.cinema .top,#stage.cinema .howto,#stage.cinema .roles,#stage.cinema .side,#stage.cinema .fanbar,#stage.cinema .event,#stage.cinema .chant{opacity:0!important;visibility:hidden!important}
 .cine{position:absolute;left:60px;right:60px;top:640px;display:flex;align-items:center;gap:26px;padding:22px 30px;border-radius:30px;background:linear-gradient(120deg,#000000ee,#111827ee);border:6px solid var(--tc,#ffe08a);box-shadow:0 0 60px var(--tc,#ffe08a),0 20px 50px #000;z-index:45;opacity:0;transform:scale(.6) rotate(-3deg);transition:opacity .25s,transform .45s cubic-bezier(.2,1.6,.4,1);pointer-events:none}
 .cine.show{opacity:1;transform:none}
 .cine .cav{position:relative;width:170px;height:170px;border-radius:50%;flex:none;overflow:hidden;background:#374151;display:grid;place-items:center;font-size:64px;font-weight:900;border:8px solid var(--tc,#ffe08a)}
@@ -397,6 +397,7 @@ class Actor{
     if(P==='card'||P==='yellow'){U.armR.rotation.z=2.95;U.armR.rotation.x=0;
       if(!this.cardM){this.cardM=new THREE.Mesh(new THREE.PlaneGeometry(0.34,0.48),new THREE.MeshBasicMaterial({color:0xff1a1a,side:THREE.DoubleSide}));this.cardM.position.set(0,-0.95,0);U.armR.add(this.cardM)}
       this.cardM.material.color.set(P==='card'?0xff1a1a:0xffd400);this.cardM.visible=true}else if(this.cardM)this.cardM.visible=false
+    if(this.tag.visible&&document.getElementById('stage').classList.contains('cinema'))this.tag.visible=false;
     this.tag.position.set(this.pos.x,jy+2.9*this.s+0.4,this.pos.z);this.sh.position.set(this.pos.x,0.02,this.pos.z)}
 }
 /* 5'e 5 dizilişi (FB tarafı, x>0 kendi yarı sahası). GS aynalanır. */
@@ -544,13 +545,13 @@ function goalSong(team,sec){if(AU.muted)return;try{if(songNow)songNow.pause();co
 let goalChain=Promise.resolve();
 const FAST=new URLSearchParams(location.search).get('fast')==='1';
 const sleep=ms=>new Promise(r=>setTimeout(r,FAST?ms*0.05:ms));const nowS=()=>performance.now()/1000;
-const cinemaOn=on=>$('#stage').classList.toggle('cinema',on);
+const cinemaOn=on=>{$('#stage').classList.toggle('cinema',on);for(const x of actors.values())x.tag.visible=!on};
 function queueMoment(fn){goalChain=goalChain.then(async()=>{cinemaOn(true);try{await fn()}catch(e){console.error(e)}finally{cinemaOn(false)}})}
 function cineShow(u,lbl,sub,tc,board){const c=$('#cine');c.style.setProperty('--tc',tc);$('#cineAv').innerHTML=avHTML(u);$('#cineLbl').textContent=lbl;$('#cineName').textContent=u.name;$('#cineSub').textContent=sub;
   $('#cineBoard').classList.toggle('hide',!board);$('#cineAv').classList.toggle('hide',!!board);c.classList.add('show')}
 const cineHide=()=>$('#cine').classList.remove('show');
 function flash(){const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}
-function holdAll(sec,stars=[]){for(const x of [...actors.values()]){x.hold=nowS()+sec;x.target.copy(x.pos);x.tag.visible=stars.includes(x)}}
+function holdAll(sec,stars=[]){for(const x of [...actors.values()]){x.hold=nowS()+sec;x.target.copy(x.pos);x.tag.visible=false}}
 function releaseAll(){for(const x of actors.values()){x.hold=0;x.pose=null;x.speedMul=1;x.lookAt=null;x.tag.visible=true}}
 const SHOTS=[{id:'sert',lbl:'SERT ŞUT',start:16,run:23,dur:0.5,arc:0.5,curve:0},{id:'plase',lbl:'PLASE',start:14,run:22,dur:0.85,arc:1.4,curve:2.6},
   {id:'fuze',lbl:'UZAKTAN FÜZE',start:2,run:9,dur:1.05,arc:3.6,curve:0},{id:'kafa',lbl:'KAFA VURUŞU',start:18,run:27,dur:0.45,arc:0.3,curve:0,head:true}];
@@ -558,7 +559,7 @@ const CELEBS=[{id:'knee',lbl:'dizlerinin üstünde kaydı!'},{id:'plane',lbl:'u�
 /* GOL: tanıtım → koşu → ağır çekim vuruş → ağlar → GOL → sevinç → tekrar */
 function goalSeq(u,g,opt={}){queueMoment(()=>goalCinema(u,g,opt))}
 async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=team==='gs'?1:-1;S.goalsBy=S.goalsBy||{};
-  const mine=actors.get(u.id);let a=mine&&mine.zone==='field'?mine:(fieldActors(team).find(x=>x.opts.num===9)||fieldActors(team)[0]);if(a)a.tag.visible=true;
+  const mine=actors.get(u.id);let a=mine&&mine.zone==='field'?mine:(fieldActors(team).find(x=>x.opts.num===9)||fieldActors(team)[0]);
   const sh=SHOTS[Math.floor(Math.random()*SHOTS.length)],cel=CELEBS[Math.floor(Math.random()*CELEBS.length)];
   holdAll(40,[a]);const gk=gkOf(oppOf(team));if(gk){gk.pos.set(s*(PL/2-1.5),0,0);gk.target.copy(gk.pos)}
   const z0=(Math.random()-.5)*12;if(a){a.pos.set(s*sh.start,0,z0);a.target.copy(a.pos);a.face=s>0?-Math.PI/2:Math.PI/2}
@@ -595,7 +596,7 @@ async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=t
   await sleep(1300);
   // 5a) taktik golü: oyuncular hocanın etrafına toplanıp onu havaya atar
   if(opt.tdActor){const td=opt.tdActor;await sleep(900);G.classList.remove('show');flash();const mates=fieldActors(team).filter(x=>x.opts.num!==1);
-    td.hold=nowS()+30;td.tag.visible=true;mates.forEach((m,i)=>{const ang=i/mates.length*Math.PI*2;m.pos.set(td.pos.x+Math.cos(ang)*1.7,0,td.pos.z+Math.sin(ang)*1.7);m.target.copy(m.pos);m.pose='lift';m.poseUntil=nowS()+7;m.lookAt=td.pos});
+    td.hold=nowS()+30;mates.forEach((m,i)=>{const ang=i/mates.length*Math.PI*2;m.pos.set(td.pos.x+Math.cos(ang)*1.7,0,td.pos.z+Math.sin(ang)*1.7);m.target.copy(m.pos);m.pose='lift';m.poseUntil=nowS()+7;m.lookAt=td.pos});
     td.pose='toss';td.poseUntil=nowS()+6.5;camOverride={follow:td,span:7.5,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};
     event(opt.by||u,'🧠 Oyuncular hocayı havaya atıyor!',3);await sleep(5600);a=null}
   // 5) sevinç: köşe bayrağına koşu + rastgele sevinç
@@ -626,7 +627,7 @@ function tacticMoment(u){queueMoment(async()=>{const td=actors.get(u.id);goalBus
   await goalCinema(scorer?scorer.u:u,1,{team:u.team,by:u,tdActor:actors.get(u.id),scorerActor:scorer,lbl:'🧠 TAKTİK GOLÜ',tag:'🧠 TAKTİK DEHASI 🧠',sub:`${u.name} taktiğiyle ${TEAM[u.team].n} golü buldu!`})})}
 /* HAKEM: sahadaki en düşük jetonlu izleyici oyuncuya kırmızı kart; oyuncu yoksa düdük anı */
 function refMoment(u){queueMoment(async()=>{const ref=actors.get(u.id);if(!ref)return;goalBusy=true;holdAll(30);
-  const victims=fieldActors().filter(x=>!x.u.isDefault&&x.u.coins>0).sort((a,b)=>a.u.coins-b.u.coins);const v=victims[0];ref.tag.visible=true;if(v)v.tag.visible=true;
+  const victims=fieldActors().filter(x=>!x.u.isDefault&&x.u.coins>0).sort((a,b)=>a.u.coins-b.u.coins);const v=victims[0];
   camOverride={follow:ref,span:7,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};SFX.whistle(1);
   if(v){ref.speedMul=3;ref.target.set(v.pos.x-1.6,0,v.pos.z+(v.pos.z>0?-1.4:1.4));await until(()=>ref.pos.distanceTo(ref.target)<=0.4,FAST?300:3000);
     ref.face=Math.atan2(v.pos.x-ref.pos.x,v.pos.z-ref.pos.z)+Math.PI;ref.pose='card';ref.poseUntil=nowS()+3.2;SFX.whistle(3);flash();$('#redc').classList.add('show');
