@@ -55,7 +55,7 @@
   // 3) skor tahmini
   join('Tahminci', 'GS'); h({ type: 'comment', user: U('Tahminci'), text: '2-1' });
   check('Tahmin kaydedilir (GS-FB)', JSON.stringify((S.preds || {})['p_Tahminci']) === '[2,1]', JSON.stringify(S.preds));
-  check('Tahmin ekranda görünür', shouts().some(t => /Tahminci.*GS 2 – 1 FB/.test(t)));
+  check('Tahmin ekranda görünür', shouts().some(t => /Tahminci.*ASLAN 2 – 1 KANARYA/.test(t)));
 
   // 5) paylaş / takip
   D.power.fb = 0; join('Paylaşan', 'FB'); D.power.fb = 0; h({ type: 'share', user: U('Paylaşan') });
@@ -97,7 +97,7 @@
   check('Yarış sırasında GS/FB yazıları sayılır', D.race.cnt.fb >= 6 && D.race.cnt.gs >= 1, JSON.stringify(D.race.cnt));
   check('Yarış çubuğu görünür', document.querySelector('#race').classList.contains('show'));
   await wait(2600);
-  check('Yarış biter, kazanan ilan edilir', !D.race.on && /FB KAZANDI/.test(document.querySelector('#chant').textContent), document.querySelector('#chant').textContent);
+  check('Yarış biter, kazanan ilan edilir', !D.race.on && /KANARYA KAZANDI/.test(document.querySelector('#chant').textContent), document.querySelector('#chant').textContent);
   check('Yarışın yıldızları ekranda', shouts().some(t => /Yarışçı(1|2).*yarışın yıldızı/.test(t)), shouts().join(' | '));
   D.CONFIG.powerMin = pm;
 

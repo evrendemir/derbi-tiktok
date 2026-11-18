@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .top .sc{background:#111827;display:flex;align-items:center;padding:0 30px;font-size:70px;font-variant-numeric:tabular-nums}
 .top .clk{background:#1f2937;display:flex;align-items:center;padding:0 22px;font-size:40px;color:#ffe08a;font-variant-numeric:tabular-nums}
 /* talimat */
-.aitag{position:absolute;right:30px;top:250px;z-index:60;background:#000c;color:#fff;font-size:22px;font-weight:700;padding:5px 14px;border-radius:12px;border:2px solid #ffffff55;pointer-events:none}
+.aitag{position:absolute;right:30px;top:204px;z-index:60;background:#000c;color:#fff;font-size:22px;font-weight:700;padding:5px 14px;border-radius:12px;border:2px solid #ffffff55;pointer-events:none}
 .howto{position:absolute;left:30px;right:30px;top:418px;height:60px;border-radius:16px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;gap:12px;box-shadow:0 10px 30px #0009;z-index:5}
 .howto b{background:#111;color:#ffe08a;padding:4px 16px;border-radius:10px}
 /* taraftar şeridi + roller */
@@ -196,17 +196,17 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 <body>
 <div id="stage">
   <canvas id="gl"></canvas>
-  <div class="top"><div class="live"><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff;margin-right:8px;animation:blink 1.1s infinite"></i>CANLI</span><small id="viewers"></small></div><div class="t gs">GS<small><span id="cntG">0</span> taraftar</small></div><div class="sc"><span id="sGs">0</span>&nbsp;–&nbsp;<span id="sFb">0</span></div><div class="t fb">FB<small><span id="cntF">0</span> taraftar</small></div><div class="clk" style="flex-direction:column;justify-content:center;line-height:1"><span id="clk">00:00</span><small id="half" style="font-size:18px;color:#cbd5e1;margin-top:6px">1. YARI</small></div></div>
+  <div class="top"><div class="live"><span><i style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#fff;margin-right:8px;animation:blink 1.1s infinite"></i>CANLI</span><small id="viewers"></small></div><div class="t gs">ASLAN<small><span id="cntG">0</span> taraftar</small></div><div class="sc"><span id="sGs">0</span>&nbsp;–&nbsp;<span id="sFb">0</span></div><div class="t fb">KANARYA<small><span id="cntF">0</span> taraftar</small></div><div class="clk" style="flex-direction:column;justify-content:center;line-height:1"><span id="clk">00:00</span><small id="half" style="font-size:18px;color:#cbd5e1;margin-top:6px">1. YARI</small></div></div>
   <div class="aitag">🤖 Yapay zeka ile oluşturulmuş oyun ve spiker sesi</div>
   <div class="chant" id="chant"></div>
-    <div class="howto" id="howto">💬 Sohbete <b>GS</b> ya da <b>FB</b> yaz → takımına katıl</div>
-  <div class="power"><div class="pb gs" id="pbG"><i id="pbGi"></i><span id="pbGt">❤️ GS GÜCÜ</span></div><div class="pb fb" id="pbF"><i id="pbFi"></i><span id="pbFt">❤️ FB GÜCÜ</span></div></div>
+    <div class="howto" id="howto">💬 Sohbete <b>ASLAN</b> ya da <b>KANARYA</b> yaz → takımına katıl</div>
+  <div class="power"><div class="pb gs" id="pbG"><i id="pbGi"></i><span id="pbGt">❤️ ASLAN GÜCÜ</span></div><div class="pb fb" id="pbF"><i id="pbFi"></i><span id="pbFt">❤️ KANARYA GÜCÜ</span></div></div>
   <div class="shouts" id="shouts"></div>
-  <div class="race" id="race"><span id="raceT">📣 YARIŞ</span><div class="rb"><i class="g" id="raceG" style="width:50%"></i><i class="f" id="raceF" style="width:50%"></i></div><span id="raceS">GS 0 – 0 FB</span></div>
+  <div class="race" id="race"><span id="raceT">📣 YARIŞ</span><div class="rb"><i class="g" id="raceG" style="width:50%"></i><i class="f" id="raceF" style="width:50%"></i></div><span id="raceS">ASLAN 0 – 0 KANARYA</span></div>
   <div class="pen" id="pen"></div>
   <div class="pre" id="pre"></div>
   <div class="tvfx" id="tvfx"></div><div class="var" id="var"></div><div class="varrec" id="varrec">● REPLAY</div>
-  <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 GS: <b id="rTdG"></b></div><div>🧢 FB: <b id="rTdF"></b></div></div>
+  <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 ASLAN: <b id="rTdG"></b></div><div>🧢 KANARYA: <b id="rTdF"></b></div></div>
   <div class="side l"><h4>🏆 ŞEREF KÜRSÜSÜ</h4><div id="lb"></div></div>
   <div class="side r"><h4>🎁 HEDİYE GÖNDER</h4><div id="giftList"></div></div>
   <div class="fanbar"><div class="lbl">TRİBÜN</div><div class="mvw" id="fanW"><div class="mv" id="fanMv"></div></div></div>
@@ -220,7 +220,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 <div id="panel">
   <div class="st"><i id="wsDot"></i><span id="wsTxt">Köprü yok (ws://localhost:8765)</span></div>
   <input id="pName" placeholder="isim (boş = rastgele)">
-  <button data-ev="join">Katılım</button><button data-ev="gs">Yorum GS</button><button data-ev="fb">Yorum FB</button>
+  <button data-ev="join">Katılım</button><button data-ev="gs">Yorum ASLAN</button><button data-ev="fb">Yorum KANARYA</button>
   <button data-ev="g1">Gül 1</button><button data-ev="g30">Donut 30</button><button data-ev="g100">El Kalp 100</button>
   <button data-ev="ref">"hakem"</button><button data-ev="td">"hoca"</button><button data-ev="g199">Gözlük 199</button><button data-ev="g299">Corgi 299</button><button data-ev="g500">Tabanca 500</button>
   <button id="reset">Sıfırla</button><button id="hide">Paneli gizle</button>
@@ -241,8 +241,8 @@ const GIFT_TABLE=[
   {e:'🔫',n:'Para Tabancası',c:`${CONFIG.goal} jeton`,d:'GOL at!'},
   {e:'👑',n:'En çok gönderen',c:'her takımda',d:'Kaptan olur'},
 ];
-const TEAM={gs:{c:'#f5b400',c2:'#c8102e',n:'Galatasaray',crowd:['#f5b400','#c8102e','#8a0e22','#d9a300','#f5b400','#1a1a1a'],side:-1},
-            fb:{c:'#ffe600',c2:'#002d72',n:'Fenerbahçe',crowd:['#ffe600','#002d72','#0b3d91','#e6cf00','#002d72','#1a1a1a'],side:1}};
+const TEAM={gs:{c:'#f5b400',c2:'#c8102e',n:'Aslanlar',crowd:['#f5b400','#c8102e','#8a0e22','#d9a300','#f5b400','#1a1a1a'],side:-1},
+            fb:{c:'#ffe600',c2:'#002d72',n:'Kanaryalar',crowd:['#ffe600','#002d72','#0b3d91','#e6cf00','#002d72','#1a1a1a'],side:1}};
 const params=new URLSearchParams(location.search);
 if(params.get('ws'))CONFIG.ws=params.get('ws');
 const SIM=+params.get('sim')||0;
@@ -262,8 +262,8 @@ function getUser(u){const id=String(u.id||u.name);let x=S.users[id];
   if(u.avatar&&u.avatar!==x.avatar){x.avatar=u.avatar;const a=actors.get(id);if(a)a.refresh()}
   if(u.name)x.name=u.name;return x}
 function parseTeam(t){t=(t||'').toLocaleLowerCase('tr-TR');
-  if(/(^|[^a-zçğıöşü])(gs|galatasaray|cimbom|cim bom|aslan)([^a-zçğıöşü]|$)/.test(t))return 'gs';
-  if(/(^|[^a-zçğıöşü])(fb|fener|fenerbahçe|fenerbahce|kanarya)([^a-zçğıöşü]|$)/.test(t))return 'fb';return null}
+  if(/(^|[^a-zçğıöşü])(gs|galatasaray|cimbom|cim bom|aslan|aslanlar)([^a-zçğıöşü]|$)/.test(t))return 'gs';
+  if(/(^|[^a-zçğıöşü])(fb|fener|fenerbahçe|fenerbahce|kanarya|kanaryalar)([^a-zçğıöşü]|$)/.test(t))return 'fb';return null}
 function parseRole(t){t=(t||'').toLocaleLowerCase('tr-TR');if(/hakem/.test(t))return 'ref';if(/hoca|teknik|direktör|direktor/.test(t))return 'td';return null}
 
 /* ================= THREE: SAHNE ================= */
@@ -326,7 +326,7 @@ function goalMesh(side){const g=new THREE.Group();const post=new THREE.MeshStand
 scene.add(goalMesh(-1),goalMesh(1));
 /* reklam panoları */
 function adTexture(text,bg,fg){const c=cnv(2048,128),x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,2048,128);x.fillStyle=fg;x.font='bold 84px Arial,sans-serif';x.textBaseline='middle';x.fillText(text,20,66);return tex(c,true)}
-const adMats=[adTexture('GALATASARAY  •  FENERBAHÇE  •  DERBİ  •  CANLI  •  ','#c8102e','#ffe08a'),adTexture('SOHBETE GS veya FB YAZ  •  TAKIMINA KATIL  •  ','#002d72','#ffe600'),adTexture('500 JETON = GOL  •  100 JETON = SAHAYA ÇIK  •  ','#0b0e14','#ffffff')].map(t=>{t.repeat.set(2,1);return new THREE.MeshBasicMaterial({map:t})});
+const adMats=[adTexture('ASLANLAR  •  KANARYALAR  •  DERBİ  •  CANLI  •  ','#c8102e','#ffe08a'),adTexture('SOHBETE ASLAN veya KANARYA YAZ  •  TAKIMINA KATIL  •  ','#002d72','#ffe600'),adTexture('500 JETON = GOL  •  100 JETON = SAHAYA ÇIK  •  ','#0b0e14','#ffffff')].map(t=>{t.repeat.set(2,1);return new THREE.MeshBasicMaterial({map:t})});
 function addAd(len,x,z,ry,i){const m=new THREE.Mesh(new THREE.BoxGeometry(len,1.2,0.3),[null,null,null,null,adMats[i%3],adMats[i%3]].map(mm=>mm||new THREE.MeshLambertMaterial({color:0x111})));m.position.set(x,0.6,z);m.rotation.y=ry;scene.add(m)}
 addAd(PL+8,0,PW/2+3,0,0);addAd(PL+8,0,-(PW/2+3),Math.PI,1);addAd(PW+8,PL/2+5,0,-Math.PI/2,2);addAd(PW+8,-(PL/2+5),0,Math.PI/2,0);
 /* tribünler (dekor kalabalık) */
@@ -482,7 +482,7 @@ class Actor{
     if(this.tag.visible&&document.getElementById('stage').classList.contains('cinema'))this.tag.visible=false;
     this.tag.position.set(this.pos.x,jy+2.9*this.s+0.4,this.pos.z);this.sh.position.set(this.pos.x,0.02,this.pos.z)}
 }
-/* 5'e 5 dizilişi (FB tarafı, x>0 kendi yarı sahası). GS aynalanır. */
+/* 5'e 5 dizilişi (KANARYA tarafı, x>0 kendi yarı sahası). ASLAN aynalanır. */
 const SLOTS=[[PL/2-3,0],[23,-10],[23,10],[13,0],[4,-6]];const NUMS=[1,4,5,10,9];
 const slotsFor=t=>SLOTS.map(([x,z])=>[x*TEAM[t].side,z]);
 const VIEWER_ORDER=[4,3,1,2,0]; // önce forvet, orta saha, defans, kaleci
@@ -497,9 +497,9 @@ function layout(){
   for(const t of ['gs','fb']){const sq=squad(t);const sl=slotsFor(t);const bySlot={};sq.forEach((u,i)=>bySlot[VIEWER_ORDER[i]]=u);
     const capId=sq[0]&&sq[0].id;
     for(let s=0;s<5;s++){const u=bySlot[s]||DEF[t][s];put(u,'field',sl[s][0],sl[s][1],{num:NUMS[s],cap:u.id===capId},2.4);if(!u.isDefault&&!prev.has(u.id))entered.push(u)}
-    const td=S.td[t]&&S.users[S.td[t]];const tz=(t==='gs'?-1:1)*(PW/2-3.5); // GS hocası ekranın solunda, FB sağında
+    const td=S.td[t]&&S.users[S.td[t]];const tz=(t==='gs'?-1:1)*(PW/2-3.5); // ASLAN hocası ekranın solunda, KANARYA sağında
     if(td)put(td,'td',-31,tz,{td:true,tie:t,label:'🧢 '+td.name},2.3);
-    else put({id:'td_empty_'+t,name:(t==='gs'?'GS':'FB')+' hocası: BOŞ',team:t,coins:0,placeholder:true},'td',-31,tz,{td:true,tie:t,label:'🧢 '+(t==='gs'?'GS':'FB')+' HOCASI: BOŞ'},2.3)}
+    else put({id:'td_empty_'+t,name:(t==='gs'?'ASLAN':'KANARYA')+' hocası: BOŞ',team:t,coins:0,placeholder:true},'td',-31,tz,{td:true,tie:t,label:'🧢 '+(t==='gs'?'ASLAN':'KANARYA')+' HOCASI: BOŞ'},2.3)}
   const ref=S.refId&&S.users[S.refId];if(ref)put(ref,'ref',0,-8,{ref:true,label:'🟨 '+ref.name},2.3);
   else put({id:'ref_empty',name:'Hakem: BOŞ',team:null,coins:0,placeholder:true},'ref',0,-8,{ref:true,label:'🟨 HAKEM: BOŞ'},2.3); // sahada hep bir hakem olsun
   for(const [id,a] of actors)if(!used.has(id)){if(a.zone==='field'&&!a.u.isDefault){a.zone='off';a.key='off';a.target.set(a.pos.x,0,PW/2+3);a.offAt=performance.now()+4000}else if(a.zone!=='off'){a.hide();actors.delete(id)}}
@@ -543,7 +543,7 @@ let trailOn=false,trailI=0;function updateTrail(){for(const m of TRAIL){if(m.vis
   if(trailOn&&ball.t<1){const m=TRAIL[trailI++%TRAIL.length];m.position.copy(ball.m.position);m.scale.setScalar(1);m.material.opacity=0.75;m.visible=true}}
 
 /* ================= SABİT KAMERA ================= */
-// Saha boyuna ekranda dikey durur: GS aşağıdan yukarı, FB yukarıdan aşağı hücum eder.
+// Saha boyuna ekranda dikey durur: ASLAN aşağıdan yukarı, KANARYA yukarıdan aşağı hücum eder.
 const CAM_MAIN={pos:new THREE.Vector3(-186,97,0),look:new THREE.Vector3(6,0,0)};
 const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.look.clone();let camOverride=null;
 let camFov=30,camZoom=false;const zoomLook=new THREE.Vector3();
@@ -600,7 +600,7 @@ const SPK={q:[],busy:false,id:0,wait:{},last:0,ws:null,on:true,log:[]};
 const BAD=/(amk|aq|sik|siktir|orospu|oç|piç|yarrak|göt|ibne|pezevenk|kahpe|sürtük|amına|ananı|sex|porn)/i;
 function spkName(u){let n=String(u&&u.name||'').replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\uFE0F]/gu,'').replace(/[_\.\-]+/g,' ').replace(/\d+/g,' ').trim().split(/\s+/)[0]||'';
   if(!n||n.length<2||BAD.test(n))return 'bir taraftar';return n.slice(0,14)}
-const tName=t=>t==='gs'?'Galatasaray':'Fenerbahçe';
+const tName=t=>t==='gs'?'Aslanlar':'Kanaryalar';
 const pickR=a=>a[Math.floor(Math.random()*a.length)];
 /* Türkçe ek: ünlü uyumuna göre 'in' (ın/in/un/ün), 'da', 'dan', 'yi', 'a' */
 function ek(w,t){w=String(w);const v=((w.match(/[aeıioöuü]/gi)||['e']).pop()).toLocaleLowerCase('tr-TR'),back='aıou'.includes(v),e=w.slice(-1).toLocaleLowerCase('tr-TR'),vow='aeıioöuü'.includes(e),hard='fstkçşhp'.includes(e);
@@ -632,21 +632,21 @@ function narShot(r,h){if(!h)return;const n=pN(h);
   const L={save:[`${n} şut çekti, kaleci kurtarıyor!`,`Şut! Kaleci uzandı, gol yok!`,`${n} denedi ama kaleci yerinde!`],
     post:[`Direk! ${ek(n,'in')} şutu direkten döndü!`,`Ah! Top direğe çarptı!`],
     miss:[`${n} vurdu, top az farkla auta gidiyor!`,`Şut, ama top dışarıda!`]}[r];if(L)nar(pickR(L),3)}
-function scoreLine(){const g=S.goals.gs,f=S.goals.fb,m=gameMin();const lead=g>f?'Galatasaray önde':f>g?'Fenerbahçe önde':'Skor eşit';
-  return pickR([`Dakika ${m}. Galatasaray ${g}, Fenerbahçe ${f}. ${lead}!`,`${m}. dakikadayız, ${lead}. Skor ${g}-${f}.`])}
+function scoreLine(){const g=S.goals.gs,f=S.goals.fb,m=gameMin();const lead=g>f?'Aslanlar önde':f>g?'Kanaryalar önde':'Skor eşit';
+  return pickR([`Dakika ${m}. Aslanlar ${g}, Kanaryalar ${f}. ${lead}!`,`${m}. dakikadayız, ${lead}. Skor ${g}-${f}.`])}
 function hypeLine(){const g=S.goals.gs,f=S.goals.fb,lose=g<f?'gs':f<g?'fb':pickR(['gs','fb']),ln=tName(lose);
   return pickR([`${ln} gol arıyor! ${ln} taraftarı, Para Tabancası gönderin, golü siz attırın!`,
     `Sohbete ŞUT yazın! Yeterince şut gelirse takımınız kaleye şut çeker!`,
     `Beğeni gönderin! Güç barı dolunca takımınız atağa kalkıyor!`,
     `Sahaya çıkmak isteyen El Kalp göndersin, formayı giysin!`,
     `Hakem olmak isteyen Güneş Gözlüğü, teknik direktör olmak isteyen Corgi göndersin!`,
-    `Henüz takım seçmeyen sohbete GS ya da FB yazsın, tribündeki yerini alsın!`,
+    `Henüz takım seçmeyen sohbete ASLAN ya da KANARYA yazsın, tribündeki yerini alsın!`,
     `Donut gönderin, tribünler marşla inlesin!`,
     `Skor tahmini yapın! Sohbete iki bir gibi skor yazın, tutturan maçın yıldızı olsun!`])}
 function narTick(){if(quiet()||SPK.busy||SPK.q.length)return;const t=Date.now();
   if(NAR.arr.length&&t-NAR.arrAt>12000){const a=NAR.arr.splice(0);NAR.arrAt=t;const by={gs:[],fb:[]};a.forEach(u=>by[u.team]&&by[u.team].push(u));
     const tm=by.gs.length>=by.fb.length?'gs':'fb',L=by[tm],o=by[oppOf(tm)];if(L.length){const nm=L.slice(0,2).map(spkName).join(L.length>2?', ':' ve ');const more=L.length>2?` ve ${L.length-2} kişi daha`:'';
-      if(nar(pickR(L.length===1?[`${nm} ${tName(tm)} tribününde yerini aldı!`,`Hoş geldin ${nm}! ${tName(tm)} tribününe bir taraftar daha!`,`${nm} burada, ${tName(tm)} için bağırıyor!`]:[`${nm}${more} ${tName(tm)} tribününde!`,`${tName(tm)} tribünü doluyor: ${nm}${more}!`])+(o.length?` ${tName(oppOf(tm))} tarafında da ${o.slice(0,2).map(spkName).join(' ve ')}${o.length>2?` ve ${o.length-2} kişi daha`:''} var!`:''),2))return}}
+      if(nar(pickR(L.length===1?[`${nm} ${tName(tm)} tribününde yerini aldı!`,`Hoş geldin ${nm}! ${tName(tm)} tribününe bir taraftar daha!`,`${nm} burada, ${tName(tm)} için bağırıyor!`]:[`${nm}${more} ${tName(tm)} tribününde!`,`${tName(tm)} tribünü doluyor: ${nm}${more}!`])+(o.length?` ${tName(oppOf(tm))} tarafında da ${o.slice(0,2).map(spkName).join(o.length>2?', ':' ve ')}${o.length>2?` ve ${o.length-2} kişi daha`:''} var!`:''),2))return}}
   if(isWarm())return;
   if(t-NAR.score>90000&&gameMin()>2){NAR.score=t;if(nar(scoreLine(),3))return}
   if(t-NAR.hype>50000){NAR.hype=t;if(nar(hypeLine(),3))return}}
@@ -680,17 +680,17 @@ function shout(u,html){const box=$('#shouts');const T=TEAM[u.team]||{c:'#ffe08a'
 const power={gs:0,fb:0};
 const powerNeed=()=>Math.max(CONFIG.powerMin,Object.values(S.users).filter(u=>Date.now()-(u.seen||0)<120000).length*CONFIG.powerPer); // ne kadar çok izleyici, o kadar büyük hedef
 function addPower(t,n){if(!t)return;power[t]+=n;if(power[t]>=powerNeed()){power[t]=0;powerFull(t)}powerHud()}
-function powerHud(){for(const [t,k] of [['gs','G'],['fb','F']]){const p=Math.min(1,power[t]/powerNeed());$('#pb'+k+'i').style.width=(p*100)+'%';$('#pb'+k+'t').textContent=`❤️ ${t==='gs'?'GS':'FB'} GÜCÜ %${Math.round(p*100)}`;$('#pb'+k).classList.toggle('full',p>0.85)}}
+function powerHud(){for(const [t,k] of [['gs','G'],['fb','F']]){const p=Math.min(1,power[t]/powerNeed());$('#pb'+k+'i').style.width=(p*100)+'%';$('#pb'+k+'t').textContent=`❤️ ${t==='gs'?'ASLAN':'KANARYA'} GÜCÜ %${Math.round(p*100)}`;$('#pb'+k).classList.toggle('full',p>0.85)}}
 let powerGoalAt=0;
 function powerFull(t){const top=members(t).filter(u=>(u.ml||0)>0).sort((a,b)=>(b.ml||0)-(a.ml||0)).slice(0,3);
   // bazen marş yerine GOL: ~%30 ihtimal, en az 3 dakikada bir, ısınma ve maç sonu hariç
   if(!isWarm()&&!ftBusy&&!goalBusy&&Date.now()-powerGoalAt>(CONFIG.powerGoalGap??180)*1000&&Math.random()<(CONFIG.powerGoalChance??0.3)&&gameMin()<88){powerGoalAt=Date.now();
     if(S.plan&&!S.userGoal){const i=S.plan.goals.findIndex(g=>g[1]===t);if(i>=0)S.plan.goals.splice(i,1)} // senaryodaki bir sonraki golün yerine geçer, skor dengesi korunur
     const star=top[0];const pool=fieldActors(t).filter(a=>a.opts.num!==1);const p=pool.find(a=>!a.u.isDefault)||pool[Math.floor(Math.random()*pool.length)];
-    if(p){goalSeq(p.u,1,{team:t,auto:true,by:star||p.u,lbl:'❤️ TARAFTAR GÜCÜ GOLÜ',tag:'❤️ TARAFTAR GOLÜ ❤️',sub:`${t==='gs'?'GS':'FB'} taraftarının gücüyle gol!`});
+    if(p){goalSeq(p.u,1,{team:t,auto:true,by:star||p.u,lbl:'❤️ TARAFTAR GÜCÜ GOLÜ',tag:'❤️ TARAFTAR GOLÜ ❤️',sub:`${t==='gs'?'ASLAN':'KANARYA'} taraftarının gücüyle gol!`});
       top.forEach((u,i)=>setTimeout(()=>shout(u,`🔥 <b>${u.ml} beğeni</b> · golü getiren taraftar`),i*700));return}}
   cheer[t]=performance.now()/1000+6;excite=1;if(!goalBusy)goalSong(t,5);else SFX.chant();
-  const el=$('#chant');el.textContent=t==='gs'?'❤️ GS GÜCÜ DOLDU! CİM BOM BOM!':'❤️ FB GÜCÜ DOLDU! FENER! FENER!';el.style.color=TEAM[t].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000);
+  const el=$('#chant');el.textContent=t==='gs'?'❤️ ASLAN GÜCÜ DOLDU! HAYDİ ASLANLAR!':'❤️ KANARYA GÜCÜ DOLDU! HAYDİ KANARYALAR!';el.style.color=TEAM[t].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000);
   top.forEach((u,i)=>setTimeout(()=>shout(u,`🔥 <b>${u.ml} beğeni</b> · ${['1.','2.','3.'][i]} en güçlü taraftar`),i*700));if(!top.length)shout({name:TEAM[t].n,team:t},'<b>tribünü coştu!</b>')}
 /* ŞUT: yazanın adı çıkar; aynı takımdan 3 "şut" toplanınca atak + şut animasyonu gelir, kaleci kurtarır (gol hediyeyle) */
 const shotCd={},shotCalls={gs:[],fb:[]};let saveQueued=false;
@@ -698,7 +698,7 @@ function shotCall(u){const now=Date.now();if(shotCd[u.id]&&now-shotCd[u.id]<CONF
   const q=shotCalls[u.team];q.push(u);
   // kalabalıkta daha çok şut gerekir; şut animasyonları arasında en az 60 sn maç akar
   const active=Object.values(S.users).filter(x=>Date.now()-(x.seen||0)<120000).length;const need=Math.max(CONFIG.shotCalls,Math.ceil(active/(CONFIG.shotPerViewers??4)));
-  const wait=Math.ceil(((shotNextAt||0)-now)/1000);const left=need-q.length;const T=u.team==='gs'?'GS':'FB';
+  const wait=Math.ceil(((shotNextAt||0)-now)/1000);const left=need-q.length;const T=u.team==='gs'?'ASLAN':'KANARYA';
   if(left>0){shout(u,`⚡ <b>şut istedi!</b> ${left} şut daha → ${T} şut çeker`);return}
   if(wait>0){shout(u,`⚡ <b>${T} şuta hazır!</b> ${wait} sn sonra çeker`);return}
   shotNextAt=now+(CONFIG.shotGap??30)*1000;shout(u,`⚡ <b>${T} ŞUT ÇEKİYOR!</b>`);const callers=q.splice(0);saveMoment(u.team,callers)}
@@ -732,17 +732,17 @@ function handle(ev){if(!ev)return;if(!ev.user){if(ev.type==='viewers'||ev.type==
       if(VARV.on){const v=yesNo(ev.text);if(v&&!VARV.voted.has(u.id)){VARV.voted.add(u.id);VARV[v]++;u.mc=(u.mc||0);break}}
       if(pen.on){const d=normDir(ev.text);if(d&&!pen.voted.has(u.id)){if(!u.team)u.team=autoTeam();pen.voted.add(u.id);pen.votes[u.team===pen.team?'kick':'keep'][d]++;break}}if(!u.team&&parseTeam(ev.text))u.team=parseTeam(ev.text);if(!u.team)u.team=autoTeam();addPower(u.team,CONFIG.commentPower);if(race.on){const rt=parseTeam(ev.text);if(rt){race.cnt[rt]++;race.by[u.id]=(race.by[u.id]||0)+1}}
       const pr=/^\s*(\d{1,2})\s*[-:–]\s*(\d{1,2})\s*$/.exec(ev.text||'');
-      if(pr){if(!u.team)u.team=autoTeam();S.preds=S.preds||{};if(gameMin()<45){S.preds[u.id]=[+pr[1],+pr[2]];if(isWarm())preHud();shout(u,`🔮 tahmin: <b>GS ${pr[1]} – ${pr[2]} FB</b>`)}else shout(u,'🔮 tahminler ilk yarıda alınır');break}
+      if(pr){if(!u.team)u.team=autoTeam();S.preds=S.preds||{};if(gameMin()<45){S.preds[u.id]=[+pr[1],+pr[2]];if(isWarm())preHud();shout(u,`🔮 tahmin: <b>ASLAN ${pr[1]} – ${pr[2]} KANARYA</b>`)}else shout(u,'🔮 tahminler ilk yarıda alınır');break}
       if(/(^|\s)şut(\s|!|$)/i.test((ev.text||'').toLocaleLowerCase('tr-TR'))){if(!u.team)u.team=autoTeam();shotCall(u)}
       {const t=parseTeam(ev.text);if(t&&u.team!==t){for(const k of ['gs','fb'])if(S.td[k]===u.id&&k!==t)S.td[k]=null;u.team=t;u.last=Date.now();fanQ.push({id:u.id});0}
       const r=parseRole(ev.text);if(r){if(!u.team)u.team=autoTeam();u.want=r;
         0}}
       break}
     case 'like':{excite=Math.min(1,excite+0.03);if(!u.team)u.team=autoTeam();const n=Math.max(1,Math.floor(+ev.count||1));u.ml=(u.ml||0)+n;addPower(u.team,n);break}
-    case 'share':{if(!u.team)u.team=autoTeam();u.mc=(u.mc||0)+3;shout(u,`📢 yayını paylaştı! <b>${u.team==='gs'?'GS':'FB'}'ye +${CONFIG.shareBoost} güç</b>`);addPower(u.team,CONFIG.shareBoost);break}
+    case 'share':{if(!u.team)u.team=autoTeam();u.mc=(u.mc||0)+3;shout(u,`📢 yayını paylaştı! <b>${u.team==='gs'?'Aslanlar':'Kanaryalar'}'a +${CONFIG.shareBoost} güç</b>`);addPower(u.team,CONFIG.shareBoost);break}
     case 'viewers':{liveViewers=Math.max(0,+ev.count||0);hud();break}
-    case 'live_start':{newMatch(true);shout({name:'Yayın',team:null},'<b>başladı! İlk taraftar sen ol: GS ya da FB yaz</b>');break}
-    case 'follow':{if(!u.team)u.team=autoTeam();u.mc=(u.mc||0)+2;shout(u,`➕ takip etti! <b>${u.team==='gs'?'GS':'FB'}'ye +${CONFIG.followBoost} güç</b>`);addPower(u.team,CONFIG.followBoost);break}
+    case 'live_start':{newMatch(true);shout({name:'Yayın',team:null},'<b>başladı! İlk taraftar sen ol: ASLAN ya da KANARYA yaz</b>');break}
+    case 'follow':{if(!u.team)u.team=autoTeam();u.mc=(u.mc||0)+2;shout(u,`➕ takip etti! <b>${u.team==='gs'?'Aslanlar':'Kanaryalar'}'a +${CONFIG.followBoost} güç</b>`);addPower(u.team,CONFIG.followBoost);break}
     case 'gift':{const c=Math.max(0,Math.floor(+ev.coins||0));if(!c)break;if(!u.team)u.team=autoTeam();SFX.coin();u.coins+=c;u.last=Date.now();glowUntil[u.id]=Date.now()+2500;const gn=ev.gift?ev.gift+' · ':'';const k=Math.max(1,Math.floor(+ev.unit||c)); // tek hediyenin fiyatı
       hotTile(k>=CONFIG.goal?5:k>=CONFIG.role?4:k>=CONFIG.ref?3:k>=CONFIG.player?2:k>=CONFIG.chant?1:0);
       if(k>=CONFIG.goal){const g=Math.max(1,Math.min(3,Math.floor(c/k)));S.userGoal=true;goalSeq(u,g)}
@@ -751,7 +751,7 @@ function handle(ev){if(!ev)return;if(!ev.user){if(ev.type==='viewers'||ev.type==
         else{const cur=S.td[u.team]&&S.users[S.td[u.team]];dropRoles(u);S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2);spk(`${tName(u.team)} kulübesinde yeni patron: ${spkName(u)}! Taktik tahtası onda!`,1);layout();tacticMoment(u)}}
       else if(k>=CONFIG.player){dropRoles(u);u.red=false;spotlight(u,'🫶');spk(pickR([`${spkName(u)} sahaya çıkmak için kalbini koydu ortaya!`,`${spkName(u)} formayı istiyor! ${tName(u.team)} için büyük destek!`]),1)}
       else if(k>=CONFIG.chant){chant(u);spotlight(u,'🍩');spk(pickR([`${spkName(u)} tribünleri ayağa kaldırdı! ${tName(u.team)} marşı!`,`Marş başladı! ${spkName(u)} sağolsun!`]),1)}
-      else{spotlight(u,'🌹');spk(pickR([`${ek(spkName(u),'dan')} ${ek(tName(u.team),'a')} bir gül!`,`Teşekkürler ${spkName(u)}! ${tName(u.team)} tribünü coşuyor!`,`${spkName(u)} desteğini gösterdi!`]),0);event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
+      else{spotlight(u,'🌹');spk(pickR([`${ek(spkName(u),'dan')} ${ek(tName(u.team),'a')} bir gül!`,`Teşekkürler ${spkName(u)}! ${tName(u.team)} tribünü coşuyor!`,`${spkName(u)} desteğini gösterdi!`]),0);event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Aslanlar'a":"Kanaryalar'ye"} destek!`,1,'glow');fanPush(u,true)}
       const entered=layout();
       for(const e of entered){event(e,`⚽ Sahaya çıktı!`,2);spk(`Oyuncu değişikliği! ${spkName(e)} oyuna giriyor!`,1);SFX.ding();SFX.whistle(1);const a=actors.get(e.id);if(a&&!goalBusy){a.jump=1.2;startBuild(now,e.team,a);play.passes=1}}
       if(k>=CONFIG.player&&k<CONFIG.ref&&!entered.length){const inSq=squad(u.team).some(x=>x.id===u.id);event(u,inSq?`${gn}kaptanlık yarışında!`:`${gn}sahaya çıkmaya çok az kaldı!`,1)}
@@ -759,7 +759,7 @@ function handle(ev){if(!ev)return;if(!ev.user){if(ev.type==='viewers'||ev.type==
   layout();hud();save()}
 let chantUntil=0;
 function chant(u){const t=performance.now()/1000;cheer[u.team]=t+5;excite=1;if(goalBusy)SFX.chant();else goalSong(u.team,5);event(u,`📣 ${TEAM[u.team].n} tribünü coştu!`,2);
-  const el=$('#chant');el.textContent=u.team==='gs'?'📣 CİM BOM BOM! 📣':'📣 FENER! FENER! 📣';el.style.color=TEAM[u.team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000)}
+  const el=$('#chant');el.textContent=u.team==='gs'?'📣 HAYDİ ASLANLAR! 📣':'📣 HAYDİ KANARYALAR! 📣';el.style.color=TEAM[u.team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000)}
 /* Gol şarkısı: sesler klasöründeki dosya 6 sn çalar, sonra yavaşça kısılır (dosyalar GitHub'a gönderilmez) */
 const GOAL_SONG={gs:'sesler/gs_gol.mp3',fb:'sesler/fb_gol.mp3',sec:6,start:0};
 let songNow=null;
@@ -812,7 +812,7 @@ async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=t
   await until(()=>ball.t>=1,5000);
   // 4) GOL: ağlar dalgalanır
   TS=1;trailOn=false;rippleNet(s,gz,gy);flash();SFX.goal();goalSong(team,9);
-  {const nm=spkName(opt.by||u),sc=`Skor: Galatasaray ${S.goals.gs+(team==='gs'?g:0)}, Fenerbahçe ${S.goals.fb+(team==='fb'?g:0)}.`;
+  {const nm=spkName(opt.by||u),sc=`Skor: Aslanlar ${S.goals.gs+(team==='gs'?g:0)}, Kanaryalar ${S.goals.fb+(team==='fb'?g:0)}.`;
    spk(opt.tdActor?`Goool! Taktik dehası ${nm}! ${tName(team)} golü buluyor! ${sc}`:pickR([`Gooool! ${nm} ağları sarstı! ${sc}`,`Goool! Ne vuruş! ${nm} sahnede! ${sc}`,`Ve gol! ${tName(team)} sevinçli! ${nm}! ${sc}`]),2)}
   S.goals[team]+=g;S.lastGoalM=Math.floor((Date.now()-S.start)/1000*90/(CONFIG.matchMin*60));const gid=(opt.by||u).id;const cnt=(S.goalsBy[gid]=(S.goalsBy[gid]||0)+g);save();hud();cheer[team]=nowS()+12;excite=1;
   const G=$('#goal');G.style.setProperty('--tc',TEAM[team].c2);$('#gName').textContent=(opt.by||u).name;
@@ -876,7 +876,7 @@ $('#giftList').innerHTML=GL.join('');
 function hotTile(i){const el=document.getElementById('gt'+i);if(!el)return;el.classList.remove('hot');void el.offsetWidth;el.classList.add('hot')}
 function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins);const fresh=all.filter(u=>!u.coins).sort((a,b)=>b.last-a.last);
   const rows=[...top.slice(0,3),...fresh].slice(0,4);
-  if(!rows.length)return `<div class="emptyc">Henüz kimse yok.<br>Sohbete <b>${t==='gs'?'GS':'FB'}</b> yaz, ilk taraftar sen ol!</div>`;
+  if(!rows.length)return `<div class="emptyc">Henüz kimse yok.<br>Sohbete <b>${t==='gs'?'ASLAN':'KANARYA'}</b> yaz, ilk taraftar sen ol!</div>`;
   const now=Date.now();
   return rows.map((u,i)=>`<div class="row${glowUntil[u.id]>now?' glow':''}"><div class="av">${avHTML(u)}</div><div class="nm">${u.name}</div><div class="pt${u.coins?'':' new'}">${u.coins?(i===0?'👑 ':'')+u.coins.toLocaleString('tr-TR'):'yeni'}</div></div>`).join('')+(all.length>rows.length?`<div class="more">+${all.length-rows.length} kişi daha</div>`:'')}
 const nm=id=>id&&S.users[id]?S.users[id].name:null;
@@ -892,7 +892,7 @@ function fanTick(){requestAnimationFrame(fanTick);const now=performance.now(),dt
   let guard=0;while(el.scrollWidth+fanX<W+40&&guard++<5){const nx=fanNextId();const u=nx&&S.users[nx.id];
     const sp=document.createElement('span');
     if(u){if(nx.hi)sp.className='hi';sp.innerHTML=`<i style="background:${TEAM[u.team].c};box-shadow:0 0 0 3px ${TEAM[u.team].c2}"></i>${u.name.replace(/</g,'&lt;')}`}
-    else{sp.textContent='Sohbete GS ya da FB yaz, adın burada aksın!'}
+    else{sp.textContent='Sohbete ASLAN ya da KANARYA yaz, adın burada aksın!'}
     if(!el.childNodes.length&&fanX<=0)fanX=W;el.appendChild(sp);if(!u)break}
   el.style.transform=`translateX(${fanX}px)`}
 requestAnimationFrame(fanTick);
@@ -906,16 +906,16 @@ function hud(){leaderboard();fanbar();$('#sGs').textContent=S.goals.gs;$('#sFb')
 let halfShown=false,ftBusy=false;
 function preHud(){const left=Math.max(0,Math.ceil((S.start-Date.now())/1000));const preds=Object.entries(S.preds||{});
   const last=preds.slice(-3).map(([id,p])=>S.users[id]?`${S.users[id].name} ${p[0]}-${p[1]}`:'').filter(Boolean).join(' · ');
-  $('#pre').innerHTML=`<h3>⏱ MAÇ BAŞLIYOR</h3><div class="cd">${left}</div><div class="tp">🔮 Skor tahminini yaz: <b>2-1</b> (GS–FB)</div><div class="ls">${preds.length?`${preds.length} tahmin · ${last}`:'Oyuncular ısınıyor · ilk tahmini sen yaz!'}</div>`;$('#pre').classList.add('show')}
+  $('#pre').innerHTML=`<h3>⏱ MAÇ BAŞLIYOR</h3><div class="cd">${left}</div><div class="tp">🔮 Skor tahminini yaz: <b>2-1</b> (ASLAN–KANARYA)</div><div class="ls">${preds.length?`${preds.length} tahmin · ${last}`:'Oyuncular ısınıyor · ilk tahmini sen yaz!'}</div>`;$('#pre').classList.add('show')}
 function clock(){if(ftBusy)return;
   if(isWarm()){$('#clk').textContent='00:00';$('#half').textContent='ISINMA';preHud();return}
   if($('#pre').classList.contains('show')){$('#pre').classList.remove('show')}
-  if(!S.kicked){S.kicked=true;save();SFX.whistle(2);spk('Hakem düdüğü çaldı, derbi başlıyor! Takımını seçmek için sohbete GS ya da FB yaz!',2);event({name:'Hakem',team:null},'⚽ Maç başladı! Tahminler ilk yarı sonuna kadar',3);startBuild(performance.now()/1000,'gs',fieldActors('gs').find(a=>a.opts.num===10))}const real=(Date.now()-S.start)/1000;const gsec=Math.floor(real*90*60/(CONFIG.matchMin*60)); // oyun saniyesi
+  if(!S.kicked){S.kicked=true;save();SFX.whistle(2);spk('Hakem düdüğü çaldı, derbi başlıyor! Takımını seçmek için sohbete ASLAN ya da KANARYA yaz!',2);event({name:'Hakem',team:null},'⚽ Maç başladı! Tahminler ilk yarı sonuna kadar',3);startBuild(performance.now()/1000,'gs',fieldActors('gs').find(a=>a.opts.num===10))}const real=(Date.now()-S.start)/1000;const gsec=Math.floor(real*90*60/(CONFIG.matchMin*60)); // oyun saniyesi
   const m=Math.floor(gsec/60);$('#clk').textContent=String(Math.min(90,m)).padStart(2,'0')+':'+String(m>=90?0:gsec%60).padStart(2,'0');
   $('#half').textContent=m<45?'1. YARI':'2. YARI';
   if(m>=45&&!S.half2){S.half2=true;save();SFX.whistle(2);event({name:'Hakem',team:null},'İlk yarı bitti · 2. YARI BAŞLIYOR!',3)}
   if(m>=90&&!goalBusy)fullTime();
-  // Senaryolu skor: kullanıcı hediyeyle gol atmadıkça maç önceden belirlenen sonuca doğru akar (5 maçta 3 beraberlik, 1 GS, 1 FB)
+  // Senaryolu skor: kullanıcı hediyeyle gol atmadıkça maç önceden belirlenen sonuca doğru akar (5 maçta 3 beraberlik, 1 ASLAN, 1 KANARYA)
   if(!S.plan)planMatch();
   if(!S.userGoal&&!goalBusy&&m<89&&S.plan.goals.length&&m>=S.plan.goals[0][0]){const [gm,team]=S.plan.goals.shift();save();
     const pool=fieldActors(team).filter(a=>a.opts.num!==1);const p=pool.find(a=>!a.u.isDefault)||pool[Math.floor(Math.random()*pool.length)];
@@ -927,18 +927,18 @@ function clock(){if(ftBusy)return;
 function fullTime(){ftBusy=true;goalBusy=true;SFX.whistle(3);const g=S.goals.gs,f=S.goals.fb;
   if(g===f&&CONFIG.penalties)penaltyShootout().then(p=>fullTimeScreens(g,f,p)).catch(e=>{console.error(e);fullTimeScreens(g,f,null)});else fullTimeScreens(g,f,null)}
 function fullTimeScreens(g,f,pk){const w=pk?pk.winner:(g>f?'gs':f>g?'fb':null);
-  spk(w?(pk?`${tName(w)} penaltılarla kazanıyor! Kupa onların!`:`Ve maç sona eriyor! Galatasaray ${g}, Fenerbahçe ${f}! Kazanan ${tName(w)}!`):`Maç ${g}-${f} berabere bitti!`,2);
+  spk(w?(pk?`${tName(w)} penaltılarla kazanıyor! Kupa onların!`:`Ve maç sona eriyor! Aslanlar ${g}, Kanaryalar ${f}! Kazanan ${tName(w)}!`):`Maç ${g}-${f} berabere bitti!`,2);
   const G=$('#goal');G.style.setProperty('--tc',w?TEAM[w].c2:'#374151');G.querySelector('h1').textContent='MAÇ SONU';
-  $('#gStar').innerHTML='🏆';$('#gName').textContent=`GS ${g} – ${f} FB`;$('#gText').textContent=pk?`${TEAM[w].n} penaltılarla kazandı! (${pk.sc.gs}–${pk.sc.fb})`:w?`${TEAM[w].n} KAZANDI!`:'Berabere!';G.classList.add('show');if(w){confetti(w);goalSong(w,9);cheer[w]=performance.now()/1000+12}
+  $('#gStar').innerHTML='🏆';$('#gName').textContent=`ASLAN ${g} – ${f} KANARYA`;$('#gText').textContent=pk?`${TEAM[w].n} penaltılarla kazandı! (${pk.sc.gs}–${pk.sc.fb})`:w?`${TEAM[w].n} KAZANDI!`:'Berabere!';G.classList.add('show');if(w){confetti(w);goalSong(w,9);cheer[w]=performance.now()/1000+12}
   // maç sonu sırası: skor (3,5 sn) → kupa töreni + doğru tahmin + maçın taraftarı → yeni maç (ısınma)
   const preds=S.preds||{};const ok=Object.entries(preds).filter(([id,p])=>p[0]===g&&p[1]===f).map(([id])=>S.users[id]).filter(Boolean);
   const fans=Object.values(S.users).filter(u=>!u.coins&&((u.mc||0)+(u.ml||0)/10)>0).sort((a,b)=>((b.mc||0)+(b.ml||0)/10)-((a.mc||0)+(a.ml||0)/10));const mf=fans[0];
   setTimeout(()=>{G.classList.remove('show');cinemaOn(true);if(w)trophyCeremony(w);
-    const c0=ok[0]||{name:'Kimse bilemedi',team:null};cineShow(c0,'🔮 DOĞRU TAHMİN',ok.length?(ok.slice(0,4).map(u=>u.name).join(', ')+(ok.length>4?` +${ok.length-4}`:'')+` · GS ${g}–${f} FB`):`Skor GS ${g}–${f} FB oldu`,'#a78bfa')},3500);
+    const c0=ok[0]||{name:'Kimse bilemedi',team:null};cineShow(c0,'🔮 DOĞRU TAHMİN',ok.length?(ok.slice(0,4).map(u=>u.name).join(', ')+(ok.length>4?` +${ok.length-4}`:'')+` · ASLAN ${g}–${f} KANARYA`):`Skor ASLAN ${g}–${f} KANARYA oldu`,'#a78bfa')},3500);
   setTimeout(()=>{if(mf)cineShow(mf,'⭐ MAÇIN TARAFTARI',`${mf.mc||0} yorum · ${mf.ml||0} beğeni · ${TEAM[mf.team]?TEAM[mf.team].n:''}`,TEAM[mf.team]?TEAM[mf.team].c:'#ffe08a');else cineHide()},8500);
   setTimeout(()=>{cineHide();endTrophy();cinemaOn(false);G.querySelector('h1').textContent='GOL!';newMatch(false)},14000)}
 /* yeni maç: skor, jetonlar ve koltuklar sıfırlanır; full=true ise (yayın yeni açıldı) bütün izleyiciler de silinir */
-/* 5 maçlık döngü: 3 berabere + 1 GS + 1 FB (karışık sıra). Skor hedefi ve gol dakikaları maç başında belirlenir. */
+/* 5 maçlık döngü: 3 berabere + 1 ASLAN + 1 KANARYA (karışık sıra). Skor hedefi ve gol dakikaları maç başında belirlenir. */
 function planMatch(){let cyc=[];try{cyc=JSON.parse(localStorage.getItem('derbi_cycle')||'[]')}catch(e){}
   if(!cyc.length){cyc=['draw','draw','draw','gs','fb'];for(let i=cyc.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cyc[i],cyc[j]]=[cyc[j],cyc[i]]}}
   const kind=cyc.shift();try{localStorage.setItem('derbi_cycle',JSON.stringify(cyc))}catch(e){}
@@ -965,13 +965,13 @@ function trophyCeremony(team){const mates=fieldActors(team);if(!mates.length)ret
 function endTrophy(){if(!trophy)return;trophy.cap.fig&&trophy.cap.fig.remove(trophy.cup);for(const a of actors.values()){a.jump=0}trophy=null}
 setInterval(clock,1000);setInterval(hud,1000);
 /* talimat bandı: parasız katılım yollarını sırayla anlatır */
-const TIPS=['💬 Sohbete <b>GS</b> ya da <b>FB</b> yaz → takımına katıl','❤️ Ekrana <b>dokun</b> → takımının gücü dolsun','⚡ Sohbete <b>ŞUT</b> yaz → takımın atağa kalksın','🔮 Skor tahmini yaz: <b>2-1</b> (GS–FB)','📢 <b>Paylaş</b> ya da <b>takip et</b> → +güç','📣 Yarışta sohbete <b>GS</b> ya da <b>FB</b> yaz → en çok yazılan kazanır'];let tipI=0;
+const TIPS=['💬 Sohbete <b>ASLAN</b> ya da <b>KANARYA</b> yaz → takımına katıl','❤️ Ekrana <b>dokun</b> → takımının gücü dolsun','⚡ Sohbete <b>ŞUT</b> yaz → takımın atağa kalksın','🔮 Skor tahmini yaz: <b>2-1</b> (ASLAN–KANARYA)','📢 <b>Paylaş</b> ya da <b>takip et</b> → +güç','📣 Yarışta sohbete <b>ASLAN</b> ya da <b>KANARYA</b> yaz → en çok yazılan kazanır'];let tipI=0;
 setInterval(()=>{tipI=(tipI+1)%TIPS.length;$('#howto').innerHTML=TIPS[tipI]},6000);
 setInterval(()=>{if(!S.half2&&!ftBusy)powerHud()},2000);
 
 /* ================= TRİBÜN ÇEKİMİ =================
    Belirli aralıklarla kamera bir takımın tribününe döner: o takımın taraftarları (gerçek izleyiciler) reklam panolarının
-   arkasında omuz omuza durur. GS'liler kol kola zıplar, FB'liler atkı sallar. İsim etiketleri figürden dar, çakışmaz. */
+   arkasında omuz omuza durur. ASLAN'liler kol kola zıplar, KANARYA'liler atkı sallar. İsim etiketleri figürden dar, çakışmaz. */
 let crowdNext=performance.now()/1000+12,crowdTeam='gs',crowdShow=null;
 const SCARF={gs:(()=>{const c=cnv(256,32),x=c.getContext('2d');for(let i=0;i<8;i++){x.fillStyle=i%2?'#c8102e':'#f5b400';x.fillRect(i*32,0,32,32)}return tex(c)})(),
              fb:(()=>{const c=cnv(256,32),x=c.getContext('2d');for(let i=0;i<8;i++){x.fillStyle=i%2?'#002d72':'#ffe600';x.fillRect(i*32,0,32,32)}return tex(c)})()};
@@ -981,7 +981,7 @@ function bubbleTex(text){const c=cnv(256,150),x=c.getContext('2d');x.fillStyle='
   x.beginPath();x.moveTo(110,104);x.lineTo(128,146);x.lineTo(150,104);x.fill();x.fillStyle='#e0102a';x.font='900 64px Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(text,128,60);return tex(c)}
 /* Tribün çekimi: yalnızca gerçek izleyiciler (bot taraftar yok). opt.fans: gösterilecek kişiler, opt.bubble: konuşma balonu, opt.keep: sinematik sırasında da sürsün */
 function startCrowd(team,opt={}){const named=(opt.fans||crowdFans(team)).slice(0,8);if(!named.length)return null;endCrowd();
-  if(!opt.bubble&&named.length>1){const nm=named.slice(0,3).map(spkName).join(', ');nar(team==='gs'?pickR([`Galatasaray tribünü zıplıyor! ${nm} hep birlikte!`,`Tribünlere bakalım: ${nm}, kol kola Galatasaray için!`]):pickR([`Fenerbahçe tribünü atkıları salladı! ${nm} burada!`,`Tribünlere bakalım: ${nm}, Fenerbahçe için sesleniyor!`]),4)}
+  if(!opt.bubble&&named.length>1){const nm=named.slice(0,3).map(spkName).join(', ');nar(team==='gs'?pickR([`Aslanlar tribünü zıplıyor! ${nm} hep birlikte!`,`Tribünlere bakalım: ${nm}, kol kola Aslanlar için!`]):pickR([`Kanaryalar tribünü atkıları salladı! ${nm} burada!`,`Tribünlere bakalım: ${nm}, Kanaryalar için sesleniyor!`]),4)}
   const N=named.length,SP=1.45,zs=team==='gs'?-1:1,zF=zs*(PW/2+4.1),xc=-6;const dur=opt.dur||CONFIG.crowdDur;const figs=[];
   const dist=THREE.MathUtils.clamp(5+N*1.4,6.5,16.1);
   for(let i=0;i<N;i++){const u=named[i];const g=makeFigure(u.team||team,'',{fem:femOf(u)});g.scale.setScalar(0.95);
@@ -995,7 +995,7 @@ function startCrowd(team,opt={}){const named=(opt.fans||crowdFans(team)).slice(0
   const t0=performance.now()/1000;const show=crowdShow={team,figs,end:t0+dur,named:N,keep:!!opt.keep,shout:!!opt.bubble};$('#stage').classList.add('crowdshot');setTimeout(()=>{if(crowdShow===show)endCrowd()},dur*1000+100);
   const ly=2.4+dist*0.1;
   camOverride={fn:o=>{const k=Math.min(1,(performance.now()/1000-t0)/dur);o.pos.set(xc-N*0.5+N*1.0*k,4.6,zF-zs*dist);o.look.set(xc-N*0.25+N*0.5*k,ly,zF);o.fov=42},cut:true,until:performance.now()+dur*1000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
-  if(!opt.bubble){cheer[team]=t0+dur;const el=$('#chant');el.textContent=team==='gs'?'📣 GS TRİBÜNÜ · CİM BOM BOM!':'📣 FB TRİBÜNÜ · FENER! FENER!';el.style.color=TEAM[team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),dur*1000)}
+  if(!opt.bubble){cheer[team]=t0+dur;const el=$('#chant');el.textContent=team==='gs'?'📣 ASLAN TRİBÜNÜ · HAYDİ ASLANLAR!':'📣 KANARYA TRİBÜNÜ · HAYDİ KANARYALAR!';el.style.color=TEAM[team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),dur*1000)}
   return show}
 function endCrowd(){if(!crowdShow)return;$('#stage').classList.remove('crowdshot');for(const f of crowdShow.figs){scene.remove(f.g);scene.remove(f.tag);if(f.bub)scene.remove(f.bub)}if(camOverride&&camOverride.fn&&!goalBusy)camOverride=null;crowdShow=null}
 function crowdTick(t){
@@ -1018,7 +1018,7 @@ function decorShow(team){const zs=team==='gs'?-1:1,kind=['jump','wave','close'][
   if(kind==='wave')waveT=t0;else cheer[team]=t0+dur;
   const near=kind==='close';
   camOverride={fn:o=>{const k=Math.min(1,(performance.now()/1000-t0)/dur),x=x0+(x1-x0)*k;o.pos.set(x,near?7:11,zs*(near?PW/2-4:PW/2-14));o.look.set(x+(x1-x0)*0.1,near?6:7,stand);o.fov=near?34:44},cut:true,until:performance.now()+dur*1000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
-  const el=$('#chant');el.textContent=kind==='wave'?'🌊 TRİBÜNDE DALGA!':team==='gs'?'📣 GS TRİBÜNÜ · CİM BOM BOM!':'📣 FB TRİBÜNÜ · FENER! FENER!';el.style.color=TEAM[team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),dur*1000)}
+  const el=$('#chant');el.textContent=kind==='wave'?'🌊 TRİBÜNDE DALGA!':team==='gs'?'📣 ASLAN TRİBÜNÜ · HAYDİ ASLANLAR!':'📣 KANARYA TRİBÜNÜ · HAYDİ KANARYALAR!';el.style.color=TEAM[team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),dur*1000)}
 /* ================= VAR: ofsayt / penaltı / el =================
    Planlanan bir gol VAR'a düşer: olay oynanır → düdük → ağır çekim tekrar (ofsaytta çizgiler) → izleyiciler EVET/HAYIR yazar →
    hakem monitöre koşar → karar. Gol iptal olursa planlanan gol maçın ilerisine kayar (senaryo skoru korunur). */
@@ -1035,7 +1035,7 @@ function monitor(){if(varMon)return varMon;const g=new THREE.Group();const st=ne
   const sc=new THREE.Mesh(new THREE.BoxGeometry(1.6,1.0,0.12),[0,0,0,0,0,0].map((_,i)=>i===4||i===5?new THREE.MeshBasicMaterial({map:tex(c)}):new THREE.MeshStandardMaterial({color:0x111111})));sc.position.y=1.9;
   g.add(st,sc);g.position.set(-14,0,-(PW/2+1.2));g.traverse(m=>{if(m.isMesh)m.castShadow=true});scene.add(g);varMon=g;return g}
 function varPanel(html){const v=$('#var');v.innerHTML=html;v.classList.add('show')}
-const tChip=t=>`<b class="tm" style="background:${TEAM[t].c}">${t==='gs'?'GS':'FB'}</b>`;
+const tChip=t=>`<b class="tm" style="background:${TEAM[t].c}">${t==='gs'?'ASLAN':'KANARYA'}</b>`;
 const pName=a=>a&&a.u&&!a.u.isDefault?String(a.u.name).replace(/</g,'&lt;'):'oyuncusu';
 async function varVote(q,sec,o={}){VARV.on=true;VARV.y=0;VARV.n=0;VARV.voted=new Set();const win=FAST?1500:sec*1000,t0=Date.now();
   while(Date.now()-t0<win){const tot=VARV.y+VARV.n||1;varPanel(`<div class="vh">📺 <i>VAR</i> İNCELEMESİ</div><div class="q">${q}</div>${o.ctx?`<div class="ctx">${o.ctx}</div>`:''}<div class="cd">💬 Sohbete <b style="color:#22c55e">EVET</b> ya da <b style="color:#ef4444">HAYIR</b> yaz · ${Math.ceil((win-(Date.now()-t0))/1000)} sn</div>
@@ -1046,7 +1046,7 @@ async function refToMonitor(){const r=refActor();const m=monitor();if(!r)return;
   camOverride={fn:o=>{o.pos.set(r.pos.x-10,5,r.pos.z+9);o.look.set((r.pos.x+m.position.x)/2,2,(r.pos.z+m.position.z)/2);o.fov=38},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
   await until(()=>r.pos.distanceTo(r.target)<0.5,FAST?400:3500);r.pose='tv';r.poseUntil=nowS()+2.6;SFX.whistle(1);await sleep(2600);r.pose=null;r.lookAt=null}
 async function refDecision(sign){const r=refActor();if(!r)return;camOverride={follow:r,span:5,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};r.pose=sign;r.poseUntil=nowS()+3;SFX.whistle(sign==='goalsign'?1:2)}
-async function scoreGoal(team,u,sub,tag){spk(`Gol! ${tName(team)} sevinçli! ${spkName(u)}! Skor: Galatasaray ${S.goals.gs+(team==='gs'?1:0)}, Fenerbahçe ${S.goals.fb+(team==='fb'?1:0)}.`,2);S.goals[team]++;S.lastGoalM=gameMin();save();hud();SFX.goal();goalSong(team,7);cheer[team]=nowS()+8;excite=1;flash();
+async function scoreGoal(team,u,sub,tag){spk(`Gol! ${tName(team)} sevinçli! ${spkName(u)}! Skor: Aslanlar ${S.goals.gs+(team==='gs'?1:0)}, Kanaryalar ${S.goals.fb+(team==='fb'?1:0)}.`,2);S.goals[team]++;S.lastGoalM=gameMin();save();hud();SFX.goal();goalSong(team,7);cheer[team]=nowS()+8;excite=1;flash();
   const G=$('#goal');G.style.setProperty('--tc',TEAM[team].c2);$('#gName').textContent=u.name;$('#gText').textContent=sub;G.querySelector('.tag').textContent=tag;$('#gStar').innerHTML=avHTML(u);G.classList.add('show');confetti(team);sparks();
   await sleep(3800);G.classList.remove('show')}
 function varMoment(team){S.plan&&(S.plan.varUsed=(S.plan.varUsed||0)+1);varNext=Date.now()+(FAST?0:100000);
@@ -1076,10 +1076,10 @@ async function varOffside(team){const {s,opp,a,mate,defs,gk}=varSetup(team);if(!
   const lA=varLine(snap.a.x,0xff3b3b),lD=varLine(snap.defs[0].x,0x3b82f6);
   const pulse=setInterval(()=>{for(const m of varLines)m.material.opacity=0.55+0.4*Math.abs(Math.sin(performance.now()/250))},60);
   spk(`${ek(tName(team),'in')} golü VAR'da! ${spkName(a.u)} ofsayt mıydı? Ofsaytsa evet, gol geçerliyse hayır yazın!`,2);
-  const yes=await varVote(`${team==='gs'?'GS':'FB'} GOLÜ · OFSAYT MI?`,15,{ctx:`${tChip(team)} ⚽ Golü atan: ${pName(a)} · ${tChip(opp)} savunması ofsayt istiyor`,yes:'Ofsayt, gol iptal',no:'Gol geçerli'});spk(yes?'Ve karar: ofsayt! Gol iptal!':'Ve karar: gol geçerli!',2);clearInterval(pulse);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
+  const yes=await varVote(`${team==='gs'?'ASLAN':'KANARYA'} GOLÜ · OFSAYT MI?`,15,{ctx:`${tChip(team)} ⚽ Golü atan: ${pName(a)} · ${tChip(opp)} savunması ofsayt istiyor`,yes:'Ofsayt, gol iptal',no:'Gol geçerli'});spk(yes?'Ve karar: ofsayt! Gol iptal!':'Ve karar: gol geçerli!',2);clearInterval(pulse);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
   await refToMonitor();$('#tvfx').classList.remove('show');clearVarLines();
   await refDecision(yes?'flagout':'goalsign');
-  if(yes){varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#ef4444">❌ OFSAYT</div><div class="q">${team==='gs'?'GS':'FB'} GOLÜ İPTAL · ${vtx('y')}</div>`);SFX.ooh();varReschedule(team);await sleep(3200);$('#var').classList.remove('show')}
+  if(yes){varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#ef4444">❌ OFSAYT</div><div class="q">${team==='gs'?'ASLAN':'KANARYA'} GOLÜ İPTAL · ${vtx('y')}</div>`);SFX.ooh();varReschedule(team);await sleep(3200);$('#var').classList.remove('show')}
   else{$('#var').classList.remove('show');await scoreGoal(team,a.u,'VAR golü onayladı! '+vtx('n'),'📺 GOL GEÇERLİ ✅')}
   camOverride=null;releaseAll();goalBusy=false;const o=oppOf(team);kickTo(0,0,0.6);await sleep(600);startBuild(nowS(),o,gkOf(o))}
 async function varPenalty(team,kind){const {s,opp,a,mate,defs,gk}=varSetup(team);if(!a||!defs.length){goalBusy=false;return}
@@ -1096,9 +1096,9 @@ async function varPenalty(team,kind){const {s,opp,a,mate,defs,gk}=varSetup(team)
   $('#tvfx').classList.add('show');$('#varrec').classList.add('show');a.pose=null;d.pose=null;a.pos.copy(snap.a);a.target.copy(snap.a);d.pos.copy(snap.d);d.target.copy(snap.d);ball.holder=null;ball.t=1;ball.m.position.set(a.pos.x+s*0.9,0.55,a.pos.z);passTo(a,0.05);
   TS=FAST?1:0.3;await play1(true);await sleep(FAST?100:1200);TS=0;
   spk(kind==='hand'?`${tName(opp)} savunmasında top ele çarptı mı? ${tName(team)} lehine penaltı mı? Evet ya da hayır yazın!`:`${spkName(a.u)} ceza sahasında düştü! ${tName(team)} lehine penaltı mı? Evet ya da hayır yazın!`,2);
-  const yes=await varVote(kind==='hand'?`EL VAR MI? ${team==='gs'?'GS':'FB'} LEHİNE PENALTI MI?`:`${team==='gs'?'GS':'FB'} LEHİNE PENALTI MI?`,15,{ctx:kind==='hand'?`✋ ${tChip(opp)} ${pName(d)} topa eliyle mi dokundu?`:`🤕 ${tChip(team)} ${pName(a)} düştü · faul yapan: ${tChip(opp)} ${pName(d)}`,yes:`Penaltı, ${team==='gs'?'GS':'FB'} atar`,no:'Penaltı yok, devam'});spk(yes?'Hakem beyaz noktayı gösteriyor! Penaltı!':'Penaltı yok, oyun devam ediyor!',2);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
+  const yes=await varVote(kind==='hand'?`EL VAR MI? ${team==='gs'?'ASLAN':'KANARYA'} LEHİNE PENALTI MI?`:`${team==='gs'?'ASLAN':'KANARYA'} LEHİNE PENALTI MI?`,15,{ctx:kind==='hand'?`✋ ${tChip(opp)} ${pName(d)} topa eliyle mi dokundu?`:`🤕 ${tChip(team)} ${pName(a)} düştü · faul yapan: ${tChip(opp)} ${pName(d)}`,yes:`Penaltı, ${team==='gs'?'ASLAN':'KANARYA'} atar`,no:'Penaltı yok, devam'});spk(yes?'Hakem beyaz noktayı gösteriyor! Penaltı!':'Penaltı yok, oyun devam ediyor!',2);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
   await refToMonitor();$('#tvfx').classList.remove('show');a.pose=null;d.pose=null;
-  if(yes){await refDecision('point');varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#22c55e">⚽ ${team==='gs'?'GS':'FB'} LEHİNE PENALTI!</div><div class="q">${vtx('y')}</div>`);await sleep(2600);$('#var').classList.remove('show');
+  if(yes){await refDecision('point');varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#22c55e">⚽ ${team==='gs'?'ASLAN':'KANARYA'} LEHİNE PENALTI!</div><div class="q">${vtx('y')}</div>`);await sleep(2600);$('#var').classList.remove('show');
     a.pos.set(s*(PL/2-10),0,0);a.target.copy(a.pos);if(gk){gk.pos.set(s*(PL/2-0.6),0,0);gk.target.copy(gk.pos)}ball.holder=null;ball.t=1;ball.m.position.set(s*(PL/2-8.5),0.55,0);
     camOverride={fn:o=>{o.pos.set(s*(PL/2-50),14,-9);o.look.set(s*(PL/2-4),2.2,0);o.fov=26},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
     await sleep(900);a.target.set(s*(PL/2-9.3),0,0);a.speedMul=2;await sleep(500);a.kickT=0.45;await sleep(120);const gz=(Math.random()<.5?-1:1)*2;TS=FAST?1:0.45;trailOn=true;SFX.kick(true);kickTo(s*(PL/2+1.1),gz,0.45,0.5,0,0.9);
@@ -1108,14 +1108,14 @@ async function varPenalty(team,kind){const {s,opp,a,mate,defs,gk}=varSetup(team)
   camOverride=null;releaseAll();goalBusy=false;kickTo(0,0,0.6);await sleep(600);startBuild(nowS(),oppOf(team),gkOf(oppOf(team)))}
 /* ================= TEZAHÜRAT YARIŞI: 30 sn, en çok yazan takım kazanır ================= */
 const race={on:false,cnt:{gs:0,fb:0},by:{}};let raceNext=performance.now()/1000+60;
-function raceHud(){const g=race.cnt.gs,f=race.cnt.fb,tot=g+f||1;$('#raceG').style.width=(g/tot*100)+'%';$('#raceF').style.width=(f/tot*100)+'%';$('#raceS').textContent=`GS ${g} – ${f} FB`;
-  $('#raceT').innerHTML=`📣 Sohbete <b style="color:#f5b400">GS</b> ya da <b style="color:#ffe600">FB</b> yaz! ${Math.max(0,Math.ceil((race.end-Date.now())/1000))} sn`}
+function raceHud(){const g=race.cnt.gs,f=race.cnt.fb,tot=g+f||1;$('#raceG').style.width=(g/tot*100)+'%';$('#raceF').style.width=(f/tot*100)+'%';$('#raceS').textContent=`ASLAN ${g} – ${f} KANARYA`;
+  $('#raceT').innerHTML=`📣 Sohbete <b style="color:#f5b400">ASLAN</b> ya da <b style="color:#ffe600">KANARYA</b> yaz! ${Math.max(0,Math.ceil((race.end-Date.now())/1000))} sn`}
 function startRace(){race.on=true;race.cnt={gs:0,fb:0};race.by={};race.end=Date.now()+(FAST?2000:CONFIG.raceDur*1000);$('#race').classList.add('show');raceHud();
-  const el=$('#chant');el.textContent='📣 YARIŞ! Sohbete GS ya da FB yaz · en çok yazılan takım kazanır';el.style.color='#ffe08a';el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),3500);
+  const el=$('#chant');el.textContent='📣 YARIŞ! Sohbete ASLAN ya da KANARYA yaz · en çok yazılan takım kazanır';el.style.color='#ffe08a';el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),3500);
   const iv=setInterval(()=>{raceHud();if(Date.now()>=race.end){clearInterval(iv);finishRace()}},250)}
 function finishRace(){race.on=false;$('#race').classList.remove('show');const g=race.cnt.gs,f=race.cnt.fb;spk(g===f?'Tezahürat yarışı berabere!':`Tezahürat yarışını ${tName(g>f?'gs':'fb')} kazandı!`,1);raceNext=performance.now()/1000+CONFIG.raceEvery;
-  const el=$('#chant');if(g===f){el.textContent=`📣 YARIŞ BERABERE! GS ${g} – ${f} FB`;el.style.color='#ffe08a'}
-  else{const w=g>f?'gs':'fb';el.textContent=`🏆 TEZAHÜRAT YARIŞINI ${w==='gs'?'GS':'FB'} KAZANDI! (${g}–${f})`;el.style.color=TEAM[w].c;cheer[w]=performance.now()/1000+6;excite=1;if(!goalBusy)goalSong(w,5);addPower(w,5);
+  const el=$('#chant');if(g===f){el.textContent=`📣 YARIŞ BERABERE! ASLAN ${g} – ${f} KANARYA`;el.style.color='#ffe08a'}
+  else{const w=g>f?'gs':'fb';el.textContent=`🏆 TEZAHÜRAT YARIŞINI ${w==='gs'?'ASLAN':'KANARYA'} KAZANDI! (${g}–${f})`;el.style.color=TEAM[w].c;cheer[w]=performance.now()/1000+6;excite=1;if(!goalBusy)goalSong(w,5);addPower(w,5);
     Object.entries(race.by).map(([id,n])=>[S.users[id],n]).filter(([u])=>u&&u.team===w).sort((a,b)=>b[1]-a[1]).slice(0,3).forEach(([u,n],i)=>setTimeout(()=>shout(u,`📣 <b>${n} yorum</b> · yarışın yıldızı`),i*600))}
   el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000)}
 setInterval(()=>{if(!race.on&&!goalBusy&&!ftBusy&&performance.now()/1000>raceNext)startRace()},1000);
@@ -1125,8 +1125,8 @@ const normDir=t=>{t=(t||'').trim().toLocaleLowerCase('tr-TR');const E='(?![a-zç
 const DIR_K={sol:-1,orta:0,'sağ':1};
 const pick=v=>{const e=Object.entries(v).sort((a,b)=>b[1]-a[1]);return e[0][1]>0&&e[0][1]>(e[1]?e[1][1]:0)?e[0][0]:e[0][1]>0?e.filter(x=>x[1]===e[0][1])[Math.floor(Math.random()*e.filter(x=>x[1]===e[0][1]).length)][0]:['sol','orta','sağ'][Math.floor(Math.random()*3)]};
 function penHud(sc,marks,left,extra){const P=$('#pen');const T=TEAM[pen.team];P.style.setProperty('--tc',T.c);const o=oppOf(pen.team);
-  P.innerHTML=`<h3>⚽ PENALTILAR</h3><div class="ps">GS ${sc.gs} – ${sc.fb} FB</div><div class="marks">GS ${marks.gs.join(' ')||'·'}<br>FB ${marks.fb.join(' ')||'·'}</div>`+
-    (extra||`<div class="vt"><div><b>${pen.team==='gs'?'GS':'FB'} atıyor: şut nereye?</b>sol ${pen.votes.kick.sol} · orta ${pen.votes.kick.orta} · sağ ${pen.votes.kick['sağ']}</div><div><b>${o==='gs'?'GS':'FB'} kalecisi: nereye uçsun?</b>sol ${pen.votes.keep.sol} · orta ${pen.votes.keep.orta} · sağ ${pen.votes.keep['sağ']}</div></div><div class="cd">💬 Sohbete <b>sol</b> / <b>orta</b> / <b>sağ</b> yaz · ${left} sn</div>`);P.classList.add('show')}
+  P.innerHTML=`<h3>⚽ PENALTILAR</h3><div class="ps">ASLAN ${sc.gs} – ${sc.fb} KANARYA</div><div class="marks">ASLAN ${marks.gs.join(' ')||'·'}<br>KANARYA ${marks.fb.join(' ')||'·'}</div>`+
+    (extra||`<div class="vt"><div><b>${pen.team==='gs'?'ASLAN':'KANARYA'} atıyor: şut nereye?</b>sol ${pen.votes.kick.sol} · orta ${pen.votes.kick.orta} · sağ ${pen.votes.kick['sağ']}</div><div><b>${o==='gs'?'ASLAN':'KANARYA'} kalecisi: nereye uçsun?</b>sol ${pen.votes.keep.sol} · orta ${pen.votes.keep.orta} · sağ ${pen.votes.keep['sağ']}</div></div><div class="cd">💬 Sohbete <b>sol</b> / <b>orta</b> / <b>sağ</b> yaz · ${left} sn</div>`);P.classList.add('show')}
 async function penaltyShootout(){spk('Maç berabere bitti! Penaltılara gidiyoruz! Sohbete sol, orta ya da sağ yazın!',2);cinemaOn(true);holdAll(600,[]);const sc={gs:0,fb:0},taken={gs:0,fb:0},marks={gs:[],fb:[]};let team='gs';SFX.whistle(2);
   for(let k=0;k<20;k++){
     const s=team==='gs'?1:-1,opp=oppOf(team);const viewers=fieldActors(team).filter(a=>!a.u.isDefault).sort((a,b)=>b.u.coins-a.u.coins);

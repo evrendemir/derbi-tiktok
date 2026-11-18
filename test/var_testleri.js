@@ -11,7 +11,7 @@
   // 1) yarış: sadece GS/FB yazıları sayılır, talimat net
   D.startRace(); vote('Y1', 'GS'); vote('Y2', 'merhaba'); vote('Y3', 'Fener'); vote('Y4', 'fb');
   check('Yarışta sadece GS/FB yazıları sayılır', D.race.cnt.gs === 1 && D.race.cnt.fb === 2, JSON.stringify(D.race.cnt));
-  check('Yarış talimatı net: GS ya da FB yaz', /GS ya da FB yaz/.test(document.querySelector('#raceT').textContent), document.querySelector('#raceT').textContent);
+  check('Yarış talimatı net: GS ya da FB yaz', /ASLAN ya da KANARYA yaz/.test(document.querySelector('#raceT').textContent), document.querySelector('#raceT').textContent);
   await wait(2500);
 
   // 2) ofsayt: EVET çoğunluk → gol iptal, planlanan gol ileri kayar
