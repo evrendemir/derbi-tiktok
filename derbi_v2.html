@@ -429,12 +429,16 @@ let chantUntil=0;
 function chant(u){const t=performance.now()/1000;cheer[u.team]=t+5;excite=1;SFX.chant();event(u,`📣 ${TEAM[u.team].n} tribünü coştu!`,2);
   const el=$('#chant');el.textContent=u.team==='gs'?'📣 CİM BOM BOM! 📣':'📣 FENER! FENER! 📣';el.style.color=TEAM[u.team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000)}
 let goalChain=Promise.resolve();
+/* Gol şarkısı: sesler klasöründeki dosya 6 sn çalar, sonra yavaşça kısılır (dosyalar GitHub'a gönderilmez) */
+const GOAL_SONG={gs:'sesler/gs_gol.mp3',fb:'sesler/fb_gol.mp3',sec:6,start:0};
+function goalSong(team){if(AU.muted)return;try{const a=new Audio(GOAL_SONG[team]);a.currentTime=GOAL_SONG.start;a.volume=1;a.play().catch(()=>{});
+  setTimeout(()=>{const f=setInterval(()=>{a.volume=Math.max(0,a.volume-0.1);if(a.volume<=0.01){a.pause();clearInterval(f)}},80)},GOAL_SONG.sec*1000)}catch(e){}}
 function goalSeq(u,g){const run=()=>{goalBusy=true;const side=u.team==='gs'?1:-1;const now=()=>performance.now()/1000;
     // gol atan: sahadaysa kendisi, değilse takımın forveti
     const a=actors.get(u.id)&&actors.get(u.id).zone==='field'?actors.get(u.id):fieldActors(u.team).find(x=>x.opts.num===9)||fieldActors(u.team)[0];
     if(a){passTo(a,.6);play.phase='attack';play.team=u.team;play.next=now()+99}event(u,`🔫 Şut çekiyor…`,3);
     setTimeout(()=>{if(a)shoot(a,now(),true);else kickTo(side*(PL/2+1.2),0,0.9);play.next=now()+99;goalCam(side,3500)},1800);
-    setTimeout(()=>{S.goals[u.team]+=g;save();hud();SFX.goal();cheer[u.team]=now()+6;excite=1;
+    setTimeout(()=>{S.goals[u.team]+=g;save();hud();SFX.goal();goalSong(u.team);cheer[u.team]=now()+6;excite=1;
       const G=$('#goal');G.style.setProperty('--tc',TEAM[u.team].c2);$('#gName').textContent=u.name;$('#gText').textContent=`${TEAM[u.team].n} için ${g>1?g+' gol':'gol'} attı!`;G.classList.add('show');confetti(u.team);if(a)a.jump=3},2600);
     setTimeout(()=>{$('#goal').classList.remove('show')},6200);
     setTimeout(()=>{goalBusy=false;const opp=oppOf(u.team);kickTo(0,0,0.8);setTimeout(()=>{startBuild(now(),opp,fieldActors(opp).find(x=>x.opts.num===10)||fieldActors(opp)[0]);SFX.whistle(1)},900)},7200)};
