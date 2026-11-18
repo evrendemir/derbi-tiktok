@@ -210,6 +210,10 @@ function tex(c,repeat){const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRG
   for(const [a,b] of [[-1,-1],[1,-1],[-1,1],[1,1]]){const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,2.2,6),new THREE.MeshStandardMaterial({color:0xffffff}));pole.position.set(a*PL/2,1.1,b*PW/2);pole.castShadow=true;scene.add(pole);
     const fl=new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.6),new THREE.MeshStandardMaterial({color:a<0?0xc8102e:0x002d72,side:THREE.DoubleSide}));fl.position.set(a*PL/2+0.45,1.9,b*PW/2);scene.add(fl)}
 })();
+/* teknik alanlar: hocalar bu çizgili kutunun içinde durur */
+for(const sz of [-1,1]){const z0=sz*(PW/2-3.5),x0=-31,w=10,d=4.2;const lm=new THREE.MeshBasicMaterial({color:0xffffff});
+  for(const [x,z,sx,sz2] of [[x0,z0-d/2,w,0.18],[x0,z0+d/2,w,0.18],[x0-w/2,z0,0.18,d],[x0+w/2,z0,0.18,d]]){const l=new THREE.Mesh(new THREE.PlaneGeometry(sx,sz2),lm);l.rotation.x=-Math.PI/2;l.position.set(x,0.03,z);scene.add(l)}
+  const tint=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color:sz<0?0xc8102e:0x002d72,transparent:true,opacity:0.22}));tint.rotation.x=-Math.PI/2;tint.position.set(x0,0.025,z0);scene.add(tint)}
 /* kaleler */
 function goalMesh(side){const g=new THREE.Group();const post=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.4});const W=6,H=2.2,D=2;
   const cyl=h=>new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,h,10),post);
@@ -274,7 +278,9 @@ const shadowTex=(()=>{const c=cnv(128,128),x=c.getContext('2d');const g=x.create
 const SKINS=['#f1c9a5','#e0ac82','#c68c5a','#8d5a3b','#f4d6b8'];const HAIRS=['#1b120c','#3b2416','#6b4423','#111','#c9a36b'];
 const KIT={gs:{a:'#f5b400',b:'#c8102e',shorts:'#c8102e',socks:'#c8102e',style:'half'},fb:{a:'#ffe600',b:'#002d72',shorts:'#ffffff',socks:'#002d72',style:'stripes'},
   gk_gs:{a:'#1f9d55',b:'#0c5e31',shorts:'#0c5e31',socks:'#1f9d55',style:'plain'},gk_fb:{a:'#7c3aed',b:'#4c1d95',shorts:'#4c1d95',socks:'#7c3aed',style:'plain'},
-  ref:{a:'#111111',b:'#f5d90a',shorts:'#111111',socks:'#111111',style:'plain'},td:{a:'#1e2533',b:'#ffffff',shorts:'#1e2533',socks:'#1e2533',legs:'#1e2533',style:'suit'}};
+  ref:{a:'#111111',b:'#f5d90a',shorts:'#111111',socks:'#111111',style:'plain'},td:{a:'#1e2533',b:'#ffffff',shorts:'#1e2533',socks:'#1e2533',legs:'#1e2533',style:'suit'},
+  td_gs:{a:'#6b0f1f',b:'#ffffff',shorts:'#3a0a12',socks:'#3a0a12',legs:'#3a0a12',style:'suit',hat:'#f5b400',band:'#c8102e'},
+  td_fb:{a:'#0b2557',b:'#ffffff',shorts:'#081a3d',socks:'#081a3d',legs:'#081a3d',style:'suit',hat:'#ffe600',band:'#002d72'}};
 function jerseyTex(k,num){const c=cnv(512,256),x=c.getContext('2d');x.fillStyle=k.a;x.fillRect(0,0,512,256);x.fillStyle=k.b;
   if(k.style==='half'){x.fillRect(256,0,256,256)} // bir yan sarı, bir yan kırmızı
   else if(k.style==='stripes'){for(let i=0;i<16;i+=2)x.fillRect(i*32+8,0,32,256)}
@@ -290,8 +296,8 @@ const GEO={thigh:new THREE.CapsuleGeometry(0.15,0.3,4,10),shin:new THREE.Capsule
   sleeve:new THREE.CapsuleGeometry(0.125,0.16,4,10),fore:new THREE.CapsuleGeometry(0.095,0.3,4,10),hand:new THREE.SphereGeometry(0.1,10,8),
   shoulder:new THREE.SphereGeometry(0.2,12,10),neck:new THREE.CylinderGeometry(0.11,0.12,0.18,10),head:new THREE.SphereGeometry(0.26,16,12),
   hair:new THREE.SphereGeometry(0.275,16,10,0,Math.PI*2,0,Math.PI*0.55),shorts:new THREE.CylinderGeometry(0.4,0.43,0.42,16),
-  torso:new THREE.CylinderGeometry(0.44,0.35,1.0,20,1,false,Math.PI),tail:new THREE.CapsuleGeometry(0.09,0.4,4,8)};
-function makeFigure(kitKey,num,opt={}){const k={...KIT[kitKey]};if(opt.tie)k.tie=TEAM[opt.tie].c2==='#002d72'?'#ffe600':'#c8102e';const g=new THREE.Group();const fem=!!opt.fem;
+  torso:new THREE.CylinderGeometry(0.44,0.35,1.0,20,1,false,Math.PI),tail:new THREE.CapsuleGeometry(0.09,0.4,4,8),brim:new THREE.CylinderGeometry(0.5,0.5,0.04,24),crown:new THREE.CylinderGeometry(0.25,0.29,0.3,20),band:new THREE.CylinderGeometry(0.295,0.295,0.07,20)};
+function makeFigure(kitKey,num,opt={}){const k={...KIT[kitKey]};if(opt.tie)k.tie='#ffe08a';const g=new THREE.Group();const fem=!!opt.fem;
   const skin=mat(SKINS[Math.floor(Math.random()*SKINS.length)]),jersey=mat(k.a),sock=mat(k.socks),boot=mat('#111111',{roughness:0.4});
   const torso=part(GEO.torso,new THREE.MeshStandardMaterial({map:jerseyTex(k,num),roughness:0.7}),0,1.55,0);g.add(torso);
   g.add(part(GEO.shoulder,jersey,-0.4,1.98,0),part(GEO.shoulder,jersey,0.4,1.98,0),part(GEO.neck,skin,0,2.12,0));
@@ -300,6 +306,7 @@ function makeFigure(kitKey,num,opt={}){const k={...KIT[kitKey]};if(opt.tie)k.tie
   const arm=sx=>{const p=new THREE.Group();p.position.set(sx*(fem?0.47:0.52),2.0,0);p.add(part(GEO.sleeve,jersey,0,-0.16,0),part(GEO.fore,k.style==='suit'?jersey:skin,0,-0.5,0),part(GEO.hand,skin,0,-0.72,0));return p};
   const legL=leg(-1),legR=leg(1),armL=arm(-1),armR=arm(1);g.add(legL,legR,armL,armR);
   g.add(part(GEO.head,skin,0,2.45,0));const hm=mat(HAIRS[Math.floor(Math.random()*HAIRS.length)]);const hair=part(GEO.hair,hm,0,2.49,0.02);hair.rotation.x=0.25;g.add(hair);
+  if(k.hat){const hat=new THREE.Group();const brim=part(GEO.brim,mat(k.hat),0,0,0),crown=part(GEO.crown,mat(k.hat),0,0.16,0),band=part(GEO.band,mat(k.band),0,0.07,0);hat.add(brim,crown,band);hat.position.set(0,2.66,0.02);hat.rotation.x=-0.08;g.add(hat)}
   if(fem){const tail=part(GEO.tail,hm,0,2.3,0.3);tail.rotation.x=0.5;g.add(tail);const bun=part(GEO.hand,hm,0,2.55,0.24);bun.scale.setScalar(1.3);g.add(bun)} // at kuyruğu
   g.userData={legL,legR,armL,armR};return g}
 function drawTag(c,u,o){const x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);
@@ -324,7 +331,7 @@ class Actor{
     this.sh=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,depthWrite:false}));this.sh.rotation.x=-Math.PI/2;
     this.fig=null;this.figKey='';this.s=2.4;this.face=0;
     this.pos=new THREE.Vector3();this.target=new THREE.Vector3();this.home=new THREE.Vector3();this.zone=null;this.opts={};this.jump=0;this.nextMove=0;this.added=false;this.key=''}
-  setLook(o){this.opts=o;const on=!this.u.isDefault||this.u.placeholder;if(on!==this.tagOn){this.tagOn=on;if(this.added){if(on)scene.add(this.tag);else scene.remove(this.tag)}}const kk=o.ref?'ref':o.td?'td':o.num===1?'gk_'+this.u.team:this.u.team;const fem=!o.ref&&!o.td&&femOf(this.u);const fk=kk+'|'+(o.num||'')+'|'+fem+'|'+(o.tie||'');
+  setLook(o){this.opts=o;const on=!this.u.isDefault||this.u.placeholder;if(on!==this.tagOn){this.tagOn=on;if(this.added){if(on)scene.add(this.tag);else scene.remove(this.tag)}}const kk=o.ref?'ref':o.td?'td_'+(o.tie||this.u.team):o.num===1?'gk_'+this.u.team:this.u.team;const fem=!o.ref&&!o.td&&femOf(this.u);const fk=kk+'|'+(o.num||'')+'|'+fem+'|'+(o.tie||'');
     if(fk!==this.figKey){const was=this.added;if(was)this.hide();this.fig=makeFigure(kk,o.num||'',{fem,tie:o.tie});this.figKey=fk;if(was)this.show()}this.refresh()}
   refresh(){const o=this.opts;drawTag(this.c,this.u,{...o,img:null});this.t.needsUpdate=true;loadImg(this.u.avatar).then(im=>{drawTag(this.c,this.u,{...o,img:im});this.t.needsUpdate=true}).catch(()=>{})}
   setScale(s){this.s=s;if(this.fig)this.fig.scale.setScalar(s);this.sh.scale.set(s*1.3,s*0.9,1)}
@@ -338,7 +345,7 @@ class Actor{
       else if(!att&&ball.holder&&ball.holder!==this&&ball.m.position.distanceTo(this.pos)<10){this.target.set(clampX(ball.m.position.x-dir*1.5),0,clampZ(ball.m.position.z));this.nextMove=t+0.6}
       else if(t>this.nextMove&&ball.holder!==this){const sh=hot?(att?dir*8:-dir*5):(att?dir*3:-dir*2);this.target.set(clampX(this.home.x+sh+(Math.random()-.5)*6),0,clampZ(this.home.z+(Math.random()-.5)*6));this.nextMove=t+1.2+Math.random()*1.8}}
     if(z==='ref'){const b=ball.m.position;this.target.set(THREE.MathUtils.clamp(b.x-5,-30,30),0,THREE.MathUtils.clamp(b.z-8,-18,18))}
-    if(z==='td'&&t>this.nextMove){this.target.set(this.home.x+(Math.random()-.5)*8,0,this.home.z);this.nextMove=t+3+Math.random()*4}
+    if(z==='td'&&t>this.nextMove){this.target.set(this.home.x+(Math.random()-.5)*7,0,this.home.z+(Math.random()-.5)*2);this.nextMove=t+3+Math.random()*4}
     const goal=this.target;const speed=z==='field'?(this.opts.num===1&&this.dive?9:ball.holder===this?4.6:3.8):z==='off'?3:3.2;
     const d=goal.clone().sub(this.pos);d.y=0;const L=d.length();if(L>0.08){d.multiplyScalar(Math.min(1,dt*speed/L));this.pos.add(d);moving=true}
     if(this.jump>0)this.jump-=dt;
