@@ -69,10 +69,9 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 /* olay kutusu */
 .event{position:absolute;left:90px;right:90px;top:1170px;background:#0b0f17f2;border:5px solid var(--tc,#ffe08a);border-radius:60px;padding:6px 26px 6px 8px;height:116px;display:flex;align-items:center;gap:20px;box-shadow:0 10px 30px #000c;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1);z-index:20}
 .event.show{opacity:1;transform:none}
-.event.glow{border-color:#ff6fb5;animation:evglow 1s ease-in-out infinite alternate}
-.event.glow .av{border-color:#ff6fb5}
-.event.glow h2::after{content:' 🌹';}
-@keyframes evglow{from{box-shadow:0 0 18px #ff6fb5aa,0 10px 30px #000c}to{box-shadow:0 0 50px #ff6fb5,0 0 90px #ff6fb588,0 10px 30px #000c}}
+.event.glow{animation:evglow 1s ease-in-out infinite alternate}
+
+@keyframes evglow{from{box-shadow:0 0 16px var(--tc),0 10px 30px #000c}to{box-shadow:0 0 48px var(--tc),0 0 90px var(--tc),0 10px 30px #000c}}
 .fanbar .mv span.hi{color:#ffd1ea;text-shadow:0 0 10px #ff6fb5,0 0 20px #ff6fb5}
 .event .av{position:relative;width:96px;height:96px;border-radius:50%;background:#374151;border:6px solid var(--tc,#ffe08a);display:grid;place-items:center;font-size:24px;font-weight:700;flex:none;overflow:hidden}
 .event .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -441,19 +440,19 @@ const EV_MS=3500;let evQ=[],evBusy=false,joinSkip=0;
 const avHTML=u=>`${ini(u.name||'?')}${u.avatar?`<img src="${u.avatar}" alt="" onerror="this.remove()">`:''}`;
 function event(u,text,prio=1,cls=''){if(prio===0&&(evBusy||evQ.length)){joinSkip++;return}if(evQ.length>=5)evQ=evQ.filter(e=>e.prio>0);evQ.push({u:{...u},text,prio,cls});if(!evBusy)evNext()}
 function evNext(){const el=$('#event');let it=evQ.shift();
-  if(!it&&joinSkip>1){it={u:{name:`+${joinSkip} kişi`},text:'maça geldi'};joinSkip=0}
+  joinSkip=0;
   if(!it){evBusy=false;el.classList.remove('show');return}
-  joinSkip=0;evBusy=true;const T=TEAM[it.u.team];el.style.setProperty('--tc',T?T.c:'#ffe08a');$('#evAv').innerHTML=avHTML(it.u);$('#evName').textContent=it.u.name;$('#evText').textContent=it.text;el.classList.toggle('glow',it.cls==='glow');
+  joinSkip=0;evBusy=true;const T=TEAM[it.u.team];el.style.setProperty('--tc',T?T.c:'#ffe08a');$('#evAv').innerHTML=avHTML(it.u);$('#evName').textContent=it.u.name;$('#evText').textContent=it.text;el.classList.toggle('glow',it.cls!=='plain');
   el.classList.remove('show');void el.offsetWidth;el.classList.add('show');setTimeout(evNext,EV_MS)}
 
 /* ================= KURALLAR ================= */
 let goalBusy=false;const glowUntil={};
 function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date.now();const now=performance.now()/1000;
   switch(ev.type){
-    case 'join':{const fresh=!u.team;if(!u.team)u.team=autoTeam();u.last=Date.now();if(fresh)fanQ.push({id:u.id})}event(u,`${TEAM[u.team].n} tribününe oturdu · değiştirmek için ${u.team==='gs'?'FB':'GS'} yaz`,0);break;
-    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();fanQ.push({id:u.id});event(u,`${TEAM[t].n} taraftarı oldu`,1)}
+    case 'join':{const fresh=!u.team;if(!u.team)u.team=autoTeam();u.last=Date.now();if(fresh)fanQ.push({id:u.id})}break;
+    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();fanQ.push({id:u.id});0}
       const r=parseRole(ev.text);if(r){if(!u.team)u.team=autoTeam();u.want=r;
-        event(u,r==='ref'?'🟨 Hakem olmak istiyor · 🕶️ Güneş Gözlüğü gönderirse olur!':'🧢 Hoca olmak istiyor · 🐶 Corgi gönderirse olur!',1)}
+        0}
       break}
     case 'like':excite=Math.min(1,excite+0.03);break;
     case 'gift':{const c=Math.max(0,Math.floor(+ev.coins||0));if(!c)break;if(!u.team)u.team=autoTeam();SFX.coin();u.coins+=c;u.last=Date.now();glowUntil[u.id]=Date.now()+2500;const gn=ev.gift?ev.gift+' · ':'';
@@ -463,7 +462,7 @@ function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date
         if(r==='ref'){const cur=S.refId&&S.users[S.refId];S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2)}
         else{const cur=S.td[u.team]&&S.users[S.td[u.team]];S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}}
       else if(c>=CONFIG.chant&&c<CONFIG.player){chant(u)}
-      else if(c<CONFIG.chant){event(u,`${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
+      else if(c<CONFIG.chant){event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
       const entered=layout();
       for(const e of entered){event(e,`⚽ Sahaya çıktı!`,2);SFX.ding();SFX.whistle(1);const a=actors.get(e.id);if(a&&!goalBusy){a.jump=1.2;startBuild(now,e.team,a);play.passes=1}}
       if(c>=CONFIG.player&&c<CONFIG.role&&!entered.length){const inSq=squad(u.team).some(x=>x.id===u.id);event(u,inSq?`${gn}kaptanlık yarışında!`:`${gn}sahaya çıkmaya çok az kaldı!`,1)}
