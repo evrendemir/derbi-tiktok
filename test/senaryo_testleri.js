@@ -67,6 +67,14 @@
   check('En az jetonlu kadroya giremez', !sq.includes('Oy1'), sq.join(','));
   await wait(150); check('Kadrodakiler sahada', zone('Oy6') === 'field', zone('Oy6'));
 
+  // 8b) sahadaki oyuncu takım değiştirirse forması ve yeri değişir
+  h({ type: 'comment', user: U('Oy6'), text: 'FB' }); await wait(150);
+  const o6 = D.actors.get('t_Oy6');
+  check('Takım değiştiren oyuncunun forması değişir', o6 && /^fb\|/.test(o6.figKey), o6 && o6.figKey);
+  check('Takım değiştiren oyuncu yeni takımında oynar', o6 && o6.zone === 'field' && o6.u.team === 'fb' && o6.home.x > 0, o6 && o6.home.x);
+  h({ type: 'comment', user: U('Oy6'), text: 'GS' }); await wait(150);
+  check('Geri dönünce GS forması giyer', /^gs\|/.test(D.actors.get('t_Oy6').figKey));
+
   // 9) hakem El Kalp atarsa rolü bırakır ve oyuncu olur
   gift('Cem', 100, 'El Kalp');
   check('Hakem El Kalp atınca hakemlik boşalır', S.refId === null, String(S.refId));

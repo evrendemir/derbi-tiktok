@@ -410,7 +410,7 @@ function squad(t){return members(t).filter(u=>u.coins>=CONFIG.player&&!u.red&&u.
 function layout(){
   const used=new Set();const prev=new Set([...actors.values()].filter(a=>a.zone==='field').map(a=>a.u.id));const entered=[];
   const put=(u,zone,x,z,opts,scale)=>{used.add(u.id);let a=actors.get(u.id);if(!a){a=new Actor(u);actors.set(u.id,a);a.pos.set(x,0,z);if(zone==='field'&&!u.isDefault)a.pos.set(x,0,PW/2+1)}
-    a.u=u;const key=JSON.stringify([zone,opts]);if(a.key!==key){a.key=key;a.zone=zone;a.setLook(opts);a.setScale(scale)}
+    a.u=u;const key=JSON.stringify([zone,opts,u.team]);if(a.key!==key){a.key=key;a.zone=zone;a.setLook(opts);a.setScale(scale)}
     a.home.set(x,0,z);if(zone!=='field')a.target.set(x,0,z);a.show()};
   for(const t of ['gs','fb']){const sq=squad(t);const sl=slotsFor(t);const bySlot={};sq.forEach((u,i)=>bySlot[VIEWER_ORDER[i]]=u);
     const capId=sq[0]&&sq[0].id;
