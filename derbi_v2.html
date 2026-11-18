@@ -139,7 +139,7 @@ const GIFT_TABLE=[
   {e:'🌹',n:'Gül',c:'1 jeton',d:'Adın parlar'},
   {e:'🍩',n:'Donut',c:`${CONFIG.chant} jeton`,d:'Marş çalar'},
   {e:'🫶',n:'El Kalp',c:`${CONFIG.player} jeton`,d:'Sahaya çık'},
-  {e:'🐶',n:'Corgi',c:`${CONFIG.role} jeton`,d:'Hakem / hoca koltuğu'},
+  {e:'🐶',n:'Corgi',c:`${CONFIG.role} jeton`,d:'Takımının hocası ol'},
   {e:'🔫',n:'Para Tabancası',c:`${CONFIG.goal} jeton`,d:'GOL at!'},
   {e:'👑',n:'En çok gönderen',c:'her takımda',d:'Kaptan olur'},
 ];
@@ -440,9 +440,7 @@ function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date
     case 'join':{const fresh=!u.team;if(!u.team)u.team=autoTeam();u.last=Date.now();if(fresh)fanPush(u)}event(u,`${TEAM[u.team].n} tribününe oturdu · değiştirmek için ${u.team==='gs'?'FB':'GS'} yaz`,0);break;
     case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();fanPush(u);event(u,`${TEAM[t].n} taraftarı oldu`,1)}
       const r=parseRole(ev.text);if(r){if(!u.team)u.team=autoTeam();u.want=r;
-        if(r==='ref'&&!S.refId){S.refId=u.id;SFX.whistle(2);event(u,'🟨 Maçın hakemi oldu!',2)}
-        else if(r==='td'&&!S.td[u.team]){S.td[u.team]=u.id;event(u,`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}
-        else event(u,`${r==='ref'?'Hakem':'Hoca'} olmak istiyor · Corgi ile koltuğu kapar`,1)}
+        event(u,`${r==='ref'?'🟨 Hakem':'🧢 Hoca'} olmak istiyor · Corgi gönderirse olur!`,1)}
       break}
     case 'like':excite=Math.min(1,excite+0.03);break;
     case 'gift':{const c=Math.max(0,Math.floor(+ev.coins||0));if(!c)break;if(!u.team)u.team=autoTeam();SFX.coin();u.coins+=c;u.last=Date.now();glowUntil[u.id]=Date.now()+2500;const gn=ev.gift?ev.gift+' · ':'';
@@ -494,7 +492,7 @@ function confetti(t){const G=$('#goal');for(let i=0;i<90;i++){const c=document.c
 /* ================= PANELLER ================= */
 const GL=[...GIFT_TABLE.slice(0,5).map((g,i)=>`<div class="gr" id="gt${i}"><div class="e">${g.e}</div><div class="t"><b>${g.n}</b><i>${g.d}</i></div><div class="p">${g.c.replace(' jeton','')}</div></div>`),
   `<div class="gr cmd"><div class="e">👑</div><div class="t"><b>En çok gönderen</b><i>Kaptan olur</i></div></div>`,
-  `<div class="gr cmd"><div class="e">💬</div><div class="t"><b>"hakem" / "hoca" yaz</b><i>Koltuk boşsa senin</i></div></div>`];
+  `<div class="gr cmd"><div class="e">🟨</div><div class="t"><b>Hakem olmak için</b><i>"hakem" yaz + Corgi gönder</i></div></div>`];
 $('#giftList').innerHTML=GL.join('');
 function hotTile(i){const el=document.getElementById('gt'+i);if(!el)return;el.classList.remove('hot');void el.offsetWidth;el.classList.add('hot')}
 function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins);const fresh=all.filter(u=>!u.coins).sort((a,b)=>b.last-a.last);
@@ -524,7 +522,7 @@ function hud(){leaderboard();fanbar();$('#sGs').textContent=S.goals.gs;$('#sFb')
   $('#cntG').textContent=members('gs').length;$('#cntF').textContent=members('fb').length;
   
   const set=(el,v,hint)=>{el.textContent=v||hint;el.className=v?'':'emp'};
-  set($('#rRef'),nm(S.refId),'boş · "hakem" yaz');set($('#rTdG'),nm(S.td.gs),'boş · "hoca" yaz');set($('#rTdF'),nm(S.td.fb),'boş · "hoca" yaz')}
+  set($('#rRef'),nm(S.refId),'boş · Corgi ile al');set($('#rTdG'),nm(S.td.gs),'boş · Corgi ile al');set($('#rTdF'),nm(S.td.fb),'boş · Corgi ile al')}
 let halfShown=false,ftBusy=false;
 function clock(){if(ftBusy)return;const real=(Date.now()-S.start)/1000;const gsec=Math.floor(real*90*60/(CONFIG.matchMin*60)); // oyun saniyesi
   const m=Math.floor(gsec/60);$('#clk').textContent=String(Math.min(90,m)).padStart(2,'0')+':'+String(m>=90?0:gsec%60).padStart(2,'0');
@@ -584,7 +582,7 @@ function startSim(N){
     const r=Math.random();viewers.push({u:{id:'sim_'+i,name,avatar:`https://api.dicebear.com/9.x/avataaars/png?seed=${encodeURIComponent(name)}&size=160&backgroundColor=b6e3f4,c0aede,ffd5dc,ffdfbf`},
       joinAt:i<12?Math.random()*12:8+Math.random()*140,lean,gen:r<.55?0:r<.85?1:r<.96?2:3,in:false,picked:false,pickAt:0,next:0})}
   // garantili akış: her kural en az bir kez görünsün
-  const script=[[25,'gift',0,G.donut],[40,'comment',2,'hakem olayım ben'],[55,'comment',0,'hoca benim'],[65,'gift',5,G.kalp],[80,'gift',1,G.kalp],[95,'gift',13,G.donut],[110,'comment',10,'ben hakem olurum'],[120,'gift',10,G.corgi],
+  const script=[[25,'gift',0,G.donut],[40,'comment',2,'hakem olayım ben'],[44,'gift',2,G.corgi],[55,'comment',0,'hoca benim'],[58,'gift',0,G.corgi],[65,'gift',5,G.kalp],[80,'gift',1,G.kalp],[95,'gift',13,G.donut],[110,'comment',10,'ben hakem olurum'],[120,'gift',10,G.corgi],
     [140,'gift',6,G.tab],[170,'gift',16,G.kalp],[185,'gift',4,G.kalp],[200,'gift',24,G.kalp],[215,'gift',3,G.kalp],[230,'gift',7,G.kalp],[250,'gift',9,G.kalp],[270,'gift',19,G.tab],[300,'gift',11,G.corgi]];
   const box=document.createElement('div');box.innerHTML='<div class="sh">SİMÜLASYON · TikTok sohbeti · <span id="simN">0</span> izleyici</div><div id="simLog"></div>';box.id='simchat';document.body.appendChild(box);
   const st=document.createElement('style');st.textContent='#simchat{position:fixed;left:10px;top:10px;bottom:10px;width:300px;background:#111c;border:1px solid #333;border-radius:12px;font:14px Arial,sans-serif;color:#ddd;display:flex;flex-direction:column;z-index:98;overflow:hidden}#simchat .sh{padding:10px;background:#222;font-weight:700;color:#ffe08a}#simLog{flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:8px;gap:4px}#simLog div{line-height:1.35}#simLog b{color:#fff}#simLog .g{color:#ff9bd2}#simLog .j{color:#8b96a8}#simLog .big{color:#ffe08a;font-weight:700}';document.head.appendChild(st);
