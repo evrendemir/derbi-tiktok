@@ -455,8 +455,8 @@ function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date
       hotTile(c>=CONFIG.goal?5:c>=CONFIG.role?4:c>=CONFIG.ref?3:c>=CONFIG.player?2:c>=CONFIG.chant?1:0);
       if(c>=CONFIG.goal){const g=Math.floor(c/CONFIG.goal);goalSeq(u,g)}
       else if(c>=CONFIG.ref){const r=c>=CONFIG.role?'td':'ref';
-        if(r==='ref'){const cur=S.refId&&S.users[S.refId];if(!cur||cur.id===u.id||u.coins>cur.coins){S.refId=u.id;SFX.whistle(2);event(u,`${gn}🟨 Düdüğü kaptı, hakem oldu!`,2)}else event(u,`${gn}hakemlik için biraz daha!`,1)}
-        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];if(!cur||cur.id===u.id||u.coins>cur.coins){S.td[u.team]=u.id;event(u,`${gn}🧢 ${TEAM[u.team].n} hocası oldu!`,2)}else event(u,`${gn}hocalık için biraz daha!`,1)}}
+        if(r==='ref'){const cur=S.refId&&S.users[S.refId];S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2)}
+        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}}
       else if(c>=CONFIG.chant&&c<CONFIG.player){chant(u)}
       else if(c<CONFIG.chant){event(u,`${ev.gift||'Hediye'} gönderdi · adı parladı ✨`,c>=10?1:0)}
       const entered=layout();
