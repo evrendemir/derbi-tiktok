@@ -157,7 +157,7 @@ import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/
 
 /* ================= AYARLAR ================= */
 // Jeton eşikleri (tek seferde gönderilen). Hediye adları yalnızca tabloda görünür.
-const CONFIG={chant:30,player:100,ref:199,role:299,goal:500,squad:5,matchMin:10,idleMin:10,ws:'ws://localhost:8765',key:'derbi_v2'};
+const CONFIG={chant:30,player:100,ref:199,role:299,goal:500,squad:5,matchMin:10,autoGoalMin:15,idleMin:10,ws:'ws://localhost:8765',key:'derbi_v2'};
 const GIFT_TABLE=[
   {e:'🌹',n:'Gül',c:'1 jeton',d:'Adın ekranda parlar'},
   {e:'🍩',n:'Donut',c:`${CONFIG.chant} jeton`,d:'Marş çalar'},
@@ -588,7 +588,7 @@ async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=t
   await until(()=>ball.t>=1,5000);
   // 4) GOL: ağlar dalgalanır
   TS=1;trailOn=false;rippleNet(s,gz,gy);flash();SFX.goal();goalSong(team,9);
-  S.goals[team]+=g;const gid=(opt.by||u).id;const cnt=(S.goalsBy[gid]=(S.goalsBy[gid]||0)+g);save();hud();cheer[team]=nowS()+12;excite=1;
+  S.goals[team]+=g;S.lastGoalM=Math.floor((Date.now()-S.start)/1000*90/(CONFIG.matchMin*60));const gid=(opt.by||u).id;const cnt=(S.goalsBy[gid]=(S.goalsBy[gid]||0)+g);save();hud();cheer[team]=nowS()+12;excite=1;
   const G=$('#goal');G.style.setProperty('--tc',TEAM[team].c2);$('#gName').textContent=(opt.by||u).name;
   $('#gText').textContent=opt.sub||`${TEAM[team].n} için ${sh.lbl.toLocaleLowerCase('tr-TR')} ile gol!`;
   G.querySelector('.tag').textContent=cnt>=3?'🎩 HAT-TRICK! 🎩':cnt===2?'🔥 2. GOLÜ! 🔥':(opt.tag||'⭐ MAÇIN YILDIZI ⭐');
@@ -682,6 +682,9 @@ function clock(){if(ftBusy)return;const real=(Date.now()-S.start)/1000;const gse
   $('#half').textContent=m<45?'1. YARI':'2. YARI';
   if(m>=45&&!S.half2){S.half2=true;save();SFX.whistle(2);event({name:'Hakem',team:null},'İlk yarı bitti · 2. YARI BAŞLIYOR!',3)}
   if(m>=90&&!goalBusy)fullTime();
+  // Maçın akışı: 15 oyun dakikası boyunca gol olmazsa sahadan rastgele biri gol atar (kimse katılmasa da skor her maç farklı olur)
+  if(CONFIG.autoGoalMin&&m<88&&!goalBusy&&m-(S.lastGoalM||0)>=CONFIG.autoGoalMin){S.lastGoalM=m;const pool=fieldActors().filter(a=>a.opts.num!==1);
+    const p=pool[Math.floor(Math.random()*pool.length)];if(p)goalSeq(p.u,1,{team:p.u.team,lbl:'⚽ MAÇIN AKIŞI',tag:'⚽ GOL ⚽',sub:`${p.u.name} fırsatı değerlendirdi!`})}
   // koltuklar: uzun süre ses vermeyen hakem/hoca yayından çıkmış sayılır, koltuk boşalır
   const idle=id=>{const u=id&&S.users[id];return u&&Date.now()-(u.seen||u.joined)>CONFIG.idleMin*60000};
   if(idle(S.refId)){event(S.users[S.refId],'yayından ayrıldı · hakem koltuğu boş!',1);S.refId=null;layout();hud();save()}
@@ -691,7 +694,7 @@ function fullTime(){ftBusy=true;goalBusy=true;SFX.whistle(3);const g=S.goals.gs,
   $('#gStar').innerHTML='🏆';$('#gName').textContent=`GS ${g} – ${f} FB`;$('#gText').textContent=w?`${TEAM[w].n} KAZANDI!`:'Berabere!';G.classList.add('show');if(w){confetti(w);goalSong(w,9);cheer[w]=performance.now()/1000+12}
   setTimeout(()=>{G.classList.remove('show');G.querySelector('h1').textContent='GOL!';
     // yeni maç: skor, jetonlar ve koltuklar sıfırlanır; taraftarlar takımlarında kalır
-    S.goals={gs:0,fb:0};S.start=Date.now();S.half2=false;S.refId=null;S.td={gs:null,fb:null};for(const u of Object.values(S.users)){u.coins=0;u.red=false}S.goalsBy={};save();layout();hud();
+    S.goals={gs:0,fb:0};S.start=Date.now();S.half2=false;S.lastGoalM=0;S.refId=null;S.td={gs:null,fb:null};for(const u of Object.values(S.users)){u.coins=0;u.red=false}S.goalsBy={};save();layout();hud();
     ftBusy=false;goalBusy=false;SFX.whistle(1);event({name:'Yeni maç',team:null},'Başladı! Sahaya çıkmak için El Kalp gönder',3);startBuild(performance.now()/1000,'gs',fieldActors('gs').find(a=>a.opts.num===10))},15000)}
 setInterval(clock,1000);setInterval(hud,1000);
 
