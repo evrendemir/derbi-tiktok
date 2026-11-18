@@ -70,19 +70,24 @@ def avatar_data_url(url: str):
     return out
 
 
-def user_of(u) -> dict:
+async def user_of(u) -> dict:
     """TikTok kullanıcı nesnesini overlay'in beklediği sade biçime çevirir."""
     avatar = None
-    try:
-        avatar = u.avatar_thumb.m_urls[0]
-    except Exception:
+    # TikTokLive 7.x: avatar_thumb.url_list, 6.x: avatar_thumb.m_urls
+    for a, b in (("avatar_thumb", "url_list"), ("avatar_thumb", "m_urls"),
+                 ("profile_picture", "urls")):
         try:
-            avatar = u.profile_picture.urls[0]
+            lst = getattr(getattr(u, a), b)
+            if lst:
+                avatar = lst[0]
+                break
         except Exception:
             pass
-    uid = getattr(u, "unique_id", None) or str(getattr(u, "id", ""))
-    name = getattr(u, "nickname", None) or uid or "Seyirci"
-    return {"id": uid, "name": name, "avatar": avatar_data_url(avatar)}
+    uid = (getattr(u, "unique_id", None) or getattr(u, "display_id", None)
+           or str(getattr(u, "id", "")))
+    name = getattr(u, "nickname", None) or getattr(u, "nick_name", None) or uid or "Seyirci"
+    # Resim indirme olay döngüsünü kilitlemesin diye ayrı iş parçacığında
+    return {"id": uid, "name": name, "avatar": await asyncio.to_thread(avatar_data_url, avatar)}
 
 
 async def ws_handler(ws):
@@ -109,32 +114,44 @@ async def main(unique_id: str):
 
     @client.on(JoinEvent)
     async def on_join(e):
-        await broadcast({"type": "join", "user": user_of(e.user)})
+        await broadcast({"type": "join", "user": await user_of(e.user)})
 
     @client.on(CommentEvent)
     async def on_comment(e):
-        await broadcast({"type": "comment", "user": user_of(e.user), "text": e.comment})
+        await broadcast({"type": "comment", "user": await user_of(e.user), "text": e.comment})
 
     @client.on(LikeEvent)
     async def on_like(e):
-        await broadcast({"type": "like", "user": user_of(e.user), "count": getattr(e, "count", 1)})
+        await broadcast({"type": "like", "user": await user_of(e.user), "count": getattr(e, "count", 1)})
 
     @client.on(GiftEvent)
     async def on_gift(e):
         gift = e.gift
         # Seri (streak) hediyelerde her tıkta olay gelir; yalnızca seri bitince say.
-        if getattr(gift, "streakable", False) and getattr(e, "streaking", False):
+        # (e.streaking, seri sürerken True; seri olmayan hediyede hep False)
+        if getattr(e, "streaking", False):
             return
         coins = int(getattr(gift, "diamond_count", 0) or 0) * max(1, int(getattr(e, "repeat_count", 1) or 1))
         if coins <= 0:
             return
-        await broadcast({"type": "gift", "user": user_of(e.user), "coins": coins,
+        user = await user_of(e.user)
+        await broadcast({"type": "gift", "user": user, "coins": coins,
                          "gift": getattr(gift, "name", "")})
-        print(f"HEDİYE {coins} jeton <- {user_of(e.user)['name']}")
+        print(f"HEDİYE {coins} jeton <- {user['name']}")
 
     async with websockets.serve(ws_handler, "localhost", PORT):
         print(f"WebSocket hazır: ws://localhost:{PORT}  (overlay sayfasını şimdi aç)")
-        await client.connect()
+        # Yayın henüz açılmadıysa ya da bağlantı koparsa 15 sn'de bir yeniden dene
+        while True:
+            try:
+                await client.connect()
+                print("Bağlantı bitti, 15 sn sonra yeniden denenecek...")
+            except Exception as ex:
+                if type(ex).__name__ == "UserOfflineError":
+                    print(f"{unique_id} şu an canlı yayında değil. 15 sn sonra tekrar bakılacak...")
+                else:
+                    print(f"Bağlanamadı ({type(ex).__name__}: {ex}). 15 sn sonra tekrar...")
+            await asyncio.sleep(15)
 
 
 if __name__ == "__main__":

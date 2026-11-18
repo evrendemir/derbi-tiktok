@@ -33,8 +33,8 @@ TEST 1 – yayın açmadan, gerçek TikTok verisiyle
 -----------------------------------------------
 1) O an canlı yayında olan kalabalık bir hesap bul (ör. @kullaniciadi).
 2) cmd'de:
-       cd /d "%USERPROFILE%\Desktop\DERBI_DEMO"      (klasör neredeyse orası)
-       python bridge.py @kullaniciadi
+       baslat.bat dosyasına çift tıkla, kullanıcı adını yaz
+       (ya da cmd: cd /d "%USERPROFILE%\OneDrive\Documents\Desktop\DERBI_DEMO" ve python bridge.py @kullaniciadi)
    "TikTok yayınına bağlanıldı" yazmalı.
 3) tiktok_canli.html'i çift tıkla. Sağ alttaki panelde nokta yeşil olmalı.
 4) Yayındaki gerçek insanlar fotoğraflarıyla tribüne dolar; yorum ve hediyeler sahaya yansır.
