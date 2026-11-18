@@ -168,6 +168,8 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .var .bars .y i{background:#22c55e}.var .bars .n i{background:#ef4444}
 .var .bars span{position:relative}
 .var .cd{font-size:26px;margin-top:10px;font-weight:700}
+.var .ctx{font-size:32px;font-weight:800;margin:6px 0 2px;color:#fff}.var .ctx b.tm{padding:2px 12px;border-radius:10px;color:#fff;margin:0 4px}
+.var .bars small{display:block;font-size:22px;font-weight:700;opacity:.9}
 .var .dec{font-size:72px;font-weight:900;line-height:1.1;text-shadow:0 6px 0 #0008;margin:6px 0}
 .varrec{position:absolute;right:46px;top:262px;z-index:48;display:none;font-weight:900;font-size:24px;color:#ef4444}
 .varrec.show{display:block;animation:blink 1s infinite}
@@ -992,9 +994,11 @@ function monitor(){if(varMon)return varMon;const g=new THREE.Group();const st=ne
   const sc=new THREE.Mesh(new THREE.BoxGeometry(1.6,1.0,0.12),[0,0,0,0,0,0].map((_,i)=>i===4||i===5?new THREE.MeshBasicMaterial({map:tex(c)}):new THREE.MeshStandardMaterial({color:0x111111})));sc.position.y=1.9;
   g.add(st,sc);g.position.set(-14,0,-(PW/2+1.2));g.traverse(m=>{if(m.isMesh)m.castShadow=true});scene.add(g);varMon=g;return g}
 function varPanel(html){const v=$('#var');v.innerHTML=html;v.classList.add('show')}
-async function varVote(q,sec){VARV.on=true;VARV.y=0;VARV.n=0;VARV.voted=new Set();const win=FAST?1500:sec*1000,t0=Date.now();
-  while(Date.now()-t0<win){const tot=VARV.y+VARV.n||1;varPanel(`<div class="vh">📺 <i>VAR</i> İNCELEMESİ</div><div class="q">${q}</div><div class="cd">💬 Sohbete <b style="color:#22c55e">EVET</b> ya da <b style="color:#ef4444">HAYIR</b> yaz · ${Math.ceil((win-(Date.now()-t0))/1000)} sn</div>
-    <div class="bars"><div class="y"><i style="width:${VARV.y/tot*100}%"></i><span>✅ EVET ${VARV.y}</span></div><div class="n"><i style="width:${VARV.n/tot*100}%"></i><span>❌ HAYIR ${VARV.n}</span></div></div>`);await new Promise(r=>setTimeout(r,250))}
+const tChip=t=>`<b class="tm" style="background:${TEAM[t].c}">${t==='gs'?'GS':'FB'}</b>`;
+const pName=a=>a&&a.u&&!a.u.isDefault?String(a.u.name).replace(/</g,'&lt;'):'oyuncusu';
+async function varVote(q,sec,o={}){VARV.on=true;VARV.y=0;VARV.n=0;VARV.voted=new Set();const win=FAST?1500:sec*1000,t0=Date.now();
+  while(Date.now()-t0<win){const tot=VARV.y+VARV.n||1;varPanel(`<div class="vh">📺 <i>VAR</i> İNCELEMESİ</div><div class="q">${q}</div>${o.ctx?`<div class="ctx">${o.ctx}</div>`:''}<div class="cd">💬 Sohbete <b style="color:#22c55e">EVET</b> ya da <b style="color:#ef4444">HAYIR</b> yaz · ${Math.ceil((win-(Date.now()-t0))/1000)} sn</div>
+    <div class="bars"><div class="y"><i style="width:${VARV.y/tot*100}%"></i><span>✅ EVET ${VARV.y}${o.yes?`<small>${o.yes}</small>`:''}</span></div><div class="n"><i style="width:${VARV.n/tot*100}%"></i><span>❌ HAYIR ${VARV.n}${o.no?`<small>${o.no}</small>`:''}</span></div></div>`);await new Promise(r=>setTimeout(r,250))}
   VARV.on=false;return VARV.y>VARV.n?true:VARV.n>VARV.y?false:Math.random()<.5}
 function refActor(){return [...actors.values()].find(a=>a.zone==='ref')}
 async function refToMonitor(){const r=refActor();const m=monitor();if(!r)return;r.hold=nowS()+30;r.speedMul=3;r.target.set(m.position.x+1.4,0,m.position.z+1.6);r.lookAt=m.position;
@@ -1030,11 +1034,11 @@ async function varOffside(team){const {s,opp,a,mate,defs,gk}=varSetup(team);if(!
   await sleep(600);TS=FAST?1:0.25;mate.kickT=0.45;kickTo(s*(PL/2-9.5),az*0.4,0.9,1.5);await sleep(FAST?100:900);TS=0; // pasın çıktığı an dondur
   const lA=varLine(snap.a.x,0xff3b3b),lD=varLine(snap.defs[0].x,0x3b82f6);
   const pulse=setInterval(()=>{for(const m of varLines)m.material.opacity=0.55+0.4*Math.abs(Math.sin(performance.now()/250))},60);
-  spk(pickR(['Hakem VAR\'a gidiyor! Ofsayt var mı? Karar sizin, evet ya da hayır yazın!','Pozisyon inceleniyor! Ofsayt mı? Sohbete evet ya da hayır yazın!']),2);
-  const yes=await varVote('OFSAYT MI?',15);spk(yes?'Ve karar: ofsayt! Gol iptal!':'Ve karar: gol geçerli!',2);clearInterval(pulse);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
+  spk(`${tName(team)}'ın golü VAR'da! ${spkName(a.u)} ofsayt mıydı? Ofsaytsa evet, gol geçerliyse hayır yazın!`,2);
+  const yes=await varVote(`${team==='gs'?'GS':'FB'} GOLÜ · OFSAYT MI?`,15,{ctx:`${tChip(team)} ⚽ Golü atan: ${pName(a)} · ${tChip(opp)} savunması ofsayt istiyor`,yes:'Ofsayt, gol iptal',no:'Gol geçerli'});spk(yes?'Ve karar: ofsayt! Gol iptal!':'Ve karar: gol geçerli!',2);clearInterval(pulse);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
   await refToMonitor();$('#tvfx').classList.remove('show');clearVarLines();
   await refDecision(yes?'flagout':'goalsign');
-  if(yes){varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#ef4444">❌ OFSAYT</div><div class="q">GOL İPTAL · ${vtx('y')}</div>`);SFX.ooh();varReschedule(team);await sleep(3200);$('#var').classList.remove('show')}
+  if(yes){varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#ef4444">❌ OFSAYT</div><div class="q">${team==='gs'?'GS':'FB'} GOLÜ İPTAL · ${vtx('y')}</div>`);SFX.ooh();varReschedule(team);await sleep(3200);$('#var').classList.remove('show')}
   else{$('#var').classList.remove('show');await scoreGoal(team,a.u,'VAR golü onayladı! '+vtx('n'),'📺 GOL GEÇERLİ ✅')}
   camOverride=null;releaseAll();goalBusy=false;const o=oppOf(team);kickTo(0,0,0.6);await sleep(600);startBuild(nowS(),o,gkOf(o))}
 async function varPenalty(team,kind){const {s,opp,a,mate,defs,gk}=varSetup(team);if(!a||!defs.length){goalBusy=false;return}
@@ -1050,10 +1054,10 @@ async function varPenalty(team,kind){const {s,opp,a,mate,defs,gk}=varSetup(team)
   // tekrar: ağır çekim, yakın açı
   $('#tvfx').classList.add('show');$('#varrec').classList.add('show');a.pose=null;d.pose=null;a.pos.copy(snap.a);a.target.copy(snap.a);d.pos.copy(snap.d);d.target.copy(snap.d);ball.holder=null;ball.t=1;ball.m.position.set(a.pos.x+s*0.9,0.55,a.pos.z);passTo(a,0.05);
   TS=FAST?1:0.3;await play1(true);await sleep(FAST?100:1200);TS=0;
-  spk(kind==='hand'?'Top ele mi çarptı? VAR inceliyor! Penaltı mı, evet ya da hayır yazın!':'Ceza sahasında düştü! Penaltı mı? Karar sizin, evet ya da hayır yazın!',2);
-  const yes=await varVote(kind==='hand'?'EL VAR MI? PENALTI MI?':'PENALTI MI?',15);spk(yes?'Hakem beyaz noktayı gösteriyor! Penaltı!':'Penaltı yok, oyun devam ediyor!',2);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
+  spk(kind==='hand'?`${tName(opp)} savunmasında top ele çarptı mı? ${tName(team)} lehine penaltı mı? Evet ya da hayır yazın!`:`${spkName(a.u)} ceza sahasında düştü! ${tName(team)} lehine penaltı mı? Evet ya da hayır yazın!`,2);
+  const yes=await varVote(kind==='hand'?`EL VAR MI? ${team==='gs'?'GS':'FB'} LEHİNE PENALTI MI?`:`${team==='gs'?'GS':'FB'} LEHİNE PENALTI MI?`,15,{ctx:kind==='hand'?`✋ ${tChip(opp)} ${pName(d)} topa eliyle mi dokundu?`:`🤕 ${tChip(team)} ${pName(a)} düştü · faul yapan: ${tChip(opp)} ${pName(d)}`,yes:`Penaltı, ${team==='gs'?'GS':'FB'} atar`,no:'Penaltı yok, devam'});spk(yes?'Hakem beyaz noktayı gösteriyor! Penaltı!':'Penaltı yok, oyun devam ediyor!',2);TS=1;$('#var').classList.remove('show');$('#varrec').classList.remove('show');
   await refToMonitor();$('#tvfx').classList.remove('show');a.pose=null;d.pose=null;
-  if(yes){await refDecision('point');varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#22c55e">⚽ PENALTI!</div><div class="q">${vtx('y')}</div>`);await sleep(2600);$('#var').classList.remove('show');
+  if(yes){await refDecision('point');varPanel(`<div class="vh">📺 <i>VAR</i> KARARI</div><div class="dec" style="color:#22c55e">⚽ ${team==='gs'?'GS':'FB'} LEHİNE PENALTI!</div><div class="q">${vtx('y')}</div>`);await sleep(2600);$('#var').classList.remove('show');
     a.pos.set(s*(PL/2-10),0,0);a.target.copy(a.pos);if(gk){gk.pos.set(s*(PL/2-0.6),0,0);gk.target.copy(gk.pos)}ball.holder=null;ball.t=1;ball.m.position.set(s*(PL/2-8.5),0.55,0);
     camOverride={fn:o=>{o.pos.set(s*(PL/2-50),14,-9);o.look.set(s*(PL/2-4),2.2,0);o.fov=26},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
     await sleep(900);a.target.set(s*(PL/2-9.3),0,0);a.speedMul=2;await sleep(500);a.kickT=0.45;await sleep(120);const gz=(Math.random()<.5?-1:1)*2;TS=FAST?1:0.45;trailOn=true;SFX.kick(true);kickTo(s*(PL/2+1.1),gz,0.45,0.5,0,0.9);
