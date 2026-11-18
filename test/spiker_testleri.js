@@ -1,4 +1,4 @@
-﻿// Spiker ve hediye yakın planı testleri. derbi_v2.html?sim=1&fast=1 açıkken çalıştır.
+// Spiker ve hediye yakın planı testleri. derbi_v2.html?sim=1&fast=1 açıkken çalıştır.
 (async () => {
   const D = window.derbi, S = D.S, h = D.handle;
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -23,6 +23,19 @@
   D.spk('deneme bir', 2); D.spk('deneme iki', 2); D.spk('deneme üç', 2); D.spk('deneme dört', 2); D.spk('az önemli', 0);
   check('Kalabalıkta önemsiz cümle atlanır', D.SPK.q.every(x => x.text !== 'az önemli'));
   check('Sıra en fazla 3 cümle tutar', D.SPK.q.length <= 3, D.SPK.q.length);
+
+  // canlı anlatım
+  await D.idle();
+  D.SPK.q.length = 0; D.SPK.busy = false;
+  const a = [...D.actors.values()].find(x => x.zone === 'field');
+  const say = async f => { await D.idle(); D.NAR.last = 0; D.SPK.q.length = 0; D.SPK.busy = false; D.SPK.log.length = 0; f(); return D.SPK.log[0] || ''; };
+  check('Atak anlatılır', /(atakta|ilerliyor|geliyor|yaklaşıyor)/.test(await say(() => D.narAttack(a))));
+  check('Direk anlatılır', /direk/i.test(await say(() => D.narShot('post', a))));
+  check("Anlatımda bozuk ek yok ('in şutu gibi)", !/oyuncusu'/.test(await say(() => D.narShot('post', a))));
+  h({ type: 'comment', user: { id: 's9', name: 'Zeynep', avatar: null }, text: 'FB' });
+  D.NAR.arrAt = 0; D.NAR.last = 0; D.SPK.busy = false; D.SPK.q.length = 0; D.SPK.log.length = 0;
+  await wait(3500);
+  check('Tribüne gelen ismi okunur', D.SPK.log.some(t => /Zeynep/.test(t)), D.SPK.log.join(' | '));
 
   return out;
 })();
