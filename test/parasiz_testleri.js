@@ -11,10 +11,10 @@
   // 1) beğeni ve yorum → taraftar gücü (eşik izleyici sayısına göre, en az 10)
   join('Beğenici', 'GS'); D.power.gs = 0;
   h({ type: 'like', user: U('Beğenici'), count: 4 });
-  check('Beğeni GS gücünü artırır', D.power.gs === 4, D.power.gs);
+  check('Beğeni GS gücünü artırır (2 beğeni = 1 güç)', D.power.gs === 2, D.power.gs);
   check('Güç çubuğu yüzdesi yazar', /%\d+/.test(document.querySelector('#pbGt').textContent), document.querySelector('#pbGt').textContent);
   h({ type: 'comment', user: U('Beğenici'), text: 'hadi cimbom' });
-  check('Yorum da güç verir', D.power.gs === 5, D.power.gs);
+  check('Yorum da güç verir', D.power.gs === 3, D.power.gs);
   join('Beğenici2', 'GS'); D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 200 }); await wait(100);
   check('Güç dolunca sıfırlanır', D.power.gs < 200, D.power.gs);
   check('Güç dolunca tezahürat yazısı çıkar', document.querySelector('#chant').classList.contains('show') && /GÜCÜ DOLDU/.test(document.querySelector('#chant').textContent));

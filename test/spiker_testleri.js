@@ -18,7 +18,7 @@
   await wait(300);
   check('Gül atınca spiker ismi okur', D.SPK.log.some(t => /Mehmet/.test(t)), D.SPK.log.join(' | '));
   check('Köprüye say mesajı gider', sent.some(d => d.type === 'say' && /Mehmet/.test(d.text)), JSON.stringify(sent.slice(-1)));
-  check('Hediye atana kamera döner (yakın plan)', (D.camOv() && D.camOv().spot) || D.crowdState());
+  check('Hediye atana kamera döner (yakın plan ya da kendi şutu)', (D.camOv() && D.camOv().spot) || D.crowdState() || D.busy());
 
   D.spk('deneme bir', 2); D.spk('deneme iki', 2); D.spk('deneme üç', 2); D.spk('deneme dört', 2); D.spk('az önemli', 0);
   check('Kalabalıkta önemsiz cümle atlanır', D.SPK.q.every(x => x.text !== 'az önemli'));
