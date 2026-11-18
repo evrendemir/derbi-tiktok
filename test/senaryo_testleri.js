@@ -1,6 +1,6 @@
 // Derbi CANLI v2 senaryo testleri.
-// Kullanım: derbi_v2.html?sim=1 açıkken tarayıcı konsoluna yapıştır ya da otomasyonla çalıştır.
-// Sonuç: [{ad, ok, detay}] listesi döner.
+// Kullanım: derbi_v2.html?sim=1&fast=1 açıkken tarayıcı konsoluna yapıştır ya da otomasyonla çalıştır.
+// fast=1 sinematikleri hızlı oynatır. Sonuç: [{ad, ok, detay}] listesi döner.
 (async () => {
   const D = window.derbi, S = D.S, h = D.handle;
   const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -9,7 +9,9 @@
   const check = (ad, ok, detay = '') => out.push({ ad, ok: !!ok, detay });
   const zone = n => { const a = D.actors.get('t_' + n); return a ? a.zone : null; };
   const join = (n, team) => { h({ type: 'join', user: U(n) }); if (team) h({ type: 'comment', user: U(n), text: team }); };
-  const gift = (n, c, g) => h({ type: 'gift', user: U(n), coins: c, gift: g || '' });
+  // unit = tek hediyenin fiyatı (köprü böyle gönderir); coins = toplam
+  const gift = (n, unit, g, repeat = 1) => h({ type: 'gift', user: U(n), coins: unit * repeat, unit, repeat, gift: g || '' });
+  const idle = () => D.idle(120000);
 
   // 1) katılım: takım otomatik atanır, kart çıkmaz
   join('Ali');
@@ -20,9 +22,11 @@
   h({ type: 'comment', user: U('Ali'), text: 'fb' }); check('FB yazınca FB olur', S.users['t_Ali'].team === 'fb');
   h({ type: 'comment', user: U('Ali'), text: 'Cimbom' }); check('Cimbom yazınca GS olur', S.users['t_Ali'].team === 'gs');
 
-  // 3) gül: parlayan kart
+  // 3) gül: parlayan kart; seri gül (x300) hoca yapmaz
   gift('Ali', 1, 'Gül'); await wait(200);
   check('Gül: parlayan kart çıkar', document.querySelector('#event').classList.contains('glow') && /Gül/.test(document.querySelector('#evText').textContent), document.querySelector('#evText').textContent);
+  gift('Ali', 1, 'Gül', 300);
+  check('300 güllük seri hoca yapmaz (tek hediye fiyatına bakılır)', S.td.gs !== 't_Ali' && S.refId !== 't_Ali');
 
   // 4) hakem → hoca geçişi (hakemlik boşalmalı)
   join('Bora', 'GS'); gift('Bora', 199, 'Güneş Gözlüğü');
@@ -52,8 +56,12 @@
   check('Takım değiştiren hocanın eski koltuğu boşalır', S.td.fb === null, String(S.td.fb));
   check('Yeni takımında otomatik hoca olmaz', S.td.gs !== 't_Ece');
 
+  // önceki sinematiklerin (taktik golleri, hakem anları) bitmesini bekle
+  check('Sıradaki sinematikler biter', await idle());
+
   // 8) sahaya çıkma ve kadro sınırı
-  for (let i = 1; i <= 6; i++) { join('Oy' + i, 'GS'); gift('Oy' + i, 100 + i, 'El Kalp'); }
+  for (let i = 1; i <= 6; i++) { join('Oy' + i, 'GS'); gift('Oy' + i, 100, 'El Kalp', 1); S.users['t_Oy' + i].coins = 100 + i; }
+  D.layout();
   const sq = D.squad('gs').map(u => u.name);
   check('Kadroda en fazla 5 kişi', sq.length === 5, sq.join(','));
   check('En az jetonlu kadroya giremez', !sq.includes('Oy1'), sq.join(','));
@@ -65,7 +73,7 @@
   check('Hakem El Kalp atınca oyuncu kadrosuna girer', D.squad('fb').some(u => u.id === 't_Cem'));
 
   // 10) kaptan: en çok gönderen
-  gift('Oy2', 400, 'Hediye'); await wait(150);
+  gift('Oy2', 100, 'El Kalp', 4); await wait(150);
   const cap = [...D.actors.values()].find(a => a.zone === 'field' && a.u.team === 'gs' && a.opts.cap);
   const top = D.squad('gs')[0];
   check('En çok gönderen kaptan olur', cap && top && cap.u.id === top.id, `${cap && cap.u.name} / beklenen ${top && top.name}`);
@@ -82,9 +90,34 @@
   gift('Ali', 30, 'Donut'); await wait(200);
   check('Donut: tezahürat yazısı çıkar', document.querySelector('#chant').classList.contains('show'));
 
-  // 13) gol
-  const before = S.goals.gs; gift('Oy3', 500, 'Para Tabancası'); await wait(3500);
+  // 13) gol sinematiği
+  let before = S.goals.gs; gift('Oy3', 500, 'Para Tabancası');
+  await wait(300); check('Gol sinematiği başlar', D.busy());
+  check('Gol sinematiği biter', await idle());
   check('Para Tabancası: GS golü sayılır', S.goals.gs === before + 1, `${before} → ${S.goals.gs}`);
-  check('Gol ekranı açılır', document.querySelector('#goal').classList.contains('show'));
+  gift('Oy3', 500, 'Para Tabancası'); await idle();
+  check('Aynı kişinin 2. golü sayılır', (S.goalsBy || {})['t_Oy3'] === 2, JSON.stringify(S.goalsBy));
+
+  // 14) hoca: taktik dehası → takımı anında gol atar
+  before = S.goals.fb; join('Hoca Hilmi', 'FB'); gift('Hoca Hilmi', 299, 'Corgi');
+  check('Corgi: FB hocası olur', S.td.fb === 't_Hoca Hilmi');
+  await idle(); check('Taktik dehası: FB anında gol atar', S.goals.fb === before + 1, `${before} → ${S.goals.fb}`);
+
+  // 15) hakem: sahadaki en düşük jetonlu izleyici oyuncuya kırmızı kart
+  const low = D.squad('gs').concat(D.squad('fb')).sort((a, b) => a.coins - b.coins)[0];
+  join('Düdük Dursun', 'GS'); gift('Düdük Dursun', 199, 'Güneş Gözlüğü');
+  await idle();
+  check('Hakem: en düşük jetonluya kırmızı kart', low && S.users[low.id].red === true, low && low.name);
+  check('Kırmızı kartlı kadrodan çıkar', low && !D.squad(low.team).some(u => u.id === low.id));
+  gift(low.name, 100, 'El Kalp');
+  check('El Kalp ile kırmızı kartlı geri döner', !S.users[low.id].red && D.squad(low.team).some(u => u.id === low.id));
+
+  // 16) sahada izleyici oyuncu yoksa hakem animasyonu (kart yok, takılma yok)
+  for (const u of Object.values(S.users)) u.coins = 0; D.layout();
+  const redBefore = Object.values(S.users).filter(u => u.red).length;
+  join('Boş Saha Hakemi', 'FB'); gift('Boş Saha Hakemi', 199, 'Güneş Gözlüğü');
+  await wait(20); check('Oyuncu yokken hakem anı başlar', D.busy());
+  check('Oyuncu yokken hakem anı biter', await idle());
+  check('Oyuncu yokken kimse kırmızı görmez', Object.values(S.users).filter(u => u.red).length === redBefore);
   return out;
 })();

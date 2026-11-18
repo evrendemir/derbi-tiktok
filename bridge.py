@@ -131,12 +131,14 @@ async def main(unique_id: str):
         # (e.streaking, seri sürerken True; seri olmayan hediyede hep False)
         if getattr(e, "streaking", False):
             return
-        coins = int(getattr(gift, "diamond_count", 0) or 0) * max(1, int(getattr(e, "repeat_count", 1) or 1))
+        unit = int(getattr(gift, "diamond_count", 0) or 0)   # tek hediyenin fiyatı
+        repeat = max(1, int(getattr(e, "repeat_count", 1) or 1))
+        coins = unit * repeat
         if coins <= 0:
             return
         user = await user_of(e.user)
-        await broadcast({"type": "gift", "user": user, "coins": coins,
-                         "gift": getattr(gift, "name", "")})
+        await broadcast({"type": "gift", "user": user, "coins": coins, "unit": unit,
+                         "repeat": repeat, "gift": getattr(gift, "name", "")})
         print(f"HEDİYE {coins} jeton <- {user['name']}")
 
     async with websockets.serve(ws_handler, "localhost", PORT):

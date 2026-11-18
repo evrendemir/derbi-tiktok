@@ -78,6 +78,21 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .event h2{margin:0;font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
 .event p{margin:2px 0 0;font-size:26px;font-style:italic;color:#ffe08a;font-weight:700}
 /* gol */
+.cine{position:absolute;left:60px;right:60px;top:640px;display:flex;align-items:center;gap:26px;padding:22px 30px;border-radius:30px;background:linear-gradient(120deg,#000000ee,#111827ee);border:6px solid var(--tc,#ffe08a);box-shadow:0 0 60px var(--tc,#ffe08a),0 20px 50px #000;z-index:45;opacity:0;transform:scale(.6) rotate(-3deg);transition:opacity .25s,transform .45s cubic-bezier(.2,1.6,.4,1);pointer-events:none}
+.cine.show{opacity:1;transform:none}
+.cine .cav{position:relative;width:170px;height:170px;border-radius:50%;flex:none;overflow:hidden;background:#374151;display:grid;place-items:center;font-size:64px;font-weight:900;border:8px solid var(--tc,#ffe08a)}
+.cine .cav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cine small{display:inline-block;background:var(--tc,#ffe08a);color:#000;font-weight:900;font-size:30px;padding:4px 16px;border-radius:10px;letter-spacing:2px}
+.cine b{display:block;font-size:64px;line-height:1.05;margin-top:8px;text-shadow:0 4px 10px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:700px}
+.cine span{display:block;font-size:32px;color:#ffe08a;font-weight:700;margin-top:4px}
+.cine .board{width:150px;height:170px;flex:none;border-radius:12px;background:#14532d;border:4px solid #fff;position:relative;overflow:hidden}
+.replay{position:absolute;right:40px;top:560px;background:#e0102a;color:#fff;font-weight:900;font-size:34px;padding:8px 20px;border-radius:12px;letter-spacing:3px;z-index:46;opacity:0;transition:opacity .2s}
+.replay.show{opacity:1;animation:blink 1s infinite}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:44}
+.flash.go{animation:fl .6s ease-out}
+@keyframes fl{0%{opacity:.85}100%{opacity:0}}
+.redc{position:absolute;left:50%;top:430px;width:150px;height:210px;margin-left:-75px;background:linear-gradient(135deg,#ff3b3b,#b00010);border-radius:14px;border:5px solid #fff;box-shadow:0 0 60px #ff0000;z-index:46;opacity:0;transform:scale(.2) rotate(-25deg);transition:all .4s cubic-bezier(.2,1.6,.4,1)}
+.redc.show{opacity:1;transform:rotate(8deg)}
 .goal{position:absolute;inset:0;display:none;place-items:center;z-index:50;text-align:center;pointer-events:none}
 .goal.show{display:grid}
 .goal .band{position:absolute;left:0;right:0;top:33%;height:260px;background:linear-gradient(90deg,transparent,var(--tc) 20%,var(--tc) 80%,transparent);opacity:.92;transform:translateY(-50%) skewY(-4deg);animation:band .5s cubic-bezier(.2,1.4,.4,1)}
@@ -121,6 +136,8 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
   <div class="fanbar"><div class="lbl">TRİBÜN</div><div class="mvw" id="fanW"><div class="mv" id="fanMv"></div></div></div>
   <div class="event" id="event"><div class="av" id="evAv"></div><div><h2 id="evName"></h2><p id="evText"></p></div></div>
   <div class="snd" id="snd">🔇 Ses için tıkla</div>
+  <div class="cine" id="cine"><div class="cav" id="cineAv"></div><div class="board hide" id="cineBoard"><svg viewBox="0 0 150 170" width="150" height="170"><g stroke="#fff" stroke-width="3" fill="none"><rect x="10" y="10" width="130" height="150"/><line x1="10" y1="85" x2="140" y2="85"/><circle cx="75" cy="85" r="18"/></g><g fill="#ffe08a"><circle cx="40" cy="130" r="7"/><circle cx="110" cy="125" r="7"/><circle cx="75" cy="105" r="7"/></g><g fill="#ff5a5a"><text x="35" y="55" font-size="22" font-weight="900">X</text><text x="98" y="60" font-size="22" font-weight="900">X</text></g><g stroke="#ffe08a" stroke-width="4" fill="none" stroke-dasharray="8 6"><path d="M40 125 Q30 80 60 40"/><path d="M110 120 Q125 80 90 35"/></g></svg></div><div class="ct"><small id="cineLbl"></small><b id="cineName"></b><span id="cineSub"></span></div></div>
+  <div class="replay" id="replay">⏪ TEKRAR</div><div class="redc" id="redc"></div><div class="flash" id="flash"></div>
   <div class="goal" id="goal"><div class="band"></div><h1>GOL!</h1><div class="who"><div class="star" id="gStar"></div><div class="tag">⭐ MAÇIN YILDIZI ⭐</div><b id="gName"></b><span id="gText"></span></div></div>
 </div>
 
@@ -215,12 +232,19 @@ for(const sz of [-1,1]){const z0=sz*(PW/2-3.5),x0=-31,w=10,d=4.2;const lm=new TH
   for(const [x,z,sx,sz2] of [[x0,z0-d/2,w,0.18],[x0,z0+d/2,w,0.18],[x0-w/2,z0,0.18,d],[x0+w/2,z0,0.18,d]]){const l=new THREE.Mesh(new THREE.PlaneGeometry(sx,sz2),lm);l.rotation.x=-Math.PI/2;l.position.set(x,0.03,z);scene.add(l)}
   const tint=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color:sz<0?0xc8102e:0x002d72,transparent:true,opacity:0.22}));tint.rotation.x=-Math.PI/2;tint.position.set(x0,0.025,z0);scene.add(tint)}
 /* kaleler */
+const NETS={};let netRip=null;
+function rippleNet(side,z,y){netRip={side,z,y,t0:performance.now()/1000}}
+function updateNet(){if(!netRip)return;const N=NETS[netRip.side];const e=performance.now()/1000-netRip.t0;const pos=N.geo.attributes.position.array;
+  if(e>2.2){pos.set(N.base);N.geo.attributes.position.needsUpdate=true;netRip=null;return}
+  for(let i=0;i<pos.length;i+=3){const lx=N.base[i],ly=N.base[i+1];const dx=lx-(-netRip.z),dy=ly-(netRip.y-N.H/2);const d2=dx*dx+dy*dy;
+    pos[i+2]=N.base[i+2]+netRip.side*1.3*Math.exp(-d2*0.35)*Math.exp(-e*1.6)*Math.cos(e*14-Math.sqrt(d2)*2)}
+  N.geo.attributes.position.needsUpdate=true}
 function goalMesh(side){const g=new THREE.Group();const post=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.4});const W=6,H=2.2,D=2;
   const cyl=h=>new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,h,10),post);
   const p1=cyl(H);p1.position.set(0,H/2,-W/2);const p2=cyl(H);p2.position.set(0,H/2,W/2);const bar=cyl(W);bar.rotation.x=Math.PI/2;bar.position.y=H;g.add(p1,p2,bar);
   const nc=cnv(256,256),nx=nc.getContext('2d');nx.strokeStyle='#ffffffcc';nx.lineWidth=2;for(let i=0;i<=256;i+=16){nx.beginPath();nx.moveTo(i,0);nx.lineTo(i,256);nx.stroke();nx.beginPath();nx.moveTo(0,i);nx.lineTo(256,i);nx.stroke()}
   const net=new THREE.MeshBasicMaterial({map:tex(nc,true),transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false});net.map.repeat.set(4,2);
-  const back=new THREE.Mesh(new THREE.PlaneGeometry(W,H),net);back.position.set(D*side,H/2,0);back.rotation.y=Math.PI/2;g.add(back);
+  const bg=new THREE.PlaneGeometry(W,H,24,10);const back=new THREE.Mesh(bg,net);back.position.set(D*side,H/2,0);back.rotation.y=Math.PI/2;g.add(back);NETS[side]={geo:bg,base:bg.attributes.position.array.slice(),H};
   const top=new THREE.Mesh(new THREE.PlaneGeometry(D,W),net);top.rotation.x=Math.PI/2;top.position.set(D/2*side,H,0);g.add(top);
   g.position.x=side*PL/2;return g}
 scene.add(goalMesh(-1),goalMesh(1));
@@ -338,15 +362,16 @@ class Actor{
   show(){if(!this.added&&this.fig){this.fig.scale.setScalar(this.s);scene.add(this.fig);if(this.tagOn)scene.add(this.tag);this.added=true}}
   hide(){if(this.added){scene.remove(this.fig,this.tag);this.added=false}}
   update(dt,t){const z=this.zone;let moving=false;
-    if(z==='field'&&this.celeb&&t<this.celeb){}
+    const held=this.hold&&t<this.hold;
+    if(held){}
     else if(z==='field'){const dir=dirOf(this.u.team),att=play.team===this.u.team,hot=play.phase==='attack'||play.phase==='shot';
       if(this.opts.num===1){if(this.dive&&t<this.dive.until)this.target.set(this.home.x,0,this.dive.z);else{this.dive=null;this.target.set(this.home.x+dir*1.2,0,THREE.MathUtils.clamp(ball.m.position.z*0.35,-3,3))}}
       else if(ball.holder===this&&play.phase==='attack')this.target.set(clampX(this.pos.x+dir*9),0,clampZ(this.pos.z*0.7+(Math.random()-.5)*2));
       else if(!att&&ball.holder&&ball.holder!==this&&ball.m.position.distanceTo(this.pos)<10){this.target.set(clampX(ball.m.position.x-dir*1.5),0,clampZ(ball.m.position.z));this.nextMove=t+0.6}
       else if(t>this.nextMove&&ball.holder!==this){const sh=hot?(att?dir*8:-dir*5):(att?dir*3:-dir*2);this.target.set(clampX(this.home.x+sh+(Math.random()-.5)*6),0,clampZ(this.home.z+(Math.random()-.5)*6));this.nextMove=t+1.2+Math.random()*1.8}}
-    if(z==='ref'){const b=ball.m.position;this.target.set(THREE.MathUtils.clamp(b.x-5,-30,30),0,THREE.MathUtils.clamp(b.z-8,-18,18))}
-    if(z==='td'&&t>this.nextMove){this.target.set(this.home.x+(Math.random()-.5)*7,0,this.home.z+(Math.random()-.5)*2);this.nextMove=t+3+Math.random()*4}
-    const goal=this.target;const speed=z==='field'?(this.opts.num===1&&this.dive?9:ball.holder===this?4.6:3.8):z==='off'?3:3.2;
+    if(z==='ref'&&!held){const b=ball.m.position;this.target.set(THREE.MathUtils.clamp(b.x-5,-30,30),0,THREE.MathUtils.clamp(b.z-8,-18,18))}
+    if(z==='td'&&!held&&t>this.nextMove){this.target.set(this.home.x+(Math.random()-.5)*7,0,this.home.z+(Math.random()-.5)*2);this.nextMove=t+3+Math.random()*4}
+    const goal=this.target;const speed=(z==='field'?(this.opts.num===1&&this.dive?9:ball.holder===this?4.6:3.8):z==='off'?3:3.2)*(held&&this.speedMul?this.speedMul:1);
     const d=goal.clone().sub(this.pos);d.y=0;const L=d.length();if(L>0.08){d.multiplyScalar(Math.min(1,dt*speed/L));this.pos.add(d);moving=true}
     if(this.jump>0)this.jump-=dt;
     if(!this.fig)return;
@@ -357,6 +382,17 @@ class Actor{
     const U=this.fig.userData,sw=moving?Math.sin(t*11+this.pos.x)*0.8:Math.sin(t*2+this.pos.z)*0.05;
     U.legL.rotation.x=sw;U.legR.rotation.x=-sw;U.armL.rotation.x=-sw*0.8;U.armR.rotation.x=sw*0.8;
     if(this.jump>0){U.armL.rotation.z=-2.6;U.armR.rotation.z=2.6}else{U.armL.rotation.z=-0.1;U.armR.rotation.z=0.1}
+    // vuruş: sağ bacak geri alınır, sonra sertçe öne savrulur
+    if(this.kickT>0){this.kickT-=dt;const q=1-Math.max(0,this.kickT)/0.45;U.legR.rotation.x=q<0.45?0.9*q/0.45:0.9-2.4*(q-0.45)/0.55}
+    const P=this.pose&&t<this.poseUntil?this.pose:null;this.fig.rotation.x=0;
+    if(P==='plane'){U.armL.rotation.z=-1.55;U.armR.rotation.z=1.55;U.armL.rotation.x=0;U.armR.rotation.x=0;this.fig.rotation.z=Math.sin(t*3)*0.25}else this.fig.rotation.z=0;
+    if(P==='heart'){U.armL.rotation.z=-2.75;U.armR.rotation.z=2.75;U.armL.rotation.x=-0.45;U.armR.rotation.x=-0.45}
+    if(P==='knee'){this.fig.position.y=-0.42*this.s;U.legL.rotation.x=1.5;U.legR.rotation.x=1.5;U.armL.rotation.z=-2.7;U.armR.rotation.z=2.7;this.fig.rotation.x=-0.25}
+    if(P==='flip'&&this.jump>0){this.fig.rotation.x=(1-this.jump%1)*Math.PI*2}
+    if(P==='point'){U.armR.rotation.z=1.4;U.armR.rotation.x=-1.3;U.armL.rotation.z=-0.5}
+    if(P==='card'||P==='yellow'){U.armR.rotation.z=2.95;U.armR.rotation.x=0;
+      if(!this.cardM){this.cardM=new THREE.Mesh(new THREE.PlaneGeometry(0.34,0.48),new THREE.MeshBasicMaterial({color:0xff1a1a,side:THREE.DoubleSide}));this.cardM.position.set(0,-0.95,0);U.armR.add(this.cardM)}
+      this.cardM.material.color.set(P==='card'?0xff1a1a:0xffd400);this.cardM.visible=true}else if(this.cardM)this.cardM.visible=false
     this.tag.position.set(this.pos.x,jy+2.9*this.s+0.4,this.pos.z);this.sh.position.set(this.pos.x,0.02,this.pos.z)}
 }
 /* 5'e 5 dizilişi (FB tarafı, x>0 kendi yarı sahası). GS aynalanır. */
@@ -365,7 +401,7 @@ const slotsFor=t=>SLOTS.map(([x,z])=>[x*TEAM[t].side,z]);
 const VIEWER_ORDER=[4,3,1,2,0]; // önce forvet, orta saha, defans, kaleci
 const DEFAULTS={gs:['Uğurcan','Ayşe','Jakobs','Elif','Osimhen'],fb:['Ederson','Zeynep','Brown','Melis','En-Nesyri']};
 const DEF={};for(const t of ['gs','fb'])DEF[t]=DEFAULTS[t].map((name,i)=>({id:`def_${t}_${i}`,name,team:t,coins:0,avatar:null,isDefault:true}));
-function squad(t){return members(t).filter(u=>u.coins>=CONFIG.player&&u.id!==S.refId&&u.id!==S.td[t]).sort((a,b)=>b.coins-a.coins||a.joined-b.joined).slice(0,CONFIG.squad)}
+function squad(t){return members(t).filter(u=>u.coins>=CONFIG.player&&!u.red&&u.id!==S.refId&&u.id!==S.td[t]).sort((a,b)=>b.coins-a.coins||a.joined-b.joined).slice(0,CONFIG.squad)}
 function layout(){
   const used=new Set();const prev=new Set([...actors.values()].filter(a=>a.zone==='field').map(a=>a.u.id));const entered=[];
   const put=(u,zone,x,z,opts,scale)=>{used.add(u.id);let a=actors.get(u.id);if(!a){a=new Actor(u);actors.set(u.id,a);a.pos.set(x,0,z);if(zone==='field'&&!u.isDefault)a.pos.set(x,0,PW/2+1)}
@@ -387,8 +423,8 @@ const ballTex=(()=>{const c=cnv(256,256),x=c.getContext('2d');x.fillStyle='#f4f4
 const ball={m:new THREE.Mesh(new THREE.SphereGeometry(0.55,16,12),new THREE.MeshStandardMaterial({map:ballTex,roughness:.5})),holder:null,from:new THREE.Vector3(),to:new THREE.Vector3(),t:1,dur:1};
 ball.sh=new THREE.Mesh(new THREE.PlaneGeometry(1.2,0.8),new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,depthWrite:false}));ball.sh.rotation.x=-Math.PI/2;ball.m.position.set(0,0.55,0);ball.m.castShadow=true;ball.sh.visible=false;scene.add(ball.m,ball.sh);
 const fieldActors=t=>[...actors.values()].filter(a=>a.zone==='field'&&(!t||a.u.team===t));
-function passTo(a,dur){ball.holder=a;ball.from.copy(ball.m.position);ball.to.set(a.pos.x+0.8,0.55,a.pos.z+0.6);ball.t=0;ball.t0=performance.now()/1000;ball.dur=dur||Math.max(.45,ball.from.distanceTo(ball.to)/26)}
-function kickTo(x,z,dur){ball.holder=null;ball.from.copy(ball.m.position);ball.to.set(x,0.55,z);ball.t=0;ball.t0=performance.now()/1000;ball.dur=dur}
+function passTo(a,dur){ball.holder=a;ball.arc=null;ball.curve=0;ball.from.copy(ball.m.position);ball.to.set(a.pos.x+0.8,0.55,a.pos.z+0.6);ball.t=0;ball.t0=performance.now()/1000;ball.dur=dur||Math.max(.45,ball.from.distanceTo(ball.to)/26)}
+function kickTo(x,z,dur,arc,curve,y){ball.holder=null;ball.from.copy(ball.m.position);ball.to.set(x,y||0.55,z);ball.t=0;ball.t0=performance.now()/1000;ball.dur=dur;ball.arc=arc==null?null:arc;ball.curve=curve||0}
 const play={phase:'build',team:'gs',passes:0,next:0,until:0,shot:null};
 const dirOf=t=>t==='gs'?1:-1;const oppOf=t=>t==='gs'?'fb':'gs';
 const gkOf=t=>fieldActors(t).find(a=>a.opts.num===1);
@@ -403,7 +439,7 @@ function resolveShot(t){const s=play.shot;if(!s){startBuild(t,'gs',gkOf('gs'));r
   else if(s.out==='post'||s.out==='miss'){SFX.ooh();if(gk){startBuild(t,def,gk);play.next=t+1.8}}
   else{play.phase='goal';play.next=t+99}excite=Math.min(1,excite+0.2)}
 function updateBall(dt,t){
-  if(ball.t<1){ball.t=Math.min(1,(t-ball.t0)/ball.dur);const k=ball.t;const p=ball.from.clone().lerp(ball.to,k);p.y=0.55+Math.sin(k*Math.PI)*Math.min(5,ball.from.distanceTo(ball.to)*0.16);ball.m.position.copy(p);ball.m.rotation.x+=dt*12}
+  if(ball.t<1){ball.t=Math.min(1,ball.t+dt/ball.dur);const k=ball.t;const p=ball.from.clone().lerp(ball.to,k);p.y=0.55+Math.sin(k*Math.PI)*(ball.arc!=null?ball.arc:Math.min(5,ball.from.distanceTo(ball.to)*0.16));if(ball.curve)p.z+=Math.sin(k*Math.PI)*ball.curve;ball.m.position.copy(p);ball.m.rotation.x+=dt*12}
   else if(ball.holder){const a=ball.holder;ball.m.position.set(a.pos.x+dirOf(a.u.team)*0.9,0.55,a.pos.z+0.6)}
   if(!goalBusy&&ball.t>=1&&t>play.next){const team=play.team,dir=dirOf(team),mates=fieldActors(team),opp=fieldActors(oppOf(team));
     if(!mates.length)play.next=t+2;
@@ -413,7 +449,11 @@ function updateBall(dt,t){
       if(play.passes>=2+Math.floor(Math.random()*3)){play.phase='attack';play.until=t+ball.dur+1.4+Math.random()*1.5;play.next=t+ball.dur+0.2}}
     else if(play.phase==='attack'){const h=ball.holder;if(!h)startBuild(t,team,mates[0]);else if(t>=play.until||h.pos.x*dir>PL/2-14)shoot(h,t);else play.next=t+0.2}
     else if(play.phase==='shot')resolveShot(t)}
-  ball.sh.position.set(ball.m.position.x,0.03,ball.m.position.z)}
+  ball.sh.position.set(ball.m.position.x,0.03,ball.m.position.z);updateTrail()}
+/* topun parlak izi (sinematik vuruşlarda) */
+const TRAIL=[];for(let i=0;i<26;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(0.42,10,8),new THREE.MeshBasicMaterial({color:0xfff2a8,transparent:true,opacity:0,depthWrite:false}));m.visible=false;scene.add(m);TRAIL.push(m)}
+let trailOn=false,trailI=0;function updateTrail(){for(const m of TRAIL){if(m.visible){m.material.opacity*=0.9;m.scale.multiplyScalar(0.96);if(m.material.opacity<0.03)m.visible=false}}
+  if(trailOn&&ball.t<1){const m=TRAIL[trailI++%TRAIL.length];m.position.copy(ball.m.position);m.scale.setScalar(1);m.material.opacity=0.75;m.visible=true}}
 
 /* ================= SABİT KAMERA ================= */
 // Saha boyuna ekranda dikey durur: GS aşağıdan yukarı, FB yukarıdan aşağı hücum eder.
@@ -422,9 +462,11 @@ const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.lo
 let camFov=30;
 function updateCam(dt){let tp=CAM_MAIN.pos,tl=CAM_MAIN.look,fovT=30,k=2.2;
   if(camOverride&&performance.now()<camOverride.until){
-    if(camOverride.follow){ // gol sevinci: ana kamera yerinde kalır, golcüye döner ve yakınlaştırır (tribüne girmez, kimse önünü kesmez)
+    if(camOverride.fn){camOverride.fn(camOverride);tp=camOverride.pos;tl=camOverride.look;fovT=camOverride.fov||30;k=camOverride.k||5;
+      if(camOverride.cut){camOverride.cut=false;camPos.copy(tp);camLook.copy(tl);camFov=fovT}}
+    else if(camOverride.follow){ // gol sevinci: ana kamera yerinde kalır, golcüye döner ve yakınlaştırır (tribüne girmez, kimse önünü kesmez)
       const p=camOverride.follow.pos;camOverride.look.set(p.x,3.2,p.z);tp=CAM_MAIN.pos;tl=camOverride.look;
-      const dist=camPos.distanceTo(p);fovT=THREE.MathUtils.clamp(2*Math.atan(9/dist)*180/Math.PI,9,30);k=4}
+      const dist=camPos.distanceTo(p);fovT=THREE.MathUtils.clamp(2*Math.atan((camOverride.span||9)/dist)*180/Math.PI,7,30);k=4}
     else{tp=camOverride.pos;tl=camOverride.look}}
   else camOverride=null;
   camPos.lerp(tp,Math.min(1,dt*k));camLook.lerp(tl,Math.min(1,dt*k));
@@ -472,49 +514,119 @@ function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date
         0}
       break}
     case 'like':excite=Math.min(1,excite+0.03);break;
-    case 'gift':{const c=Math.max(0,Math.floor(+ev.coins||0));if(!c)break;if(!u.team)u.team=autoTeam();SFX.coin();u.coins+=c;u.last=Date.now();glowUntil[u.id]=Date.now()+2500;const gn=ev.gift?ev.gift+' · ':'';
-      hotTile(c>=CONFIG.goal?5:c>=CONFIG.role?4:c>=CONFIG.ref?3:c>=CONFIG.player?2:c>=CONFIG.chant?1:0);
-      if(c>=CONFIG.goal){const g=Math.floor(c/CONFIG.goal);goalSeq(u,g)}
-      else if(c>=CONFIG.ref){const r=c>=CONFIG.role?'td':'ref';
-        if(r==='ref'){const cur=S.refId&&S.users[S.refId];dropRoles(u);S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2)}
-        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];dropRoles(u);S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}}
-      else if(c>=CONFIG.player){dropRoles(u)}
-      else if(c>=CONFIG.chant&&c<CONFIG.player){chant(u)}
-      else if(c<CONFIG.chant){event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
+    case 'gift':{const c=Math.max(0,Math.floor(+ev.coins||0));if(!c)break;if(!u.team)u.team=autoTeam();SFX.coin();u.coins+=c;u.last=Date.now();glowUntil[u.id]=Date.now()+2500;const gn=ev.gift?ev.gift+' · ':'';const k=Math.max(1,Math.floor(+ev.unit||c)); // tek hediyenin fiyatı
+      hotTile(k>=CONFIG.goal?5:k>=CONFIG.role?4:k>=CONFIG.ref?3:k>=CONFIG.player?2:k>=CONFIG.chant?1:0);
+      if(k>=CONFIG.goal){const g=Math.max(1,Math.min(3,Math.floor(c/k)));goalSeq(u,g)}
+      else if(k>=CONFIG.ref){const r=k>=CONFIG.role?'td':'ref';
+        if(r==='ref'){const cur=S.refId&&S.users[S.refId];dropRoles(u);S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2);layout();refMoment(u)}
+        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];dropRoles(u);S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2);layout();tacticMoment(u)}}
+      else if(k>=CONFIG.player){dropRoles(u);u.red=false}
+      else if(k>=CONFIG.chant){chant(u)}
+      else{event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
       const entered=layout();
       for(const e of entered){event(e,`⚽ Sahaya çıktı!`,2);SFX.ding();SFX.whistle(1);const a=actors.get(e.id);if(a&&!goalBusy){a.jump=1.2;startBuild(now,e.team,a);play.passes=1}}
-      if(c>=CONFIG.player&&c<CONFIG.role&&!entered.length){const inSq=squad(u.team).some(x=>x.id===u.id);event(u,inSq?`${gn}kaptanlık yarışında!`:`${gn}sahaya çıkmaya çok az kaldı!`,1)}
+      if(k>=CONFIG.player&&k<CONFIG.ref&&!entered.length){const inSq=squad(u.team).some(x=>x.id===u.id);event(u,inSq?`${gn}kaptanlık yarışında!`:`${gn}sahaya çıkmaya çok az kaldı!`,1)}
       break}}
   layout();hud();save()}
 let chantUntil=0;
 function chant(u){const t=performance.now()/1000;cheer[u.team]=t+5;excite=1;if(goalBusy)SFX.chant();else goalSong(u.team,5);event(u,`📣 ${TEAM[u.team].n} tribünü coştu!`,2);
   const el=$('#chant');el.textContent=u.team==='gs'?'📣 CİM BOM BOM! 📣':'📣 FENER! FENER! 📣';el.style.color=TEAM[u.team].c;el.classList.add('show');clearTimeout(chantUntil);chantUntil=setTimeout(()=>el.classList.remove('show'),5000)}
-let goalChain=Promise.resolve();
 /* Gol şarkısı: sesler klasöründeki dosya 6 sn çalar, sonra yavaşça kısılır (dosyalar GitHub'a gönderilmez) */
 const GOAL_SONG={gs:'sesler/gs_gol.mp3',fb:'sesler/fb_gol.mp3',sec:6,start:0};
 let songNow=null;
 function goalSong(team,sec){if(AU.muted)return;try{if(songNow)songNow.pause();const a=new Audio(GOAL_SONG[team]);songNow=a;a.currentTime=GOAL_SONG.start;a.volume=1;a.play().catch(()=>{});
   setTimeout(()=>{const f=setInterval(()=>{a.volume=Math.max(0,a.volume-0.1);if(a.volume<=0.01){a.pause();clearInterval(f)}},80)},(sec||GOAL_SONG.sec)*1000)}catch(e){}}
-function goalSeq(u,g){const run=()=>{goalBusy=true;const side=u.team==='gs'?1:-1;const now=()=>performance.now()/1000;
-    // gol atan: sahadaysa kendisi, değilse takımın forveti
-    const a=actors.get(u.id)&&actors.get(u.id).zone==='field'?actors.get(u.id):fieldActors(u.team).find(x=>x.opts.num===9)||fieldActors(u.team)[0];
-    if(a){passTo(a,.6);play.phase='attack';play.team=u.team;play.next=now()+99}event(u,`🔫 Şut çekiyor…`,3);
-    setTimeout(()=>{if(a)shoot(a,now(),true);else kickTo(side*(PL/2+1.2),0,0.9);play.next=now()+99;goalCam(side,1600)},1800);
-    // 1) GOL anı: şarkı, konfeti, büyük yazı
-    setTimeout(()=>{S.goals[u.team]+=g;save();hud();SFX.goal();goalSong(u.team,9);cheer[u.team]=now()+10;excite=1;
-      const G=$('#goal');G.style.setProperty('--tc',TEAM[u.team].c2);$('#gName').textContent=u.name;$('#gText').textContent=`${TEAM[u.team].n} için ${g>1?g+' gol':'gol'} attı!`;
-      $('#gStar').innerHTML=avHTML(u);G.classList.add('show');confetti(u.team);sparks();
-      // 2) golcü köşe bayrağına koşar, takım arkadaşları üstüne gelir, kamera onu takip eder
-      if(a){a.celeb=now()+9;a.jump=0;const cz=(a.pos.z>=0?1:-1)*(PW/2-3);a.target.set(side*(PL/2-4),0,cz);
-        fieldActors(u.team).filter(x=>x!==a&&x.opts.num!==1).forEach((m,i)=>{m.celeb=now()+9;const ang=(i/3-0.5)*1.6;m.target.set(side*(PL/2-4)-side*Math.cos(ang)*6.5,0,cz-(cz>0?1:-1)*Math.sin(ang+0.9)*4.5)});
-        camOverride={follow:a,side,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+8500};
-        setTimeout(()=>{a.jump=5.5},1800)}},2600);
-    setTimeout(()=>sparks(),4600);setTimeout(()=>sparks(),6600);
-    setTimeout(()=>{$('#goal').classList.remove('show');event(u,'⭐ MAÇIN YILDIZI · gol sevinci!',3)},6400);
-    // 3) orta
-    setTimeout(()=>{goalBusy=false;camOverride=null;for(const x of fieldActors())x.celeb=0;const opp=oppOf(u.team);kickTo(0,0,0.8);
-      setTimeout(()=>{startBuild(now(),opp,fieldActors(opp).find(x=>x.opts.num===10)||fieldActors(opp)[0]);SFX.whistle(1)},900)},12200)};
-  goalChain=goalChain.then(()=>new Promise(res=>{run();setTimeout(res,12600)}))}
+/* ===== SİNEMATİK ANLAR: hepsi sıraya girer, üst üste binmez ===== */
+let goalChain=Promise.resolve();
+const FAST=new URLSearchParams(location.search).get('fast')==='1';
+const sleep=ms=>new Promise(r=>setTimeout(r,FAST?ms*0.05:ms));const nowS=()=>performance.now()/1000;
+function queueMoment(fn){goalChain=goalChain.then(()=>fn().catch(e=>console.error(e)))}
+function cineShow(u,lbl,sub,tc,board){const c=$('#cine');c.style.setProperty('--tc',tc);$('#cineAv').innerHTML=avHTML(u);$('#cineLbl').textContent=lbl;$('#cineName').textContent=u.name;$('#cineSub').textContent=sub;
+  $('#cineBoard').classList.toggle('hide',!board);$('#cineAv').classList.toggle('hide',!!board);c.classList.add('show')}
+const cineHide=()=>$('#cine').classList.remove('show');
+function flash(){const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}
+function holdAll(sec,stars=[]){for(const x of [...actors.values()]){x.hold=nowS()+sec;x.target.copy(x.pos);x.tag.visible=stars.includes(x)}}
+function releaseAll(){for(const x of actors.values()){x.hold=0;x.pose=null;x.speedMul=1;x.tag.visible=true}}
+const SHOTS=[{id:'sert',lbl:'SERT ŞUT',start:16,run:23,dur:0.5,arc:0.5,curve:0},{id:'plase',lbl:'PLASE',start:14,run:22,dur:0.85,arc:1.4,curve:2.6},
+  {id:'fuze',lbl:'UZAKTAN FÜZE',start:2,run:9,dur:1.05,arc:3.6,curve:0},{id:'kafa',lbl:'KAFA VURUŞU',start:18,run:27,dur:0.45,arc:0.3,curve:0,head:true}];
+const CELEBS=[{id:'knee',lbl:'dizlerinin üstünde kaydı!'},{id:'plane',lbl:'uçak gibi süzüldü!'},{id:'heart',lbl:'kalp yaptı!'},{id:'flip',lbl:'takla attı!'},{id:'jump',lbl:'havalara uçtu!'}];
+/* GOL: tanıtım → koşu → ağır çekim vuruş → ağlar → GOL → sevinç → tekrar */
+function goalSeq(u,g,opt={}){queueMoment(()=>goalCinema(u,g,opt))}
+async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=team==='gs'?1:-1;S.goalsBy=S.goalsBy||{};
+  const mine=actors.get(u.id);let a=mine&&mine.zone==='field'?mine:(fieldActors(team).find(x=>x.opts.num===9)||fieldActors(team)[0]);if(a)a.tag.visible=true;
+  const sh=SHOTS[Math.floor(Math.random()*SHOTS.length)],cel=CELEBS[Math.floor(Math.random()*CELEBS.length)];
+  holdAll(40,[a]);const gk=gkOf(oppOf(team));if(gk){gk.pos.set(s*(PL/2-1.5),0,0);gk.target.copy(gk.pos)}
+  const z0=(Math.random()-.5)*12;if(a){a.pos.set(s*sh.start,0,z0);a.target.copy(a.pos);a.face=s>0?-Math.PI/2:Math.PI/2}
+  // 1) tanıtım
+  cineShow(opt.by||u,opt.lbl||'🔫 GOL ANI',`${sh.lbl} geliyor…`,TEAM[team].c);SFX.whistle(1);swell(0.6,2);
+  camOverride={fn:o=>{const p=a?a.pos:V0;o.pos.set(p.x-s*11,4,p.z+(p.z>=0?-6:6));o.look.set(p.x+s*6,1.4,p.z*0.6);o.fov=34},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
+  if(a){ball.m.position.set(a.pos.x+s*0.9,0.55,a.pos.z+0.6);passTo(a,0.05)}
+  await sleep(1500);cineHide();
+  // 2) koşu
+  let kickPos=null;
+  if(a){a.speedMul=1.7;a.target.set(s*sh.run,0,z0*0.6);
+    if(sh.head){const mate=fieldActors(team).find(x=>x!==a&&x.opts.num!==1);const wz=z0>=0?-(PW/2-5):(PW/2-5);
+      if(mate){mate.pos.set(s*(PL/2-9),0,wz);mate.target.copy(mate.pos)}ball.holder=null;ball.m.position.set(s*(PL/2-9),0.55,wz);
+      camOverride.fn=o=>{o.pos.set(s*(PL/2-26),6,a.pos.z*0.3+(wz>0?-14:14));o.look.set(s*(PL/2-10),2,a.pos.z*0.5);o.fov=40};await sleep(700);
+      if(mate)mate.kickT=0.45;SFX.kick();kickTo(s*sh.run,z0*0.6,0.9,5);await sleep(650);a.jump=0.45;await waitBall();}
+    else await until(()=>Math.abs(a.pos.x-s*sh.run)<=0.6,FAST?300:2200)}
+  // 3) ağır çekim vuruş
+  const gz=(Math.random()<.5?-1:1)*(1+Math.random()*1.6);const gy=sh.id==='fuze'?1.7:sh.id==='plase'?0.9:0.7;
+  if(a){kickPos=a.pos.clone();a.kickT=0.45;if(!sh.head)await sleep(180)}
+  TS=FAST?1:0.28;trailOn=true;if(a)ball.m.position.set((kickPos||a.pos).x+s*0.9,sh.head?2.6:0.55,(kickPos||a.pos).z);
+  SFX.kick(true);kickTo(s*(PL/2+1.3),gz,sh.dur,sh.arc,sh.curve*(gz>0?-1:1),gy);if(gk){gk.speedMul=2.2;gk.target.set(gk.pos.x,0,-Math.sign(gz)*2.6);gk.jump=0.5}
+  const kz=kickPos?kickPos.z:0,zs=kz>=0?-1:1;
+  camOverride.fn=o=>{const kp=kickPos||ball.m.position;o.pos.set(kp.x-s*8,5,kz+zs*13);o.look.set((kp.x+s*(PL/2))/2,1.2,kz*0.5);o.fov=34};camOverride.cut=true;
+  await until(()=>ball.t>=0.55,5000);
+  camOverride.fn=o=>{o.pos.set(s*(PL/2+3.6),2.5,gz*0.4);o.look.set(s*(PL/2-14),1.2,gz*0.2);o.fov=50};camOverride.cut=true;
+  await until(()=>ball.t>=1,5000);
+  // 4) GOL: ağlar dalgalanır
+  TS=1;trailOn=false;rippleNet(s,gz,gy);flash();SFX.goal();goalSong(team,9);
+  S.goals[team]+=g;const gid=(opt.by||u).id;const cnt=(S.goalsBy[gid]=(S.goalsBy[gid]||0)+g);save();hud();cheer[team]=nowS()+12;excite=1;
+  const G=$('#goal');G.style.setProperty('--tc',TEAM[team].c2);$('#gName').textContent=(opt.by||u).name;
+  $('#gText').textContent=opt.sub||`${TEAM[team].n} için ${sh.lbl.toLocaleLowerCase('tr-TR')} ile gol!`;
+  G.querySelector('.tag').textContent=cnt>=3?'🎩 HAT-TRICK! 🎩':cnt===2?'🔥 2. GOLÜ! 🔥':(opt.tag||'⭐ MAÇIN YILDIZI ⭐');
+  $('#gStar').innerHTML=avHTML(opt.by||u);G.classList.add('show');confetti(team);sparks();
+  await sleep(1300);
+  // 5) sevinç: köşe bayrağına koşu + rastgele sevinç
+  if(a){const cz=(a.pos.z>=0?1:-1)*(PW/2-3);a.speedMul=1.6;a.target.set(s*(PL/2-4),0,cz);
+    fieldActors(team).filter(x=>x!==a&&x.opts.num!==1).forEach((m,i)=>{m.speedMul=1.5;const ang=(i/3-0.5)*1.6;m.target.set(s*(PL/2-4)-s*Math.cos(ang)*6,0,cz-(cz>0?1:-1)*Math.sin(ang+0.9)*4.2)});
+    camOverride={follow:a,span:7,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000}}
+  await sleep(2200);G.classList.remove('show');
+  if(a){a.pose=cel.id==='jump'?null:cel.id;a.poseUntil=nowS()+4;if(cel.id==='jump'||cel.id==='flip')a.jump=3.5;if(cel.id==='plane'){a.speedMul=1;a.target.set(s*(PL/2-10),0,a.pos.z*0.7)}
+    event(opt.by||u,`⭐ ${a.u.name} ${cel.lbl}`,3)}
+  await sleep(3600);
+  // 6) tekrar (ağır çekim, başka açıdan)
+  if(a&&kickPos){$('#replay').classList.add('show');flash();a.pose=null;a.pos.copy(kickPos);a.target.copy(kickPos);ball.m.position.set(kickPos.x+s*0.9,sh.head?2.6:0.55,kickPos.z);ball.holder=null;
+    camOverride={fn:o=>{o.pos.set(kickPos.x+s*4,10,kz-zs*13);o.look.set(s*(PL/2-3),1,gz*0.5);o.fov=42},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
+    await sleep(350);a.kickT=0.45;await sleep(150);TS=FAST?1:0.35;trailOn=true;kickTo(s*(PL/2+1.3),gz,sh.dur,sh.arc,sh.curve*(gz>0?-1:1),gy);
+    await until(()=>ball.t>=1,5000);TS=1;trailOn=false;rippleNet(s,gz,gy);await sleep(700);$('#replay').classList.remove('show');flash()}
+  // 7) santra
+  camOverride=null;releaseAll();goalBusy=false;const opp=oppOf(team);kickTo(0,0,0.6);await sleep(700);
+  startBuild(nowS(),opp,fieldActors(opp).find(x=>x.opts.num===10)||fieldActors(opp)[0]);SFX.whistle(1)}
+const V0=new THREE.Vector3();
+const until=async(cond,ms)=>{const t0=Date.now();if(FAST)ms*=0.1;while(!cond()&&Date.now()-t0<ms)await new Promise(r=>setTimeout(r,25))};
+async function waitBall(){await until(()=>ball.t>=1,4000)}
+/* HOCA: taktik dehası anı, ardından takımı anında gol atar */
+function tacticMoment(u){queueMoment(async()=>{const td=actors.get(u.id);goalBusy=true;holdAll(30);
+  holdAll(30,[td].filter(Boolean));if(td){td.pose='point';td.poseUntil=nowS()+3.5;td.jump=1.2;camOverride={follow:td,span:5.5,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000}}
+  SFX.whistle(1);swell(0.7,3);cineShow(u,'🧠 TAKTİK DEHASI',`${TEAM[u.team].n} hocası taktiği verdi!`,TEAM[u.team].c,true);
+  await sleep(3200);cineHide();camOverride=null;releaseAll();
+  const scorer=fieldActors(u.team).find(x=>x.opts.num===9)||fieldActors(u.team)[0];
+  await goalCinema(scorer?scorer.u:u,1,{team:u.team,by:u,lbl:'🧠 TAKTİK GOLÜ',tag:'🧠 TAKTİK DEHASI 🧠',sub:`${u.name} taktiğiyle ${TEAM[u.team].n} golü buldu!`})})}
+/* HAKEM: sahadaki en düşük jetonlu izleyici oyuncuya kırmızı kart; oyuncu yoksa düdük anı */
+function refMoment(u){queueMoment(async()=>{const ref=actors.get(u.id);if(!ref)return;goalBusy=true;holdAll(30);
+  const victims=fieldActors().filter(x=>!x.u.isDefault&&x.u.coins>0).sort((a,b)=>a.u.coins-b.u.coins);const v=victims[0];ref.tag.visible=true;if(v)v.tag.visible=true;
+  camOverride={follow:ref,span:7,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};SFX.whistle(1);
+  if(v){ref.speedMul=3;ref.target.set(v.pos.x-1.6,0,v.pos.z+(v.pos.z>0?-1.4:1.4));await until(()=>ref.pos.distanceTo(ref.target)<=0.4,FAST?300:3000);
+    ref.face=Math.atan2(v.pos.x-ref.pos.x,v.pos.z-ref.pos.z)+Math.PI;ref.pose='card';ref.poseUntil=nowS()+3.2;SFX.whistle(3);flash();$('#redc').classList.add('show');
+    cineShow(v.u,'🟥 KIRMIZI KART!',`Hakem ${u.name} oyundan attı!`,'#ff2a2a');
+    await sleep(2800);$('#redc').classList.remove('show');cineHide();v.u.red=true;S.users[v.u.id]&&(S.users[v.u.id].red=true);
+    event(v.u,'🟥 Kırmızı kart · 🫶 El Kalp ile sahaya dönebilir',3);releaseAll();layout();
+    camOverride={follow:v,span:7,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};await sleep(2200)}
+  else{ref.speedMul=2.5;ref.target.set(0,0,0);await sleep(1600);ref.pose='yellow';ref.poseUntil=nowS()+2.6;ref.jump=0.8;SFX.whistle(3);
+    cineShow(u,'🟨 HAKEM SAHADA',`Maç artık ${u.name} kontrolünde!`,'#ffd400');await sleep(2800);cineHide()}
+  camOverride=null;releaseAll();goalBusy=false;save();hud()})}
 function sparks(){const G=$('#goal');for(let i=0;i<14;i++){const e=document.createElement('div');e.className='spark';e.textContent=i%3?'⭐':'✨';e.style.left='490px';e.style.top='950px';
   const ang=Math.random()*Math.PI*2,r=220+Math.random()*260;e.style.setProperty('--dx',Math.cos(ang)*r+'px');e.style.setProperty('--dy',Math.sin(ang)*r+'px');G.appendChild(e);setTimeout(()=>e.remove(),1700)}}
 function confetti(t){const G=$('#goal');for(let i=0;i<90;i++){const c=document.createElement('div');c.className='cf';c.style.left=Math.random()*1080+'px';c.style.background=i%2?TEAM[t].c:TEAM[t].c2;c.style.animationDelay=(Math.random()*1.4)+'s';G.appendChild(c);setTimeout(()=>c.remove(),4600)}}
@@ -568,7 +680,7 @@ function fullTime(){ftBusy=true;goalBusy=true;SFX.whistle(3);const g=S.goals.gs,
   $('#gStar').innerHTML='🏆';$('#gName').textContent=`GS ${g} – ${f} FB`;$('#gText').textContent=w?`${TEAM[w].n} KAZANDI!`:'Berabere!';G.classList.add('show');if(w){confetti(w);goalSong(w,9);cheer[w]=performance.now()/1000+12}
   setTimeout(()=>{G.classList.remove('show');G.querySelector('h1').textContent='GOL!';
     // yeni maç: skor, jetonlar ve koltuklar sıfırlanır; taraftarlar takımlarında kalır
-    S.goals={gs:0,fb:0};S.start=Date.now();S.half2=false;S.refId=null;S.td={gs:null,fb:null};for(const u of Object.values(S.users))u.coins=0;save();layout();hud();
+    S.goals={gs:0,fb:0};S.start=Date.now();S.half2=false;S.refId=null;S.td={gs:null,fb:null};for(const u of Object.values(S.users)){u.coins=0;u.red=false}S.goalsBy={};save();layout();hud();
     ftBusy=false;goalBusy=false;SFX.whistle(1);event({name:'Yeni maç',team:null},'Başladı! Sahaya çıkmak için El Kalp gönder',3);startBuild(performance.now()/1000,'gs',fieldActors('gs').find(a=>a.opts.num===10))},15000)}
 setInterval(clock,1000);setInterval(hud,1000);
 
@@ -576,10 +688,11 @@ setInterval(clock,1000);setInterval(hud,1000);
 function fit(){const s=Math.min(innerWidth/1080,innerHeight/1920);$('#stage').style.transform=`translate(${(innerWidth-1080*s)/2}px,${(innerHeight-1920*s)/2}px) scale(${s})`}
 addEventListener('resize',fit);fit();setInterval(fit,500);
 let last=performance.now();
-function loop(){requestAnimationFrame(loop);const now=performance.now();const dt=Math.min(.25,(now-last)/1000);last=now;const t=now/1000;
+let TS=1; // ağır çekim için zaman ölçeği
+function loop(){requestAnimationFrame(loop);const now=performance.now();const rdt=Math.min(.25,(now-last)/1000);last=now;const t=now/1000;const dt=rdt*TS;
   excite=Math.max(0.15,excite-dt*0.05);animCrowd(t);
   for(const [id,a] of actors){a.update(dt,t);if(a.zone==='off'&&now>a.offAt){a.hide();actors.delete(id)}}
-  updateBall(dt,t);updateCam(dt);renderer.render(scene,camera)}
+  updateBall(dt,t);updateNet();updateCam(rdt);renderer.render(scene,camera)}
 layout();hud();clock();loop();startBuild(performance.now()/1000,'gs',fieldActors('gs').find(a=>a.opts.num===10));
 
 /* ================= KÖPRÜ ================= */
@@ -632,7 +745,7 @@ function startSim(N){
     for(const s of script)if(!s.done&&t>=s[0]){s.done=true;const v=viewers[s[2]];if(!v)continue;if(!v.in)join(v);if(s[1]==='comment'){log(`<b>${v.u.name}</b>: ${s[3]}`);send(v,{type:'comment',text:s[3]})}else gift(v,s[3])}
     $('#simN').textContent=count},400)}
 if(SIM)startSim(SIM);
-window.derbi={handle,S,actors,squad,layout,dropRoles,proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
+window.derbi={idle:async(max=120000)=>{const t0=Date.now();await sleep(0);while((goalBusy||await Promise.race([goalChain.then(()=>false),new Promise(r=>setTimeout(()=>r(true),50))]))&&Date.now()-t0<max)await new Promise(r=>setTimeout(r,100));return !goalBusy},handle,S,actors,squad,layout,dropRoles,busy:()=>goalBusy,cam:()=>({pos:camera.position.toArray().map(v=>+v.toFixed(1)),look:look.toArray().map(v=>+v.toFixed(1)),fov:+camera.fov.toFixed(1),TS}),ballPos:()=>ball.m.position.toArray().map(v=>+v.toFixed(1)),proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
 </script>
 </body>
 </html>
