@@ -296,7 +296,7 @@ const GEO={thigh:new THREE.CapsuleGeometry(0.15,0.3,4,10),shin:new THREE.Capsule
   sleeve:new THREE.CapsuleGeometry(0.125,0.16,4,10),fore:new THREE.CapsuleGeometry(0.095,0.3,4,10),hand:new THREE.SphereGeometry(0.1,10,8),
   shoulder:new THREE.SphereGeometry(0.2,12,10),neck:new THREE.CylinderGeometry(0.11,0.12,0.18,10),head:new THREE.SphereGeometry(0.26,16,12),
   hair:new THREE.SphereGeometry(0.275,16,10,0,Math.PI*2,0,Math.PI*0.55),shorts:new THREE.CylinderGeometry(0.4,0.43,0.42,16),
-  torso:new THREE.CylinderGeometry(0.44,0.35,1.0,20,1,false,Math.PI),tail:new THREE.CapsuleGeometry(0.09,0.4,4,8),brim:new THREE.CylinderGeometry(0.5,0.5,0.04,24),crown:new THREE.CylinderGeometry(0.25,0.29,0.3,20),band:new THREE.CylinderGeometry(0.295,0.295,0.07,20)};
+  torso:new THREE.CylinderGeometry(0.44,0.35,1.0,20,1,false,Math.PI),tail:new THREE.CapsuleGeometry(0.09,0.4,4,8),brim:new THREE.CylinderGeometry(0.5,0.5,0.04,24),longHair:new THREE.CapsuleGeometry(0.24,0.32,4,12),crown:new THREE.CylinderGeometry(0.25,0.29,0.3,20),band:new THREE.CylinderGeometry(0.295,0.295,0.07,20)};
 function makeFigure(kitKey,num,opt={}){const k={...KIT[kitKey]};if(opt.tie)k.tie='#ffe08a';const g=new THREE.Group();const fem=!!opt.fem;
   const skin=mat(SKINS[Math.floor(Math.random()*SKINS.length)]),jersey=mat(k.a),sock=mat(k.socks),boot=mat('#111111',{roughness:0.4});
   const torso=part(GEO.torso,new THREE.MeshStandardMaterial({map:jerseyTex(k,num),roughness:0.7}),0,1.55,0);g.add(torso);
@@ -307,7 +307,7 @@ function makeFigure(kitKey,num,opt={}){const k={...KIT[kitKey]};if(opt.tie)k.tie
   const legL=leg(-1),legR=leg(1),armL=arm(-1),armR=arm(1);g.add(legL,legR,armL,armR);
   g.add(part(GEO.head,skin,0,2.45,0));const hm=mat(HAIRS[Math.floor(Math.random()*HAIRS.length)]);const hair=part(GEO.hair,hm,0,2.49,0.02);hair.rotation.x=0.25;g.add(hair);
   if(k.hat){const hat=new THREE.Group();const brim=part(GEO.brim,mat(k.hat),0,0,0),crown=part(GEO.crown,mat(k.hat),0,0.16,0),band=part(GEO.band,mat(k.band),0,0.07,0);hat.add(brim,crown,band);hat.position.set(0,2.66,0.02);hat.rotation.x=-0.08;g.add(hat)}
-  if(fem){const tail=part(GEO.tail,hm,0,2.3,0.3);tail.rotation.x=0.5;g.add(tail);const bun=part(GEO.hand,hm,0,2.55,0.24);bun.scale.setScalar(1.3);g.add(bun)} // at kuyruğu
+  if(fem){const back=part(GEO.longHair,hm,0,2.28,0.17);g.add(back);const tail=part(GEO.tail,hm,0,2.05,0.36);tail.rotation.x=0.35;g.add(tail);const bandM=mat(k.b||'#ffffff');const hb=part(GEO.band,bandM,0,2.6,0.02);hb.scale.set(0.95,0.6,0.95);g.add(hb)} // uzun saç + at kuyruğu + saç bandı
   g.userData={legL,legR,armL,armR};return g}
 function drawTag(c,u,o){const x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);
   const T=o.ref?{c:'#f5d90a'}:o.td?{c:'#e5e7eb'}:(TEAM[u.team]||{c:'#888'});
@@ -324,7 +324,7 @@ function drawTag(c,u,o){const x=c.getContext('2d'),W=c.width,H=c.height;x.clearR
   // alttaki ok
   x.fillStyle=T.c;x.beginPath();x.moveTo(W/2-18,y0+h+2);x.lineTo(W/2+18,y0+h+2);x.lineTo(W/2,H-4);x.fill()}
 const TAG_H=0.019; // ekran yüksekliğine oranla etiket boyu (uzaklıktan bağımsız, hep okunur)
-const femOf=u=>{if(u.isDefault)return /^def_(gs|fb)_(2|4)$/.test(u.id);let h=0;for(const ch of String(u.id))h=(h*31+ch.charCodeAt(0))|0;return (Math.abs(h)%10)<4}; // ~%40 kadın oyuncu
+const femOf=u=>{if(u.isDefault)return /^def_(gs|fb)_(1|3)$/.test(u.id);let h=0;for(const ch of String(u.id))h=(h*31+ch.charCodeAt(0))|0;return (Math.abs(h)%10)<5}; // ~%50 kadın oyuncu
 class Actor{
   constructor(u){this.u=u;this.c=cnv(640,150);this.t=tex(this.c);this.tag=new THREE.Sprite(new THREE.SpriteMaterial({map:this.t,transparent:true,depthWrite:false,depthTest:false,sizeAttenuation:false}));this.tag.renderOrder=10;
     this.tag.scale.set(TAG_H*640/150,TAG_H,1);this.tag.center.set(0.5,0);
@@ -363,7 +363,7 @@ class Actor{
 const SLOTS=[[PL/2-3,0],[23,-10],[23,10],[13,0],[4,-6]];const NUMS=[1,4,5,10,9];
 const slotsFor=t=>SLOTS.map(([x,z])=>[x*TEAM[t].side,z]);
 const VIEWER_ORDER=[4,3,1,2,0]; // önce forvet, orta saha, defans, kaleci
-const DEFAULTS={gs:['Uğurcan','Sánchez','Jakobs','Torreira','Osimhen'],fb:['Ederson','Škriniar','Brown','Fred','En-Nesyri']};
+const DEFAULTS={gs:['Uğurcan','Ayşe','Jakobs','Elif','Osimhen'],fb:['Ederson','Zeynep','Brown','Melis','En-Nesyri']};
 const DEF={};for(const t of ['gs','fb'])DEF[t]=DEFAULTS[t].map((name,i)=>({id:`def_${t}_${i}`,name,team:t,coins:0,avatar:null,isDefault:true}));
 function squad(t){return members(t).filter(u=>u.coins>=CONFIG.player&&u.id!==S.refId&&u.id!==S.td[t]).sort((a,b)=>b.coins-a.coins||a.joined-b.joined).slice(0,CONFIG.squad)}
 function layout(){
@@ -419,7 +419,7 @@ function updateBall(dt,t){
 const CAM_MAIN={pos:new THREE.Vector3(-186,97,0),look:new THREE.Vector3(6,0,0)};
 const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.look.clone();let camOverride=null;
 function updateCam(dt){let tp=CAM_MAIN.pos,tl=CAM_MAIN.look;
-  if(camOverride&&performance.now()<camOverride.until){if(camOverride.follow){const p=camOverride.follow.pos,sd=camOverride.side||1;camOverride.pos.set(p.x+sd*15,7,p.z*0.55);camOverride.look.set(p.x,2.6,p.z)}tp=camOverride.pos;tl=camOverride.look}else camOverride=null;
+  if(camOverride&&performance.now()<camOverride.until){if(camOverride.follow){const p=camOverride.follow.pos,sd=camOverride.side||1;const zs=p.z>=0?1:-1;camOverride.pos.set(sd*(PL/2+1.5),12,p.z-zs*24);camOverride.look.set(p.x-sd*2,3.2,p.z)}tp=camOverride.pos;tl=camOverride.look}else camOverride=null;
   camPos.lerp(tp,Math.min(1,dt*2.2));camLook.lerp(tl,Math.min(1,dt*2.5));camera.position.copy(camPos);look.copy(camLook);
   const t=performance.now()/1000;camera.position.z+=Math.sin(t*0.5)*0.6;camera.lookAt(look)}
 function goalCam(side,ms){camOverride={pos:new THREE.Vector3(side*(PL/2-70),45,40),look:new THREE.Vector3(side*(PL/2-4),1.5,0),until:performance.now()+ms}}
@@ -454,10 +454,11 @@ function evNext(){const el=$('#event');let it=evQ.shift();
 
 /* ================= KURALLAR ================= */
 let goalBusy=false;const glowUntil={};
+function dropRoles(u){if(S.refId===u.id)S.refId=null;for(const k of ['gs','fb'])if(S.td[k]===u.id)S.td[k]=null}
 function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date.now();const now=performance.now()/1000;
   switch(ev.type){
     case 'join':{const fresh=!u.team;if(!u.team)u.team=autoTeam();u.last=Date.now();if(fresh)fanQ.push({id:u.id})}break;
-    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){u.team=t;u.last=Date.now();fanQ.push({id:u.id});0}
+    case 'comment':{const t=parseTeam(ev.text);if(t&&u.team!==t){for(const k of ['gs','fb'])if(S.td[k]===u.id&&k!==t)S.td[k]=null;u.team=t;u.last=Date.now();fanQ.push({id:u.id});0}
       const r=parseRole(ev.text);if(r){if(!u.team)u.team=autoTeam();u.want=r;
         0}
       break}
@@ -466,8 +467,9 @@ function handle(ev){if(!ev||!ev.user)return;const u=getUser(ev.user);u.seen=Date
       hotTile(c>=CONFIG.goal?5:c>=CONFIG.role?4:c>=CONFIG.ref?3:c>=CONFIG.player?2:c>=CONFIG.chant?1:0);
       if(c>=CONFIG.goal){const g=Math.floor(c/CONFIG.goal);goalSeq(u,g)}
       else if(c>=CONFIG.ref){const r=c>=CONFIG.role?'td':'ref';
-        if(r==='ref'){const cur=S.refId&&S.users[S.refId];S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2)}
-        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}}
+        if(r==='ref'){const cur=S.refId&&S.users[S.refId];dropRoles(u);S.refId=u.id;SFX.whistle(2);event(u,cur&&cur.id!==u.id?`🟨 Düdüğü ${cur.name} elinden aldı, yeni hakem!`:'🟨 Maçın hakemi oldu!',2)}
+        else{const cur=S.td[u.team]&&S.users[S.td[u.team]];dropRoles(u);S.td[u.team]=u.id;event(u,cur&&cur.id!==u.id?`🧢 ${cur.name} gitti, yeni ${TEAM[u.team].n} hocası!`:`🧢 ${TEAM[u.team].n} hocası oldu!`,2)}}
+      else if(c>=CONFIG.player){dropRoles(u)}
       else if(c>=CONFIG.chant&&c<CONFIG.player){chant(u)}
       else if(c<CONFIG.chant){event(u,`🌹 ${ev.gift||'Gül'} attı · ${u.team==='gs'?"Galatasaray'a":"Fenerbahçe'ye"} destek!`,1,'glow');fanPush(u,true)}
       const entered=layout();
@@ -621,7 +623,7 @@ function startSim(N){
     for(const s of script)if(!s.done&&t>=s[0]){s.done=true;const v=viewers[s[2]];if(!v)continue;if(!v.in)join(v);if(s[1]==='comment'){log(`<b>${v.u.name}</b>: ${s[3]}`);send(v,{type:'comment',text:s[3]})}else gift(v,s[3])}
     $('#simN').textContent=count},400)}
 if(SIM)startSim(SIM);
-window.derbi={handle,S,proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
+window.derbi={handle,S,actors,squad,layout,dropRoles,proj:(x,y,z)=>{const v=new THREE.Vector3(x,y,z).project(camera);return [Math.round((v.x+1)/2*1080),Math.round((1-v.y)/2*1920)]},setCam:(px,py,pz,lx,ly,lz,off,fov)=>{if(fov){camera.fov=fov;camera.updateProjectionMatrix()}CAM_MAIN.pos.set(px,py,pz);CAM_MAIN.look.set(lx,ly,lz);camPos.copy(CAM_MAIN.pos);camLook.copy(CAM_MAIN.look);if(off!=null)camera.setViewOffset(1080,1920,0,off,1080,1920);camera.position.copy(camPos);camera.lookAt(camLook);camera.updateMatrixWorld()}};
 </script>
 </body>
 </html>
