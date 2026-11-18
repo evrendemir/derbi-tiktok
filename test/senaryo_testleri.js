@@ -127,11 +127,5 @@
   await wait(20); check('Oyuncu yokken hakem anı başlar', D.busy());
   check('Oyuncu yokken hakem anı biter', await idle());
   check('Oyuncu yokken kimse kırmızı görmez', Object.values(S.users).filter(u => u.red).length === redBefore);
-  // 17) 15 oyun dakikası gol olmazsa sahadan rastgele biri gol atar
-  await idle(); const tot = () => S.goals.gs + S.goals.fb; const g0 = tot();
-  S.lastGoalM = 0; S.start = Date.now() - 16 * 60 * 1000 * (10 / 90); // 16. dakika
-  await wait(1300); check('Golsüz 15 dakikada otomatik gol başlar', D.busy());
-  await idle(); check('Otomatik gol skora eklenir', tot() === g0 + 1, `${g0} → ${tot()}`);
-  await wait(1300); check('Hemen ikinci otomatik gol gelmez', !D.busy() && tot() === g0 + 1);
   return out;
 })();
