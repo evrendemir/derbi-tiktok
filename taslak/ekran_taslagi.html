@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><title>Derbi CANLI · ekran taslağı</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;width:1080px;height:1920px;background:#0b0f17;font-family:Arial,Helvetica,sans-serif;color:#fff;overflow:hidden;position:relative}
+.top{position:absolute;left:30px;right:30px;top:30px;display:flex;height:110px;border-radius:16px;overflow:hidden;font-weight:700;box-shadow:0 10px 30px #0008}
+.top .live{background:#e0102a;display:flex;align-items:center;padding:0 26px;font-size:32px;gap:12px}
+.top .live i{width:16px;height:16px;border-radius:50%;background:#fff}
+.top .t{flex:1;display:flex;align-items:center;justify-content:center;font-size:54px}
+.gs{background:linear-gradient(135deg,#f5b400 0 50%,#c8102e 50%)}
+.fb{background:linear-gradient(135deg,#ffe600 0 50%,#002d72 50%)}
+.top .sc{background:#111827;display:flex;align-items:center;padding:0 34px;font-size:72px}
+.top .clk{background:#1f2937;display:flex;align-items:center;padding:0 24px;font-size:42px;color:#ffe08a}
+.howto{position:absolute;left:30px;right:30px;top:160px;height:96px;border-radius:16px;background:#ffffff;color:#111;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;gap:14px}
+.howto b{background:#111;color:#ffe08a;padding:4px 16px;border-radius:10px}
+.pitch{position:absolute;left:30px;right:30px;top:280px;height:740px;border-radius:20px;overflow:hidden;background:repeating-linear-gradient(90deg,#2e8b3d 0 90px,#2a7f37 90px 180px);box-shadow:inset 0 0 0 6px #ffffffcc}
+.pitch .mid{position:absolute;left:50%;top:0;bottom:0;width:6px;background:#ffffffcc;transform:translateX(-50%)}
+.pitch .circ{position:absolute;left:50%;top:50%;width:220px;height:220px;border:6px solid #ffffffcc;border-radius:50%;transform:translate(-50%,-50%)}
+.pitch .box{position:absolute;top:50%;width:150px;height:340px;border:6px solid #ffffffcc;transform:translateY(-50%)}
+.pitch .box.l{left:-6px}.pitch .box.r{right:-6px}
+.pitch .goal{position:absolute;top:50%;width:26px;height:150px;background:#fff;transform:translateY(-50%)}
+.pitch .goal.l{left:0}.pitch .goal.r{right:0}
+.p{position:absolute;width:150px;text-align:center;transform:translate(-50%,-50%)}
+.p .av{width:118px;height:118px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:44px;font-weight:700;border:7px solid;background:#1f2937;position:relative}
+.p.g .av{border-color:#f5b400;box-shadow:0 0 0 5px #c8102e}
+.p.f .av{border-color:#ffe600;box-shadow:0 0 0 5px #002d72}
+.p .nm{margin-top:12px;background:#000c;border-radius:10px;padding:6px 8px;font-size:28px;font-weight:700;white-space:nowrap}
+.p .num{position:absolute;right:-8px;top:-8px;width:44px;height:44px;border-radius:50%;background:#fff;color:#000;font-size:24px;display:grid;place-items:center;border:3px solid #000}
+.p .cap{position:absolute;left:-12px;top:-6px;background:#ffe08a;color:#000;font-size:22px;padding:2px 8px;border-radius:8px}
+.p.ref .av{border-color:#fff;box-shadow:0 0 0 5px #111;background:#111}
+.ball{position:absolute;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,#bbb);box-shadow:0 6px 10px #0007}
+.bench{position:absolute;top:1032px;left:30px;right:30px;display:flex;gap:16px}
+.bench div{flex:1;background:#111827;border-radius:14px;padding:12px 16px;font-size:26px;display:flex;align-items:center;gap:12px}
+.bench b{color:#ffe08a}
+.event{position:absolute;left:170px;right:170px;top:600px;background:#000e;border:4px solid #ffe08a;border-radius:22px;padding:22px 26px;display:flex;align-items:center;gap:22px;box-shadow:0 20px 50px #000a}
+.event .av{width:110px;height:110px;border-radius:50%;background:#c8102e;border:6px solid #f5b400;display:grid;place-items:center;font-size:44px;font-weight:700;flex:none}
+.event h2{margin:0;font-size:46px}
+.event p{margin:6px 0 0;font-size:32px;color:#ffe08a}
+.fans{position:absolute;top:1110px;left:30px;right:30px;height:300px;display:flex;gap:16px}
+.col{flex:1;border-radius:16px;overflow:hidden;background:#111827}
+.col h3{margin:0;padding:12px 18px;font-size:30px;display:flex;justify-content:space-between}
+.col.gs h3{background:linear-gradient(90deg,#c8102e,#f5b400)}
+.col.fb h3{background:linear-gradient(90deg,#002d72,#ffe600);color:#fff}
+.row{display:flex;align-items:center;gap:14px;padding:6px 18px;font-size:30px;font-weight:700;border-bottom:1px solid #ffffff12}
+.row i{width:48px;height:48px;border-radius:50%;background:#374151;display:grid;place-items:center;font-style:normal;font-size:20px;flex:none}
+.row span{margin-left:auto;color:#ffe08a;font-size:26px}
+.more{padding:8px 18px;color:#9ca3af;font-size:26px}
+.gifts{position:absolute;left:30px;right:30px;top:1428px;bottom:30px;border-radius:18px;background:#111827;padding:16px}
+.gifts h3{margin:0 0 10px;font-size:30px;color:#ffe08a;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cell{background:#1f2937;border-radius:14px;padding:12px;text-align:center}
+.cell .e{font-size:44px;line-height:1}
+.cell .n{font-size:26px;font-weight:700;margin-top:4px}
+.cell .c{font-size:22px;color:#ffe08a}
+.cell .d{font-size:25px;margin-top:6px;font-weight:700}
+.tag{position:absolute;right:30px;top:1112px}
+</style></head><body>
+<div class="top"><div class="live"><i></i>CANLI</div><div class="t gs">GS</div><div class="sc">1 – 0</div><div class="t fb">FB</div><div class="clk">23:41</div></div>
+<div class="howto">💬 Sohbete <b>GS</b> ya da <b>FB</b> yaz → takımına katıl</div>
+
+<div class="pitch"><div class="mid"></div><div class="circ"></div><div class="box l"></div><div class="box r"></div><div class="goal l"></div><div class="goal r"></div>
+  <!-- GS (soldan sağa atar) -->
+  <div class="p g" style="left:9%;top:50%"><div class="av">MU<div class="num">1</div></div><div class="nm">Murat Usta</div></div>
+  <div class="p g" style="left:25%;top:24%"><div class="av">AK<div class="num">4</div></div><div class="nm">Ahmet K.</div></div>
+  <div class="p g" style="left:25%;top:76%"><div class="av">EÇ<div class="num">5</div></div><div class="nm">Elif Çelik</div></div>
+  <div class="p g" style="left:39%;top:50%"><div class="av">C1<div class="num">10</div><div class="cap">C</div></div><div class="nm">cimbom_1905</div></div>
+  <div class="p g" style="left:63%;top:36%"><div class="av">BA<div class="num">9</div></div><div class="nm">Burak Aslan</div></div>
+  <!-- FB -->
+  <div class="p f" style="left:91%;top:50%"><div class="av">SK<div class="num">1</div></div><div class="nm">Seda Koç</div></div>
+  <div class="p f" style="left:76%;top:72%"><div class="av">KF<div class="num">4</div><div class="cap">C</div></div><div class="nm">Kerem.FB</div></div>
+  <div class="p f" style="left:75%;top:24%"><div class="av">OF<div class="num">5</div></div><div class="nm">Onur FB</div></div>
+  <div class="p f" style="left:60%;top:74%"><div class="av">FA<div class="num">10</div></div><div class="nm">fener_aşkı</div></div>
+  <div class="p f" style="left:42%;top:82%"><div class="av">S1<div class="num">9</div></div><div class="nm">sinan_fb</div></div>
+  <div class="p ref" style="left:50%;top:13%"><div class="av">🟨</div><div class="nm">Hakem: Gizem</div></div>
+  <div class="ball" style="left:66%;top:38%"></div>
+</div>
+
+<div class="event"><div class="av">AY</div><div><h2>ayse_dmr</h2><p>📣 GS marşını çaldırdı! (Donut · 30 jeton)</p></div></div>
+
+<div class="bench"><div>🧢 GS Hocası: <b>Tamer Abi</b></div><div>🧢 FB Hocası: <b>Hakan Ç.</b></div></div>
+
+<div class="fans">
+  <div class="col gs"><h3><span>GS TARAFTARLARI</span><span>23 kişi</span></h3>
+    <div class="row"><i>AY</i>ayse_dmr<span>👑 340</span></div>
+    <div class="row"><i>GT</i>gs_tarafı<span>45</span></div>
+    <div class="row"><i>UA</i>UltrAslan<span>12</span></div>
+    <div class="row"><i>MK</i>merve.k<span>yeni</span></div>
+    <div class="more">+19 kişi daha</div></div>
+  <div class="col fb"><h3><span>FB TARAFTARLARI</span><span>19 kişi</span></h3>
+    <div class="row"><i>KH</i>kanarya_hakan<span>👑 410</span></div>
+    <div class="row"><i>S7</i>sarıkanarya07<span>60</span></div>
+    <div class="row"><i>D💙</i>Deniz💙<span>8</span></div>
+    <div class="row"><i>O1</i>oguz_1907<span>yeni</span></div>
+    <div class="more">+15 kişi daha</div></div>
+</div>
+
+<div class="gifts"><h3>🎁 HEDİYE GÖNDER, TAKIMINA KATKI YAP</h3>
+  <div class="grid">
+    <div class="cell"><div class="e">🌹</div><div class="n">Gül</div><div class="c">1 jeton</div><div class="d">Tribünde adın parlar</div></div>
+    <div class="cell"><div class="e">🍩</div><div class="n">Donut</div><div class="c">30 jeton</div><div class="d">📣 Takım marşı 5 sn</div></div>
+    <div class="cell"><div class="e">🫶</div><div class="n">El Kalp</div><div class="c">100 jeton</div><div class="d">⚽ Sahaya çık</div></div>
+    <div class="cell"><div class="e">🐶</div><div class="n">Corgi</div><div class="c">299 jeton</div><div class="d">🟨 Hakem ya da 🧢 hoca ol</div></div>
+    <div class="cell"><div class="e">🔫</div><div class="n">Para Tabancası</div><div class="c">500 jeton</div><div class="d">🥅 GOL AT!</div></div>
+    <div class="cell"><div class="e">👑</div><div class="n">En çok gönderen</div><div class="c">her takımda</div><div class="d">Kaptan (C) olur</div></div>
+  </div></div>
+</body></html>
