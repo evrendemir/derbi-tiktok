@@ -78,6 +78,8 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .event h2{margin:0;font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
 .event p{margin:2px 0 0;font-size:26px;font-style:italic;color:#ffe08a;font-weight:700}
 /* gol */
+#stage .top,#stage .howto,#stage .roles,#stage .side,#stage .fanbar,#stage .event,#stage .chant{transition:opacity .45s}
+#stage.cinema .top,#stage.cinema .howto,#stage.cinema .roles,#stage.cinema .side,#stage.cinema .fanbar,#stage.cinema .event,#stage.cinema .chant{opacity:0!important}
 .cine{position:absolute;left:60px;right:60px;top:640px;display:flex;align-items:center;gap:26px;padding:22px 30px;border-radius:30px;background:linear-gradient(120deg,#000000ee,#111827ee);border:6px solid var(--tc,#ffe08a);box-shadow:0 0 60px var(--tc,#ffe08a),0 20px 50px #000;z-index:45;opacity:0;transform:scale(.6) rotate(-3deg);transition:opacity .25s,transform .45s cubic-bezier(.2,1.6,.4,1);pointer-events:none}
 .cine.show{opacity:1;transform:none}
 .cine .cav{position:relative;width:170px;height:170px;border-radius:50%;flex:none;overflow:hidden;background:#374151;display:grid;place-items:center;font-size:64px;font-weight:900;border:8px solid var(--tc,#ffe08a)}
@@ -376,7 +378,7 @@ class Actor{
     if(this.jump>0)this.jump-=dt;
     if(!this.fig)return;
     // yüz yönü: hareket ediyorsa gittiği yöne, duruyorsa topa
-    const lookV=moving?d:ball.m.position.clone().sub(this.pos);const want=Math.atan2(lookV.x,lookV.z)+Math.PI;let da=want-this.face;da=Math.atan2(Math.sin(da),Math.cos(da));this.face+=da*Math.min(1,dt*8);
+    const lookV=this.lookAt?this.lookAt.clone().sub(this.pos):moving?d:ball.m.position.clone().sub(this.pos);const want=Math.atan2(lookV.x,lookV.z)+Math.PI;let da=want-this.face;da=Math.atan2(Math.sin(da),Math.cos(da));this.face+=da*Math.min(1,dt*8);
     const jy=this.jump>0?Math.abs(Math.sin(this.jump*9))*1.6:0;
     this.fig.position.set(this.pos.x,jy,this.pos.z);this.fig.rotation.y=this.face;
     const U=this.fig.userData,sw=moving?Math.sin(t*11+this.pos.x)*0.8:Math.sin(t*2+this.pos.z)*0.05;
@@ -389,6 +391,8 @@ class Actor{
     if(P==='heart'){U.armL.rotation.z=-2.75;U.armR.rotation.z=2.75;U.armL.rotation.x=-0.45;U.armR.rotation.x=-0.45}
     if(P==='knee'){this.fig.position.y=-0.42*this.s;U.legL.rotation.x=1.5;U.legR.rotation.x=1.5;U.armL.rotation.z=-2.7;U.armR.rotation.z=2.7;this.fig.rotation.x=-0.25}
     if(P==='flip'&&this.jump>0){this.fig.rotation.x=(1-this.jump%1)*Math.PI*2}
+    if(P==='lift'){U.armL.rotation.z=-2.95;U.armR.rotation.z=2.95;U.armL.rotation.x=-0.3;U.armR.rotation.x=-0.3;this.fig.position.y=Math.abs(Math.sin(t*4+this.pos.x))*0.25}
+    if(P==='toss'){const h=Math.abs(Math.sin(t*2.6));this.fig.position.y=h*4.2;U.armL.rotation.z=-2.3;U.armR.rotation.z=2.3;U.legL.rotation.x=-0.4*h;U.legR.rotation.x=0.4*h;this.fig.rotation.x=-0.5*h;this.tag.position.y=this.fig.position.y+2.9*this.s+0.4}
     if(P==='point'){U.armR.rotation.z=1.4;U.armR.rotation.x=-1.3;U.armL.rotation.z=-0.5}
     if(P==='card'||P==='yellow'){U.armR.rotation.z=2.95;U.armR.rotation.x=0;
       if(!this.cardM){this.cardM=new THREE.Mesh(new THREE.PlaneGeometry(0.34,0.48),new THREE.MeshBasicMaterial({color:0xff1a1a,side:THREE.DoubleSide}));this.cardM.position.set(0,-0.95,0);U.armR.add(this.cardM)}
@@ -497,7 +501,7 @@ audioInit();addEventListener('pointerdown',audioInit);addEventListener('keydown'
 const EV_MS=3500;let evQ=[],evBusy=false,joinSkip=0;
 const avHTML=u=>`${ini(u.name||'?')}${u.avatar?`<img src="${u.avatar}" alt="" onerror="this.remove()">`:''}`;
 function event(u,text,prio=1,cls=''){if(prio===0&&(evBusy||evQ.length)){joinSkip++;return}if(evQ.length>=5)evQ=evQ.filter(e=>e.prio>0);evQ.push({u:{...u},text,prio,cls});if(!evBusy)evNext()}
-function evNext(){const el=$('#event');let it=evQ.shift();
+function evNext(){if($('#stage').classList.contains('cinema')){evBusy=true;setTimeout(()=>{evBusy=false;evNext()},400);return}const el=$('#event');let it=evQ.shift();
   joinSkip=0;
   if(!it){evBusy=false;el.classList.remove('show');return}
   joinSkip=0;evBusy=true;const T=TEAM[it.u.team];el.style.setProperty('--tc',T?T.c:'#ffe08a');$('#evAv').innerHTML=avHTML(it.u);$('#evName').textContent=it.u.name;$('#evText').textContent=it.text;el.classList.toggle('glow',it.cls!=='plain');
@@ -540,13 +544,14 @@ function goalSong(team,sec){if(AU.muted)return;try{if(songNow)songNow.pause();co
 let goalChain=Promise.resolve();
 const FAST=new URLSearchParams(location.search).get('fast')==='1';
 const sleep=ms=>new Promise(r=>setTimeout(r,FAST?ms*0.05:ms));const nowS=()=>performance.now()/1000;
-function queueMoment(fn){goalChain=goalChain.then(()=>fn().catch(e=>console.error(e)))}
+const cinemaOn=on=>$('#stage').classList.toggle('cinema',on);
+function queueMoment(fn){goalChain=goalChain.then(async()=>{cinemaOn(true);try{await fn()}catch(e){console.error(e)}finally{cinemaOn(false)}})}
 function cineShow(u,lbl,sub,tc,board){const c=$('#cine');c.style.setProperty('--tc',tc);$('#cineAv').innerHTML=avHTML(u);$('#cineLbl').textContent=lbl;$('#cineName').textContent=u.name;$('#cineSub').textContent=sub;
   $('#cineBoard').classList.toggle('hide',!board);$('#cineAv').classList.toggle('hide',!!board);c.classList.add('show')}
 const cineHide=()=>$('#cine').classList.remove('show');
 function flash(){const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}
 function holdAll(sec,stars=[]){for(const x of [...actors.values()]){x.hold=nowS()+sec;x.target.copy(x.pos);x.tag.visible=stars.includes(x)}}
-function releaseAll(){for(const x of actors.values()){x.hold=0;x.pose=null;x.speedMul=1;x.tag.visible=true}}
+function releaseAll(){for(const x of actors.values()){x.hold=0;x.pose=null;x.speedMul=1;x.lookAt=null;x.tag.visible=true}}
 const SHOTS=[{id:'sert',lbl:'SERT ŞUT',start:16,run:23,dur:0.5,arc:0.5,curve:0},{id:'plase',lbl:'PLASE',start:14,run:22,dur:0.85,arc:1.4,curve:2.6},
   {id:'fuze',lbl:'UZAKTAN FÜZE',start:2,run:9,dur:1.05,arc:3.6,curve:0},{id:'kafa',lbl:'KAFA VURUŞU',start:18,run:27,dur:0.45,arc:0.3,curve:0,head:true}];
 const CELEBS=[{id:'knee',lbl:'dizlerinin üstünde kaydı!'},{id:'plane',lbl:'uçak gibi süzüldü!'},{id:'heart',lbl:'kalp yaptı!'},{id:'flip',lbl:'takla attı!'},{id:'jump',lbl:'havalara uçtu!'}];
@@ -588,16 +593,21 @@ async function goalCinema(u,g,opt){goalBusy=true;const team=opt.team||u.team,s=t
   G.querySelector('.tag').textContent=cnt>=3?'🎩 HAT-TRICK! 🎩':cnt===2?'🔥 2. GOLÜ! 🔥':(opt.tag||'⭐ MAÇIN YILDIZI ⭐');
   $('#gStar').innerHTML=avHTML(opt.by||u);G.classList.add('show');confetti(team);sparks();
   await sleep(1300);
+  // 5a) taktik golü: oyuncular hocanın etrafına toplanıp onu havaya atar
+  if(opt.tdActor){const td=opt.tdActor;await sleep(900);G.classList.remove('show');flash();const mates=fieldActors(team).filter(x=>x.opts.num!==1);
+    td.hold=nowS()+30;td.tag.visible=true;mates.forEach((m,i)=>{const ang=i/mates.length*Math.PI*2;m.pos.set(td.pos.x+Math.cos(ang)*1.7,0,td.pos.z+Math.sin(ang)*1.7);m.target.copy(m.pos);m.pose='lift';m.poseUntil=nowS()+7;m.lookAt=td.pos});
+    td.pose='toss';td.poseUntil=nowS()+6.5;camOverride={follow:td,span:7.5,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000};
+    event(opt.by||u,'🧠 Oyuncular hocayı havaya atıyor!',3);await sleep(5600);a=null}
   // 5) sevinç: köşe bayrağına koşu + rastgele sevinç
-  if(a){const cz=(a.pos.z>=0?1:-1)*(PW/2-3);a.speedMul=1.6;a.target.set(s*(PL/2-4),0,cz);
+  else if(a){const cz=(a.pos.z>=0?1:-1)*(PW/2-3);a.speedMul=1.6;a.target.set(s*(PL/2-4),0,cz);
     fieldActors(team).filter(x=>x!==a&&x.opts.num!==1).forEach((m,i)=>{m.speedMul=1.5;const ang=(i/3-0.5)*1.6;m.target.set(s*(PL/2-4)-s*Math.cos(ang)*6,0,cz-(cz>0?1:-1)*Math.sin(ang+0.9)*4.2)});
     camOverride={follow:a,span:7,pos:new THREE.Vector3(),look:new THREE.Vector3(),until:performance.now()+60000}}
-  await sleep(2200);G.classList.remove('show');
+  if(!opt.tdActor){await sleep(2200);G.classList.remove('show')}
   if(a){a.pose=cel.id==='jump'?null:cel.id;a.poseUntil=nowS()+4;if(cel.id==='jump'||cel.id==='flip')a.jump=3.5;if(cel.id==='plane'){a.speedMul=1;a.target.set(s*(PL/2-10),0,a.pos.z*0.7)}
     event(opt.by||u,`⭐ ${a.u.name} ${cel.lbl}`,3)}
-  await sleep(3600);
+  if(!opt.tdActor)await sleep(3600);
   // 6) tekrar (ağır çekim, başka açıdan)
-  if(a&&kickPos){$('#replay').classList.add('show');flash();a.pose=null;a.pos.copy(kickPos);a.target.copy(kickPos);ball.m.position.set(kickPos.x+s*0.9,sh.head?2.6:0.55,kickPos.z);ball.holder=null;
+  const ra=a||opt.scorerActor;if(ra&&kickPos){const a=ra;$('#replay').classList.add('show');flash();a.pose=null;a.pos.copy(kickPos);a.target.copy(kickPos);ball.m.position.set(kickPos.x+s*0.9,sh.head?2.6:0.55,kickPos.z);ball.holder=null;
     camOverride={fn:o=>{o.pos.set(kickPos.x+s*4,10,kz-zs*13);o.look.set(s*(PL/2-3),1,gz*0.5);o.fov=42},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
     await sleep(350);a.kickT=0.45;await sleep(150);TS=FAST?1:0.35;trailOn=true;kickTo(s*(PL/2+1.3),gz,sh.dur,sh.arc,sh.curve*(gz>0?-1:1),gy);
     await until(()=>ball.t>=1,5000);TS=1;trailOn=false;rippleNet(s,gz,gy);await sleep(700);$('#replay').classList.remove('show');flash()}
@@ -613,7 +623,7 @@ function tacticMoment(u){queueMoment(async()=>{const td=actors.get(u.id);goalBus
   SFX.whistle(1);swell(0.7,3);cineShow(u,'🧠 TAKTİK DEHASI',`${TEAM[u.team].n} hocası taktiği verdi!`,TEAM[u.team].c,true);
   await sleep(3200);cineHide();camOverride=null;releaseAll();
   const scorer=fieldActors(u.team).find(x=>x.opts.num===9)||fieldActors(u.team)[0];
-  await goalCinema(scorer?scorer.u:u,1,{team:u.team,by:u,lbl:'🧠 TAKTİK GOLÜ',tag:'🧠 TAKTİK DEHASI 🧠',sub:`${u.name} taktiğiyle ${TEAM[u.team].n} golü buldu!`})})}
+  await goalCinema(scorer?scorer.u:u,1,{team:u.team,by:u,tdActor:actors.get(u.id),scorerActor:scorer,lbl:'🧠 TAKTİK GOLÜ',tag:'🧠 TAKTİK DEHASI 🧠',sub:`${u.name} taktiğiyle ${TEAM[u.team].n} golü buldu!`})})}
 /* HAKEM: sahadaki en düşük jetonlu izleyici oyuncuya kırmızı kart; oyuncu yoksa düdük anı */
 function refMoment(u){queueMoment(async()=>{const ref=actors.get(u.id);if(!ref)return;goalBusy=true;holdAll(30);
   const victims=fieldActors().filter(x=>!x.u.isDefault&&x.u.coins>0).sort((a,b)=>a.u.coins-b.u.coins);const v=victims[0];ref.tag.visible=true;if(v)v.tag.visible=true;
