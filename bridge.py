@@ -26,7 +26,8 @@ import urllib.request
 import websockets
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import (CommentEvent, ConnectEvent, DisconnectEvent,
-                               GiftEvent, JoinEvent, LikeEvent)
+                               FollowEvent, GiftEvent, JoinEvent, LikeEvent,
+                               ShareEvent)
 
 PORT = 8765
 clients = set()
@@ -119,6 +120,14 @@ async def main(unique_id: str):
     @client.on(CommentEvent)
     async def on_comment(e):
         await broadcast({"type": "comment", "user": await user_of(e.user), "text": e.comment})
+
+    @client.on(ShareEvent)
+    async def on_share(e):
+        await broadcast({"type": "share", "user": await user_of(e.user)})
+
+    @client.on(FollowEvent)
+    async def on_follow(e):
+        await broadcast({"type": "follow", "user": await user_of(e.user)})
 
     @client.on(LikeEvent)
     async def on_like(e):
