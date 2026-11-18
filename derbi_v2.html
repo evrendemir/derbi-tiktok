@@ -12,7 +12,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 #gl{position:absolute;inset:0;width:1080px;height:1920px;display:block}
 
 /* skor */
-.top{position:absolute;left:30px;right:30px;top:196px;display:flex;height:110px;border-radius:16px;overflow:hidden;font-weight:700;box-shadow:0 10px 30px #000a}
+.top{position:absolute;left:30px;right:30px;top:300px;display:flex;height:110px;border-radius:16px;overflow:hidden;font-weight:700;box-shadow:0 10px 30px #000a}
 .top .live{background:#e0102a;display:flex;align-items:center;padding:0 24px;font-size:30px;gap:12px}
 .top .live i{width:16px;height:16px;border-radius:50%;background:#fff;animation:blink 1.1s infinite}
 @keyframes blink{50%{opacity:.2}}
@@ -32,27 +32,39 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .strip .tm.fb{background:linear-gradient(90deg,#002d72ee,#1d4ed8ee)}
 .strip .tm b{font-size:30px}
 .strip .tm span{overflow:hidden;text-overflow:ellipsis}
-.roles{position:absolute;left:30px;right:30px;top:476px;height:46px;display:flex;gap:8px;justify-content:center}
+.roles{position:absolute;left:30px;right:30px;top:422px;height:46px;display:flex;gap:8px;justify-content:center}
 .roles div{background:#000000b8;border-radius:23px;padding:0 16px;font-size:22px;display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:340px;overflow:hidden}
 .roles b{color:#ffe08a;overflow:hidden;text-overflow:ellipsis}
 .roles .emp{color:#9ca3af;font-weight:400}
-/* hediye sütunları: sahanın iki kenarında */
-.gcol{position:absolute;top:530px;width:168px;display:flex;flex-direction:column;gap:12px}
-.gcol.l{left:14px}.gcol.r{right:14px}
-.gt{background:#000000c4;border:3px solid #ffffff30;border-radius:16px;padding:8px 6px;text-align:center;box-shadow:0 8px 20px #0009}
-.gt .e{font-size:46px;line-height:1.05}
-.gt .n{font-size:21px;font-weight:700;margin-top:2px}
-.gt .c{font-size:19px;color:#ffe08a;font-weight:700}
-.gt .d{font-size:21px;font-weight:700;margin-top:4px;line-height:1.15;color:#fff}
-.gt.hot{border-color:#ffe08a;animation:hot 1.2s ease-out}
-@keyframes hot{0%{transform:scale(1.15);background:#ffe08a55}100%{transform:none}}
+/* yan paneller (örnek yayınlardaki gibi) */
+.side{position:absolute;top:480px;background:#0b0f17d0;border:2px solid #ffffff22;border-radius:18px;padding:10px 12px;box-shadow:0 10px 30px #000a;backdrop-filter:blur(4px)}
+.side h4{margin:0 0 8px;font-size:21px;letter-spacing:3px;color:#ffe08a;text-align:center}
+.side.l{left:14px;width:262px}
+.side.r{right:14px;width:330px}
+.gr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px}
+.gr .e{font-size:34px;width:42px;text-align:center;flex:none}
+.gr .t{flex:1;min-width:0}
+.gr .t b{display:block;font-size:22px;line-height:1.1;white-space:nowrap}
+.gr .t i{display:block;font-size:19px;color:#cbd5e1;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr .p{font-size:20px;color:#ffe08a;font-weight:700;white-space:nowrap}
+.gr.cmd .e{font-size:28px}
+.gr.hot{animation:hot 1.4s ease-out}
+.lb{display:flex;align-items:center;gap:8px;padding:5px 2px;font-size:21px;font-weight:700}
+.lb .r{width:26px;text-align:center;color:#ffe08a}
+.lb .av{position:relative;width:38px;height:38px;border-radius:50%;background:#374151;display:grid;place-items:center;font-size:15px;flex:none;overflow:hidden;border:3px solid var(--tc)}
+.lb .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lb .n{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb.emp{color:#9ca3af;font-weight:400;font-size:19px}
+.join{margin-top:10px;border-top:1px solid #ffffff22;padding-top:8px;text-align:center;font-size:21px;font-weight:700}
+.join b{background:#ffe08a;color:#000;padding:2px 10px;border-radius:8px}
+@keyframes hot{0%{background:#ffe08acc;transform:scale(1.06)}100%{background:transparent;transform:none}}
 /* olay kutusu */
-.event{position:absolute;left:30px;right:30px;top:388px;background:#05070bf5;border:5px solid var(--tc,#ffe08a);border-radius:16px;padding:4px 16px;height:80px;display:flex;align-items:center;gap:20px;box-shadow:0 10px 30px #000c;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1);z-index:20}
+.event{position:absolute;left:90px;right:90px;top:1080px;background:#0b0f17f2;border:5px solid var(--tc,#ffe08a);border-radius:60px;padding:6px 26px 6px 8px;height:116px;display:flex;align-items:center;gap:20px;box-shadow:0 10px 30px #000c;opacity:0;transform:translateY(12px);transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1);z-index:20}
 .event.show{opacity:1;transform:none}
-.event .av{position:relative;width:62px;height:62px;border-radius:50%;background:#374151;border:6px solid var(--tc,#ffe08a);display:grid;place-items:center;font-size:24px;font-weight:700;flex:none;overflow:hidden}
+.event .av{position:relative;width:96px;height:96px;border-radius:50%;background:#374151;border:6px solid var(--tc,#ffe08a);display:grid;place-items:center;font-size:24px;font-weight:700;flex:none;overflow:hidden}
 .event .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.event h2{margin:0;font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
-.event p{margin:2px 0 0;font-size:26px;color:#ffe08a;font-weight:700}
+.event h2{margin:0;font-size:38px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
+.event p{margin:2px 0 0;font-size:26px;font-style:italic;color:#ffe08a;font-weight:700}
 /* gol */
 .goal{position:absolute;inset:0;display:none;place-items:center;z-index:50;text-align:center;pointer-events:none}
 .goal.show{display:grid}
@@ -71,7 +83,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .cf{position:absolute;width:14px;height:24px;top:-30px;animation:fall 3s linear forwards}
 @keyframes fall{to{transform:translateY(2100px) rotate(900deg)}}
 /* tezahürat */
-.chant{position:absolute;left:0;right:0;top:520px;text-align:center;font-size:54px;font-weight:900;letter-spacing:2px;opacity:0;transition:opacity .3s;z-index:15;text-shadow:0 4px 0 #000,0 0 30px #000}
+.chant{position:absolute;left:0;right:0;top:470px;text-align:center;font-size:54px;font-weight:900;letter-spacing:2px;opacity:0;transition:opacity .3s;z-index:15;text-shadow:0 4px 0 #000,0 0 30px #000}
 .chant.show{opacity:1;animation:pulse .5s infinite alternate}
 @keyframes pulse{to{transform:scale(1.08)}}
 .snd{position:absolute;left:50%;top:960px;transform:translateX(-50%);background:#000c;padding:8px 16px;border-radius:8px;font-size:22px;color:#ffe08a;z-index:30}
@@ -89,10 +101,10 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 <div id="stage">
   <canvas id="gl"></canvas>
   <div class="top"><div class="live"><i></i>CANLI</div><div class="t gs">GS<small><span id="cntG">0</span> taraftar</small></div><div class="sc"><span id="sGs">0</span>&nbsp;–&nbsp;<span id="sFb">0</span></div><div class="t fb">FB<small><span id="cntF">0</span> taraftar</small></div><div class="clk" id="clk">00:00</div></div>
-  <div class="howto">💬 Sohbete <b>GS</b> ya da <b>FB</b> yaz → takımına katıl</div>
   <div class="chant" id="chant"></div>
     <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 GS: <b id="rTdG"></b></div><div>🧢 FB: <b id="rTdF"></b></div></div>
-  <div class="gcol l" id="gcolL"></div><div class="gcol r" id="gcolR"></div>
+  <div class="side l"><h4>🏆 ŞEREF KÜRSÜSÜ</h4><div id="lb"></div><div class="join">SEN DE KATIL<br>Sohbete <b>GS</b> ya da <b>FB</b> yaz</div></div>
+  <div class="side r"><h4>🎁 HEDİYE GÖNDER</h4><div id="giftList"></div></div>
   <div class="event" id="event"><div class="av" id="evAv"></div><div><h2 id="evName"></h2><p id="evText"></p></div></div>
   <div class="snd" id="snd">🔇 Ses için tıkla</div>
   <div class="goal" id="goal"><div class="band"></div><h1>GOL!</h1><div class="who"><div class="star" id="gStar"></div><div class="tag">⭐ MAÇIN YILDIZI ⭐</div><b id="gName"></b><span id="gText"></span></div></div>
@@ -114,11 +126,11 @@ import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/
 // Jeton eşikleri (tek seferde gönderilen). Hediye adları yalnızca tabloda görünür.
 const CONFIG={chant:30,player:100,role:299,goal:500,squad:5,ws:'ws://localhost:8765',key:'derbi_v2'};
 const GIFT_TABLE=[
-  {e:'🌹',n:'Gül',c:'1 jeton',d:'Adın parlar ✨'},
-  {e:'🍩',n:'Donut',c:`${CONFIG.chant} jeton`,d:'📣 Tezahürat'},
-  {e:'🫶',n:'El Kalp',c:`${CONFIG.player} jeton`,d:'⚽ Sahaya çık'},
+  {e:'🌹',n:'Gül',c:'1 jeton',d:'Adın parlar'},
+  {e:'🍩',n:'Donut',c:`${CONFIG.chant} jeton`,d:'Marş çalar'},
+  {e:'🫶',n:'El Kalp',c:`${CONFIG.player} jeton`,d:'Sahaya çık'},
   {e:'🐶',n:'Corgi',c:`${CONFIG.role} jeton`,d:'Hakem / hoca ol'},
-  {e:'🔫',n:'Para Tabancası',c:`${CONFIG.goal} jeton`,d:'🥅 GOL AT!'},
+  {e:'🔫',n:'Para Tabancası',c:`${CONFIG.goal} jeton`,d:'GOL at!'},
   {e:'👑',n:'En çok gönderen',c:'her takımda',d:'Kaptan olur'},
 ];
 const TEAM={gs:{c:'#f5b400',c2:'#c8102e',n:'Galatasaray',crowd:['#f5b400','#c8102e','#8a0e22','#d9a300','#f5b400','#1a1a1a'],side:-1},
@@ -154,7 +166,7 @@ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFi
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x05070b);scene.fog=new THREE.FogExp2(0x070a10,0.0028);
 const camera=new THREE.PerspectiveCamera(30,1080/1920,1,900);
 // Saha ekranın üst yarısında (talimat ile hocalar arası) dursun diye görüntüyü yukarı kaydır
-camera.setViewOffset(1080,1920,0,150,1080,1920);
+camera.setViewOffset(1080,1920,0,200,1080,1920);
 scene.add(new THREE.HemisphereLight(0xcfe0ff,0x1a2a1a,1.15));
 const sun=new THREE.DirectionalLight(0xfff4e0,1.6);sun.position.set(40,90,50);scene.add(sun);
 const sun2=new THREE.DirectionalLight(0xdde8ff,0.7);sun2.position.set(-60,60,-40);scene.add(sun2);
@@ -360,7 +372,7 @@ function updateBall(dt,t){
 
 /* ================= SABİT KAMERA ================= */
 // Saha boyuna ekranda dikey durur: GS aşağıdan yukarı, FB yukarıdan aşağı hücum eder.
-const CAM_MAIN={pos:new THREE.Vector3(-150,78,0),look:new THREE.Vector3(6,0,0)};
+const CAM_MAIN={pos:new THREE.Vector3(-186,97,0),look:new THREE.Vector3(6,0,0)};
 const camPos=CAM_MAIN.pos.clone(),camLook=CAM_MAIN.look.clone(),look=CAM_MAIN.look.clone();let camOverride=null;
 function updateCam(dt){let tp=CAM_MAIN.pos,tl=CAM_MAIN.look;
   if(camOverride&&performance.now()<camOverride.until){if(camOverride.follow){const p=camOverride.follow.pos,sd=camOverride.side||1;camOverride.pos.set(p.x+sd*15,7,p.z*0.55);camOverride.look.set(p.x,2.6,p.z)}tp=camOverride.pos;tl=camOverride.look}else camOverride=null;
@@ -455,8 +467,10 @@ function sparks(){const G=$('#goal');for(let i=0;i<14;i++){const e=document.crea
 function confetti(t){const G=$('#goal');for(let i=0;i<90;i++){const c=document.createElement('div');c.className='cf';c.style.left=Math.random()*1080+'px';c.style.background=i%2?TEAM[t].c:TEAM[t].c2;c.style.animationDelay=(Math.random()*1.4)+'s';G.appendChild(c);setTimeout(()=>c.remove(),4600)}}
 
 /* ================= PANELLER ================= */
-const gtile=(g,i)=>`<div class="gt" id="gt${i}"><div class="e">${g.e}</div><div class="n">${g.n}</div><div class="c">${g.c}</div><div class="d">${g.d}</div></div>`;
-$('#gcolL').innerHTML=GIFT_TABLE.slice(0,3).map((g,i)=>gtile(g,i)).join('');$('#gcolR').innerHTML=GIFT_TABLE.slice(3).map((g,i)=>gtile(g,i+3)).join('');
+const GL=[...GIFT_TABLE.slice(0,5).map((g,i)=>`<div class="gr" id="gt${i}"><div class="e">${g.e}</div><div class="t"><b>${g.n}</b><i>${g.d}</i></div><div class="p">${g.c.replace(' jeton','')}</div></div>`),
+  `<div class="gr cmd"><div class="e">👑</div><div class="t"><b>En çok gönderen</b><i>Kaptan olur</i></div></div>`,
+  `<div class="gr cmd"><div class="e">💬</div><div class="t"><b>"hakem" / "hoca" yaz</b><i>Boşsa koltuk senin</i></div></div>`];
+$('#giftList').innerHTML=GL.join('');
 function hotTile(i){const el=document.getElementById('gt'+i);if(!el)return;el.classList.remove('hot');void el.offsetWidth;el.classList.add('hot')}
 function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins);const fresh=all.filter(u=>!u.coins).sort((a,b)=>b.last-a.last);
   const rows=[...top.slice(0,3),...fresh].slice(0,4);
@@ -464,7 +478,9 @@ function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort
   const now=Date.now();
   return rows.map((u,i)=>`<div class="row${glowUntil[u.id]>now?' glow':''}"><div class="av">${avHTML(u)}</div><div class="nm">${u.name}</div><div class="pt${u.coins?'':' new'}">${u.coins?(i===0?'👑 ':'')+u.coins.toLocaleString('tr-TR'):'yeni'}</div></div>`).join('')+(all.length>rows.length?`<div class="more">+${all.length-rows.length} kişi daha</div>`:'')}
 const nm=id=>id&&S.users[id]?S.users[id].name:null;
-function hud(){$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;
+function leaderboard(){const top=Object.values(S.users).filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins).slice(0,6);
+  $('#lb').innerHTML=top.length?top.map((u,i)=>`<div class="lb" style="--tc:${TEAM[u.team]?TEAM[u.team].c:'#888'}"><div class="r">${['🥇','🥈','🥉'][i]||i+1}</div><div class="av">${avHTML(u)}</div><div class="n">${u.name}</div></div>`).join(''):'<div class="lb emp">İlk hediyeyi gönder,<br>en üstte sen ol!</div>'}
+function hud(){leaderboard();$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;
   $('#cntG').textContent=members('gs').length;$('#cntF').textContent=members('fb').length;
   
   const set=(el,v,hint)=>{el.textContent=v||hint;el.className=v?'':'emp'};
