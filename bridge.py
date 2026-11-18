@@ -24,6 +24,12 @@ import sys
 import urllib.request
 
 import websockets
+
+try:  # spiker sesi (Microsoft Edge Türkçe "Ahmet" sesi, internet gerekir)
+    import edge_tts
+except Exception:  # paket yoksa spiker sessiz kalır, oyun çalışmaya devam eder
+    edge_tts = None
+SPIKER_SES = "tr-TR-AhmetNeural"
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import (CommentEvent, ConnectEvent, DisconnectEvent,
                                FollowEvent, GiftEvent, JoinEvent, LikeEvent,
@@ -92,12 +98,39 @@ async def user_of(u) -> dict:
     return {"id": uid, "name": name, "avatar": await asyncio.to_thread(avatar_data_url, avatar)}
 
 
+async def tts(ws, msg):
+    """Oyundan gelen spiker metnini sese çevirip aynı sayfaya geri gönderir."""
+    if edge_tts is None:
+        return
+    try:
+        text = str(msg.get("text", ""))[:300]
+        com = edge_tts.Communicate(text, SPIKER_SES, rate=msg.get("rate", "+12%"), pitch=msg.get("pitch", "+0Hz"))
+        buf = bytearray()
+        async for chunk in com.stream():
+            if chunk.get("type") == "audio":
+                buf.extend(chunk["data"])
+        if buf:
+            await ws.send(json.dumps({"type": "tts", "id": msg.get("id"),
+                                      "audio": "data:audio/mpeg;base64," + base64.b64encode(bytes(buf)).decode("ascii")}))
+    except Exception as ex:
+        print(f"Spiker sesi üretilemedi: {ex}")
+        try:
+            await ws.send(json.dumps({"type": "tts", "id": msg.get("id"), "error": str(ex)}))
+        except Exception:
+            pass
+
+
 async def ws_handler(ws):
     clients.add(ws)
-    print("Overlay bağlandı.")
+    print("Overlay bağlandı." + ("" if edge_tts else " (spiker kapalı: pip install edge-tts)"))
     try:
-        async for _ in ws:
-            pass
+        async for raw in ws:
+            try:
+                msg = json.loads(raw)
+            except Exception:
+                continue
+            if msg.get("type") == "say":
+                asyncio.create_task(tts(ws, msg))
     finally:
         clients.discard(ws)
         print("Overlay ayrıldı.")
