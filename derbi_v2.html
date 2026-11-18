@@ -616,7 +616,11 @@ function shotCall(u){const now=Date.now();if(shotCd[u.id]&&now-shotCd[u.id]<CONF
   const q=shotCalls[u.team];q.push(u);const left=CONFIG.shotCalls-q.length;
   shout(u,left>0?`⚡ <b>şut istedi!</b> ${left} şut daha → ${u.team==='gs'?'GS':'FB'} şut çeker`:`⚡ <b>${u.team==='gs'?'GS':'FB'} ŞUT ÇEKİYOR!</b>`);
   if(left<=0){const callers=q.splice(0);saveMoment(u.team,callers)}}
+let shotGoalAt=0;
 function saveMoment(team,callers){if(saveQueued)return;saveQueued=true;queueMoment(async()=>{saveQueued=false;goalBusy=true;const s=team==='gs'?1:-1;
+  // bazen gol: ~%30, en az 3 dk arayla; senaryodaki bir sonraki golün yerine geçer (skor dengesi korunur)
+  const goal=!isWarm()&&gameMin()<88&&Date.now()-shotGoalAt>(CONFIG.shotGoalGap??180)*1000&&Math.random()<(CONFIG.shotGoalChance??0.3);
+  if(goal){shotGoalAt=Date.now();if(S.plan&&!S.userGoal){const i=S.plan.goals.findIndex(g=>g[1]===team);if(i>=0)S.plan.goals.splice(i,1)}}
   const a=fieldActors(team).find(x=>x.opts.num===9)||fieldActors(team).find(x=>x.opts.num!==1);const gk=gkOf(oppOf(team));if(!a){goalBusy=false;return}
   holdAll(12,[]);a.pos.set(s*20,0,(Math.random()-.5)*10);a.target.copy(a.pos);ball.holder=null;ball.t=1;ball.m.position.set(a.pos.x+s*0.9,0.55,a.pos.z);if(gk){gk.pos.set(s*(PL/2-1.5),0,0);gk.target.copy(gk.pos)}
   {const uniq=callers.filter((v,i,arr)=>arr.indexOf(v)===i);const cs=startCrowd(team,{fans:uniq,dur:2.6,bubble:'ŞUT!',keep:true});if(cs){SFX.chant();swell(0.8,2.5);await sleep(2600);endCrowd()}}
@@ -624,11 +628,13 @@ function saveMoment(team,callers){if(saveQueued)return;saveQueued=true;queueMome
   cineShow(callers[callers.length-1],'⚡ TARAFTAR ŞUT İSTEDİ!',callers.map(u=>u.name).filter((v,i,arr)=>arr.indexOf(v)===i).join(', '),TEAM[team].c);SFX.whistle(1);swell(0.6,2);
   camOverride={fn:o=>{o.pos.set(a.pos.x-s*9,4,a.pos.z+(a.pos.z>=0?-7:7));o.look.set(s*30,1.4,a.pos.z*0.4);o.fov=36},cut:true,until:performance.now()+60000,pos:new THREE.Vector3(),look:new THREE.Vector3()};
   await sleep(1300);cineHide();a.kickT=0.45;await sleep(150);const gz=(Math.random()<.5?-1:1)*(1.2+Math.random()*1.3);
-  TS=FAST?1:0.35;trailOn=true;SFX.kick(true);kickTo(s*(PL/2-1.4),gz,0.6,1.1,0,1.3);if(gk){gk.speedMul=2.6;gk.target.set(gk.pos.x,0,gz);gk.jump=0.6}
+  TS=FAST?1:0.35;trailOn=true;SFX.kick(true);kickTo(s*(PL/2+(goal?1.2:-1.4)),gz,0.6,1.1,0,1.3);if(gk){gk.speedMul=2.6;gk.target.set(gk.pos.x,0,goal?-gz:gz);gk.jump=0.6}
   camOverride.fn=o=>{o.pos.set(s*(PL/2+3.6),2.5,gz*0.4);o.look.set(s*(PL/2-14),1.2,gz*0.2);o.fov=50};camOverride.cut=true;
-  await until(()=>ball.t>=1,4000);TS=1;trailOn=false;SFX.save();flash();if(gk)ball.holder=gk;
-  cineShow(gk?gk.u:{name:'Kaleci'},'🧤 KALECİ KURTARDI!','Gol için 🔫 Para Tabancası gönder!',TEAM[oppOf(team)].c);
-  await sleep(2300);cineHide();camOverride=null;releaseAll();goalBusy=false;startBuild(nowS(),oppOf(team),gk)})}
+  await until(()=>ball.t>=1,4000);TS=1;trailOn=false;
+  if(goal){rippleNet(s,gz,1.3);const who=callers[callers.length-1];await scoreGoal(team,who,`Taraftar şut istedi, ${a.u.name} attı!`,'⚡ TARAFTAR ŞUTU GOLÜ');
+    callers.filter((v,i,arr)=>arr.indexOf(v)===i).forEach((u,i)=>setTimeout(()=>shout(u,'⚡ <b>şutu istedi, gol oldu!</b>'),i*600))}
+  else{SFX.save();flash();if(gk)ball.holder=gk;cineShow(gk?gk.u:{name:'Kaleci'},'🧤 KALECİ KURTARDI!','Gol için 🔫 Para Tabancası gönder!',TEAM[oppOf(team)].c);await sleep(2300);cineHide()}
+  camOverride=null;releaseAll();goalBusy=false;startBuild(nowS(),oppOf(team),goal?null:gk);if(goal)kickTo(0,0,0.6)})}
 function dropRoles(u){if(S.refId===u.id)S.refId=null;for(const k of ['gs','fb'])if(S.td[k]===u.id)S.td[k]=null}
 function handle(ev){if(!ev)return;if(!ev.user){if(ev.type==='viewers'||ev.type==='live_start')ev.user={id:'__sys',name:'sistem'};else return}const u=ev.user.id==='__sys'?{}:getUser(ev.user);if(ev.user.id!=='__sys')u.seen=Date.now();const now=performance.now()/1000;
   switch(ev.type){

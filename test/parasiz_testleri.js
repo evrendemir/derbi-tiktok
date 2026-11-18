@@ -24,6 +24,7 @@
   await D.idle(); S.start = Date.now() - 60000; S.kicked = true; await wait(1100); D.CONFIG.powerGoalChance = 1; D.CONFIG.powerGoalGap = 0; const pg0 = S.goals.gs; D.power.gs = 0; h({ type: 'like', user: U('Beğenici2'), count: 60 });
   await wait(100); check('Güç dolunca bazen gol olur', D.busy()); await D.idle(); check('Taraftar gücü golü skora eklenir', S.goals.gs === pg0 + 1, pg0 + ' → ' + S.goals.gs); D.CONFIG.powerGoalChance = 0;
 
+  D.CONFIG.shotGoalChance = 0;
   // 2) ŞUT: 3 çağrıda şut, kaleci kurtarır, gol olmaz
   await D.idle();
   const g0 = S.goals.gs + S.goals.fb;
@@ -37,6 +38,11 @@
   check('Sayaç sıfırlanır', D.shotCalls.fb.length === 0);
   await D.idle();
   check('Kaleci kurtarır, gol olmaz', S.goals.gs + S.goals.fb === g0, `${g0} → ${S.goals.gs + S.goals.fb}`);
+
+  // 2b) bazen ŞUT gol olur
+  D.CONFIG.shotGoalChance = 1; D.CONFIG.shotGoalGap = 0; S.start = Date.now() - 60000; S.kicked = true; const sg0 = S.goals.fb;
+  for (const n of ['ŞG1', 'ŞG2', 'ŞG3']) { join(n, 'FB'); h({ type: 'comment', user: U(n), text: 'şut' }); }
+  await D.idle(); check('ŞUT bazen gol olur', S.goals.fb === sg0 + 1, sg0 + ' → ' + S.goals.fb); D.CONFIG.shotGoalChance = 0;
 
   // 3) skor tahmini
   join('Tahminci', 'GS'); h({ type: 'comment', user: U('Tahminci'), text: '2-1' });
