@@ -27,10 +27,11 @@ import websockets
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import (CommentEvent, ConnectEvent, DisconnectEvent,
                                FollowEvent, GiftEvent, JoinEvent, LikeEvent,
-                               ShareEvent)
+                               RoomUserSeqEvent, ShareEvent)
 
 PORT = 8765
 clients = set()
+live_started = False  # oyun, yayına ilk bağlanınca bir kez sıfırlanır (yeniden bağlanmalarda sıfırlanmaz)
 
 
 async def broadcast(msg: dict):
@@ -107,7 +108,12 @@ async def main(unique_id: str):
 
     @client.on(ConnectEvent)
     async def on_connect(e):
+        global live_started
         print(f"TikTok yayınına bağlanıldı: {unique_id}")
+        if not live_started:
+            live_started = True
+            await broadcast({"type": "live_start"})
+            print("Oyun sıfırdan başlatıldı (yeni yayın).")
 
     @client.on(DisconnectEvent)
     async def on_disconnect(e):
@@ -120,6 +126,11 @@ async def main(unique_id: str):
     @client.on(CommentEvent)
     async def on_comment(e):
         await broadcast({"type": "comment", "user": await user_of(e.user), "text": e.comment})
+
+    @client.on(RoomUserSeqEvent)
+    async def on_viewers(e):
+        n = getattr(e, "total", 0) or getattr(e, "total_user", 0) or 0
+        await broadcast({"type": "viewers", "count": int(n)})
 
     @client.on(ShareEvent)
     async def on_share(e):
