@@ -201,7 +201,7 @@ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x05070b);scene.fog=new THREE.FogExp2(0x070a10,0.0028);
 const camera=new THREE.PerspectiveCamera(30,1080/1920,1,900);
 // Saha ekranın üst yarısında (talimat ile hocalar arası) dursun diye görüntüyü yukarı kaydır
-camera.setViewOffset(1080,1920,0,200,1080,1920);
+camera.setViewOffset(1080,1920,140,200,1080,1920); // saha biraz sola: sağ kenar TikTok "İzleyici Dilekleri" listesine
 scene.add(new THREE.HemisphereLight(0xcfe0ff,0x1a2a1a,1.15));
 const sun=new THREE.DirectionalLight(0xfff4e0,1.9);sun.position.set(-30,90,40);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
 Object.assign(sun.shadow.camera,{left:-50,right:50,top:40,bottom:-40,near:10,far:250});sun.shadow.bias=-0.0005;sun.shadow.normalBias=0.03;scene.add(sun);
