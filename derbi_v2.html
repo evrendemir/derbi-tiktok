@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .top .sc{background:#111827;display:flex;align-items:center;padding:0 30px;font-size:70px;font-variant-numeric:tabular-nums}
 .top .clk{background:#1f2937;display:flex;align-items:center;padding:0 22px;font-size:40px;color:#ffe08a;font-variant-numeric:tabular-nums}
 /* talimat */
-.howto{position:absolute;left:30px;right:30px;top:316px;height:64px;border-radius:16px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;gap:12px;box-shadow:0 10px 30px #0009}
+.howto{position:absolute;left:30px;right:30px;top:418px;height:60px;border-radius:16px;background:#fff;color:#111;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;gap:12px;box-shadow:0 10px 30px #0009;z-index:5}
 .howto b{background:#111;color:#ffe08a;padding:4px 16px;border-radius:10px}
 /* taraftar şeridi + roller */
 .strip{position:absolute;left:30px;right:30px;top:382px;height:72px;display:flex;gap:10px}
@@ -32,12 +32,19 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
 .strip .tm.fb{background:linear-gradient(90deg,#002d72ee,#1d4ed8ee)}
 .strip .tm b{font-size:30px}
 .strip .tm span{overflow:hidden;text-overflow:ellipsis}
-.roles{position:absolute;left:30px;right:30px;top:422px;height:46px;display:flex;gap:8px;justify-content:center}
+.roles{position:absolute;left:30px;right:30px;top:486px;height:46px;display:flex;gap:8px;justify-content:center}
 .roles div{background:#000000b8;border-radius:23px;padding:0 16px;font-size:22px;display:flex;align-items:center;gap:6px;white-space:nowrap;max-width:340px;overflow:hidden}
 .roles b{color:#ffe08a;overflow:hidden;text-overflow:ellipsis}
 .roles .emp{color:#9ca3af;font-weight:400}
+/* taraftar kayan şeridi */
+.fanbar{position:absolute;left:0;right:0;top:1124px;height:44px;background:#000000b0;border-top:2px solid #ffffff22;border-bottom:2px solid #ffffff22;overflow:hidden;white-space:nowrap;display:flex;align-items:center;z-index:4}
+.fanbar .lbl{flex:none;background:#ffe08a;color:#000;font-weight:900;font-size:20px;letter-spacing:2px;padding:0 14px;height:100%;display:flex;align-items:center;z-index:2}
+.fanbar .mv{display:inline-block;padding-left:100%;animation:fanmq 40s linear infinite;font-size:24px;font-weight:700}
+.fanbar .mv span{margin-right:30px}
+.fanbar .mv i{font-style:normal;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px}
+@keyframes fanmq{to{transform:translateX(-100%)}}
 /* yan paneller (örnek yayınlardaki gibi) */
-.side{position:absolute;top:480px;background:#0b0f179c;border:2px solid #ffffff22;border-radius:18px;padding:10px 12px;box-shadow:0 10px 30px #000a;backdrop-filter:blur(4px)}
+.side{position:absolute;top:546px;background:#0b0f179c;border:2px solid #ffffff22;border-radius:18px;padding:10px 12px;box-shadow:0 10px 30px #000a;backdrop-filter:blur(4px)}
 .side h4{margin:0 0 6px;font-size:18px;letter-spacing:3px;color:#ffe08a;text-align:center}
 .side.l{left:10px;width:210px}
 .side.r{right:10px;width:262px}
@@ -102,9 +109,11 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial
   <canvas id="gl"></canvas>
   <div class="top"><div class="live"><i></i>CANLI</div><div class="t gs">GS<small><span id="cntG">0</span> taraftar</small></div><div class="sc"><span id="sGs">0</span>&nbsp;–&nbsp;<span id="sFb">0</span></div><div class="t fb">FB<small><span id="cntF">0</span> taraftar</small></div><div class="clk" id="clk">00:00</div></div>
   <div class="chant" id="chant"></div>
-    <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 GS: <b id="rTdG"></b></div><div>🧢 FB: <b id="rTdF"></b></div></div>
-  <div class="side l"><h4>🏆 ŞEREF KÜRSÜSÜ</h4><div id="lb"></div><div class="join">SEN DE KATIL<br>Sohbete <b>GS</b> ya da <b>FB</b> yaz</div></div>
+    <div class="howto">💬 Sohbete <b>GS</b> ya da <b>FB</b> yaz → takımına katıl</div>
+  <div class="roles"><div>🟨 Hakem: <b id="rRef"></b></div><div>🧢 GS: <b id="rTdG"></b></div><div>🧢 FB: <b id="rTdF"></b></div></div>
+  <div class="side l"><h4>🏆 ŞEREF KÜRSÜSÜ</h4><div id="lb"></div></div>
   <div class="side r"><h4>🎁 HEDİYE GÖNDER</h4><div id="giftList"></div></div>
+  <div class="fanbar"><div class="lbl">TRİBÜN</div><div class="mv" id="fanMv">Henüz kimse yok · sohbete GS ya da FB yaz, adın burada aksın!</div></div>
   <div class="event" id="event"><div class="av" id="evAv"></div><div><h2 id="evName"></h2><p id="evText"></p></div></div>
   <div class="snd" id="snd">🔇 Ses için tıkla</div>
   <div class="goal" id="goal"><div class="band"></div><h1>GOL!</h1><div class="who"><div class="star" id="gStar"></div><div class="tag">⭐ MAÇIN YILDIZI ⭐</div><b id="gName"></b><span id="gText"></span></div></div>
@@ -495,7 +504,11 @@ function fanList(t){const all=members(t);const top=all.filter(u=>u.coins>0).sort
 const nm=id=>id&&S.users[id]?S.users[id].name:null;
 function leaderboard(){const top=Object.values(S.users).filter(u=>u.coins>0).sort((a,b)=>b.coins-a.coins).slice(0,6);
   $('#lb').innerHTML=top.length?top.map((u,i)=>`<div class="lb" style="--tc:${TEAM[u.team]?TEAM[u.team].c:'#888'}"><div class="r">${['🥇','🥈','🥉'][i]||i+1}</div><div class="av">${avHTML(u)}</div><div class="n">${u.name}</div></div>`).join(''):'<div class="lb emp">İlk hediyeyi gönder,<br>en üstte sen ol!</div>'}
-function hud(){leaderboard();$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;
+let fanSig='';
+function fanbar(){const all=Object.values(S.users).filter(u=>u.team).sort((a,b)=>(b.last||0)-(a.last||0)).slice(0,60);const sig=all.map(u=>u.id+u.team).join();if(sig===fanSig||!all.length)return;fanSig=sig;
+  const el=$('#fanMv');el.innerHTML=all.map(u=>`<span><i style="background:${TEAM[u.team].c};box-shadow:0 0 0 3px ${TEAM[u.team].c2}"></i>${u.name}</span>`).join('');
+  const d=Math.max(15,el.scrollWidth/90);el.style.animationDuration=d.toFixed(1)+'s'}
+function hud(){leaderboard();fanbar();$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;
   $('#cntG').textContent=members('gs').length;$('#cntF').textContent=members('fb').length;
   
   const set=(el,v,hint)=>{el.textContent=v||hint;el.className=v?'':'emp'};
