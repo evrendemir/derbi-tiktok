@@ -72,9 +72,9 @@
 
   // 9) tezahürat yarışı
   D.startRace(); join('Yarışçı1', 'FB'); join('Yarışçı2', 'FB'); join('Yarışçı3', 'GS');
-  for (let i = 0; i < 3; i++) { h({ type: 'comment', user: U('Yarışçı1'), text: 'fener' }); h({ type: 'comment', user: U('Yarışçı2'), text: 'hadi' }); }
+  for (let i = 0; i < 3; i++) { h({ type: 'comment', user: U('Yarışçı1'), text: 'fener' }); h({ type: 'comment', user: U('Yarışçı2'), text: 'FB' }); }
   h({ type: 'comment', user: U('Yarışçı3'), text: 'cimbom' });
-  check('Yarış sırasında yorumlar sayılır', D.race.cnt.fb >= 6 && D.race.cnt.gs >= 1, JSON.stringify(D.race.cnt));
+  check('Yarış sırasında GS/FB yazıları sayılır', D.race.cnt.fb >= 6 && D.race.cnt.gs >= 1, JSON.stringify(D.race.cnt));
   check('Yarış çubuğu görünür', document.querySelector('#race').classList.contains('show'));
   await wait(2600);
   check('Yarış biter, kazanan ilan edilir', !D.race.on && /FB KAZANDI/.test(document.querySelector('#chant').textContent), document.querySelector('#chant').textContent);
