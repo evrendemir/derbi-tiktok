@@ -4,18 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Derbi CANLI · TikTok 3B yayın</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800;900&family=Barlow:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--gs1:#f5b400;--gs2:#c8102e;--fb1:#ffe600;--fb2:#002d72}
-html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barlow","Segoe UI",system-ui,sans-serif;color:#fff}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial,"Segoe UI",Helvetica,sans-serif;color:#fff}
 #stage{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0;overflow:hidden;background:#05070b}
 #gl{position:absolute;inset:0;width:1080px;height:1920px;display:block}
 .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,#0000 55%,#000a 100%)}
-.cond{font-family:"Barlow Condensed","Barlow",sans-serif}
+.cond{font-family:Arial,Helvetica,sans-serif}
 
 /* skor tabelası */
-.bug{position:absolute;left:40px;top:44px;display:flex;align-items:stretch;height:92px;border-radius:10px;overflow:hidden;box-shadow:0 14px 40px #000b,0 0 0 1px #fff2;font-family:"Barlow Condensed",sans-serif;font-weight:800}
+.bug{position:absolute;left:40px;top:44px;display:flex;align-items:stretch;height:92px;border-radius:10px;overflow:hidden;box-shadow:0 14px 40px #000b,0 0 0 1px #fff2;font-family:Arial,Helvetica,sans-serif;font-weight:800}
 .bug .live{background:#e0102a;display:flex;align-items:center;gap:10px;padding:0 18px;font-size:26px;letter-spacing:2px}
 .bug .live i{width:14px;height:14px;border-radius:50%;background:#fff;animation:blink 1.1s infinite}
 @keyframes blink{50%{opacity:.15}}
@@ -24,16 +22,16 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barl
 .bug .t.fb{background:linear-gradient(160deg,var(--fb1) 0 48%,var(--fb2) 52%)}
 .bug .sc{background:#0b0e14;display:flex;align-items:center;padding:0 24px;font-size:58px;gap:18px;font-variant-numeric:tabular-nums}
 .bug .clk{background:#1a2130;display:flex;align-items:center;padding:0 20px;font-size:40px;color:#ffeaa0;font-variant-numeric:tabular-nums}
-.sub{position:absolute;left:40px;top:140px;background:#0b0e14d9;padding:6px 18px;border-radius:6px;font-size:24px;font-weight:700;letter-spacing:1px;color:#d6dce6;font-family:"Barlow Condensed",sans-serif}
+.sub{position:absolute;left:40px;top:140px;background:#0b0e14d9;padding:6px 18px;border-radius:6px;font-size:24px;font-weight:700;letter-spacing:1px;color:#d6dce6;font-family:Arial,Helvetica,sans-serif}
 .tug{position:absolute;left:40px;right:40px;top:196px;height:18px;border-radius:9px;overflow:hidden;background:#0b0e14cc;display:flex;box-shadow:0 4px 14px #0009}
 .tug .g{background:linear-gradient(90deg,var(--gs2),var(--gs1));transition:width .8s}
 .tug .f{background:linear-gradient(90deg,var(--fb1),var(--fb2));flex:1}
-.tugl{position:absolute;top:220px;font-size:22px;font-weight:700;text-shadow:0 2px 4px #000;font-family:"Barlow Condensed",sans-serif;letter-spacing:1px}
+.tugl{position:absolute;top:220px;font-size:22px;font-weight:700;text-shadow:0 2px 4px #000;font-family:Arial,Helvetica,sans-serif;letter-spacing:1px}
 .tugl.l{left:44px}.tugl.r{right:44px}
 .howto{position:absolute;left:40px;right:40px;top:258px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.howto span{background:#0b0e14b8;border:1px solid #fff3;border-radius:999px;padding:7px 18px;font-size:22px;font-weight:600;font-family:"Barlow Condensed",sans-serif;letter-spacing:.5px}
+.howto span{background:#0b0e14b8;border:1px solid #fff3;border-radius:999px;padding:7px 18px;font-size:22px;font-weight:600;font-family:Arial,Helvetica,sans-serif;letter-spacing:.5px}
 .howto b{color:#ffe08a}
-.cam{position:absolute;right:40px;top:44px;background:#0b0e14cc;border:1px solid #fff2;border-radius:6px;padding:6px 14px;font-size:22px;font-family:"Barlow Condensed",sans-serif;letter-spacing:2px;color:#cfd6e0;display:flex;align-items:center;gap:8px}
+.cam{position:absolute;right:40px;top:44px;background:#0b0e14cc;border:1px solid #fff2;border-radius:6px;padding:6px 14px;font-size:22px;font-family:Arial,Helvetica,sans-serif;letter-spacing:2px;color:#cfd6e0;display:flex;align-items:center;gap:8px}
 .cam i{width:10px;height:10px;border-radius:50%;background:#e0102a}
 
 /* alt yazı */
@@ -41,25 +39,25 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barl
 .lt.show{opacity:1;transform:none}
 .lt .av{position:relative;width:84px;height:84px;border-radius:50%;border:4px solid var(--tc);overflow:hidden;background:#222;display:grid;place-items:center;font-weight:800;font-size:30px;flex:none}
 .lt .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.lt b{font-size:36px;display:block;line-height:1.05;font-family:"Barlow Condensed",sans-serif;font-weight:800}
+.lt b{font-size:36px;display:block;line-height:1.05;font-family:Arial,Helvetica,sans-serif;font-weight:800}
 .lt span{font-size:24px;color:#d6dce6}
-.tick{position:absolute;left:40px;top:1668px;width:1000px;height:46px;background:#0b0e14cc;border-radius:6px;overflow:hidden;white-space:nowrap;font-size:24px;line-height:46px;font-family:"Barlow Condensed",sans-serif;letter-spacing:.5px}
+.tick{position:absolute;left:40px;top:1668px;width:1000px;height:46px;background:#0b0e14cc;border-radius:6px;overflow:hidden;white-space:nowrap;font-size:24px;line-height:46px;font-family:Arial,Helvetica,sans-serif;letter-spacing:.5px}
 .tick div{display:inline-block;padding-left:100%;animation:mq 30s linear infinite}
 @keyframes mq{to{transform:translateX(-100%)}}
 .tick em{font-style:normal;color:#ffe08a;font-weight:700;margin:0 10px}
 .tick i{color:#5e6878;font-style:normal;margin:0 14px}
 
 /* tribün isim şeridi (küçük, silik) */
-.fstrip{position:absolute;left:40px;top:1722px;width:1000px;height:34px;background:#0b0e1480;border-radius:6px;overflow:hidden;white-space:nowrap;font-size:20px;line-height:34px;color:#aeb6c4;font-family:"Barlow Condensed",sans-serif;display:flex}
+.fstrip{position:absolute;left:40px;top:1722px;width:1000px;height:34px;background:#0b0e1480;border-radius:6px;overflow:hidden;white-space:nowrap;font-size:20px;line-height:34px;color:#aeb6c4;font-family:Arial,Helvetica,sans-serif;display:flex}
 .fstrip .lbl{flex:none;background:#ffffff14;padding:0 10px;color:#ffe08a;font-weight:800;letter-spacing:2px;font-size:18px}
 .fstrip div{display:inline-block;padding-left:100%;animation:mq 45s linear infinite}
 .fstrip b{font-weight:700;color:#d6dce6}
 .fstrip i{font-style:normal;color:#5e6878;margin:0 8px}
 /* spiker satırı */
-.comm{position:absolute;left:40px;top:252px;max-width:760px;background:#0b0e14d9;border-left:8px solid #ffe08a;padding:8px 18px;font-family:"Barlow Condensed",sans-serif;font-size:30px;font-weight:800;letter-spacing:.5px;opacity:0;transition:opacity .3s}
+.comm{position:absolute;left:40px;top:252px;max-width:760px;background:#0b0e14d9;border-left:8px solid #ffe08a;padding:8px 18px;font-family:Arial,Helvetica,sans-serif;font-size:30px;font-weight:800;letter-spacing:.5px;opacity:0;transition:opacity .3s}
 .comm.show{opacity:1}
 /* dönüşümlü bilgi penceresi */
-.info{position:absolute;right:40px;top:320px;width:440px;background:#0b0e14a8;border:1px solid #fff2;border-radius:12px;overflow:hidden;font-family:"Barlow Condensed",sans-serif;backdrop-filter:blur(6px);opacity:.92;transition:opacity .5s,transform .5s}
+.info{position:absolute;right:40px;top:320px;width:440px;background:#0b0e14a8;border:1px solid #fff2;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif;backdrop-filter:blur(6px);opacity:.92;transition:opacity .5s,transform .5s}
 .info.fade{opacity:0;transform:translateX(24px)}
 .info .ih{background:#ffffff14;padding:8px 16px;font-size:24px;font-weight:900;letter-spacing:3px;color:#ffe08a}
 .info .ib{padding:10px 16px;font-size:25px;line-height:1.3}
@@ -73,7 +71,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barl
 .info .mut{color:#8b96a8;font-size:21px}
 .snd{position:absolute;left:40px;top:1490px;background:#0b0e14cc;padding:6px 14px;border-radius:8px;font-size:22px;color:#ffe08a}
 /* oyuncu değişikliği tabelası */
-.subb{position:absolute;left:40px;top:1150px;width:640px;background:#0b0e14ee;border-radius:12px;overflow:hidden;box-shadow:0 16px 40px #000b,0 0 0 1px #fff2;transform:translateX(-40px);opacity:0;transition:all .45s cubic-bezier(.2,.9,.3,1);font-family:"Barlow Condensed",sans-serif}
+.subb{position:absolute;left:40px;top:1150px;width:640px;background:#0b0e14ee;border-radius:12px;overflow:hidden;box-shadow:0 16px 40px #000b,0 0 0 1px #fff2;transform:translateX(-40px);opacity:0;transition:all .45s cubic-bezier(.2,.9,.3,1);font-family:Arial,Helvetica,sans-serif}
 .subb.show{opacity:1;transform:none}
 .subb .hdr{background:var(--tc,#fff);color:#000;font-weight:900;font-size:26px;letter-spacing:3px;padding:8px 18px}
 .subb .row{display:flex;align-items:center;gap:16px;padding:12px 18px;border-top:1px solid #fff1}
@@ -90,9 +88,9 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barl
 .goal.show{display:grid}
 .goal .band{position:absolute;left:0;right:0;top:46%;height:260px;background:linear-gradient(90deg,transparent,var(--tc) 20%,var(--tc) 80%,transparent);opacity:.92;transform:translateY(-50%) skewY(-4deg);animation:band .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes band{from{transform:translateY(-50%) scaleX(0)}}
-.goal h1{position:relative;font-family:"Barlow Condensed",sans-serif;font-size:300px;margin:0;line-height:1;font-weight:900;letter-spacing:-4px;color:#fff;text-shadow:0 10px 0 #0005,0 0 60px #0008;animation:pop .55s cubic-bezier(.2,1.6,.4,1)}
+.goal h1{position:relative;font-family:Arial,Helvetica,sans-serif;font-size:300px;margin:0;line-height:1;font-weight:900;letter-spacing:-4px;color:#fff;text-shadow:0 10px 0 #0005,0 0 60px #0008;animation:pop .55s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.3)}}
-.goal .who{position:absolute;left:0;right:0;top:62%;font-family:"Barlow Condensed",sans-serif}
+.goal .who{position:absolute;left:0;right:0;top:62%;font-family:Arial,Helvetica,sans-serif}
 .goal .who b{font-size:64px;display:block;font-weight:900;text-shadow:0 4px 12px #000}
 .goal .who span{font-size:36px;color:#ffe08a;text-shadow:0 2px 8px #000}
 .cf{position:absolute;width:14px;height:24px;top:-30px;animation:fall 3s linear forwards}
@@ -110,7 +108,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Barl
 #panel .st i.ok{background:#3c3}
 #panel input{width:150px;font:inherit;padding:6px;border-radius:8px;border:1px solid #555;background:#222;color:#fff}
 .hide{display:none!important}
-#load{position:absolute;inset:0;display:grid;place-items:center;background:#05070b;z-index:60;font-family:"Barlow Condensed",sans-serif;font-size:40px;letter-spacing:4px;color:#9aa3b2}
+#load{position:absolute;inset:0;display:grid;place-items:center;background:#05070b;z-index:60;font-family:Arial,Helvetica,sans-serif;font-size:40px;letter-spacing:4px;color:#9aa3b2}
 </style>
 </head>
 <body>
@@ -172,6 +170,8 @@ const TEAM={
   fb:{c:'#ffe600',c2:'#002d72',n:'Fenerbahçe',crowd:['#ffe600','#002d72','#0b3d91','#e6cf00','#002d72','#1a1a1a'],side:1}
 };
 const params=new URLSearchParams(location.search);
+if(params.get('ws'))CONFIG.ws=params.get('ws'); // test için farklı köprü adresi
+if(params.get('key'))CONFIG.key=params.get('key'); // test için ayrı kayıt
 const $=s=>document.querySelector(s);
 const PL=100,PW=64; // saha boyutu (birim ~ metre)
 
@@ -252,7 +252,7 @@ function goalMesh(side){
 scene.add(goalMesh(-1),goalMesh(1));
 
 /* --- reklam panoları --- */
-function adTexture(text,bg,fg){const c=cnv(2048,128),x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,2048,128);x.fillStyle=fg;x.font='900 86px "Barlow Condensed",Impact,sans-serif';x.textBaseline='middle';x.fillText(text,20,66);return tex(c,true)}
+function adTexture(text,bg,fg){const c=cnv(2048,128),x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,2048,128);x.fillStyle=fg;x.font='900 86px Arial,Helvetica,sans-serif';x.textBaseline='middle';x.fillText(text,20,66);return tex(c,true)}
 const adMats=[adTexture('GALATASARAY  •  FENERBAHÇE  •  DERBİ  •  CANLI  •  ','#c8102e','#ffe08a'),adTexture('HEDİYE GÖNDER  •  SAHAYA ÇIK  •  500 JETON = GOL  •  ','#002d72','#ffe600'),adTexture('YORUM YAZ: GS veya FB  •  TAKIMINI SEÇ  •  ','#0b0e14','#ffffff')].map(t=>{t.repeat.set(3,1);return new THREE.MeshBasicMaterial({map:t})});
 const ads=[];
 function addAd(len,x,z,ry,i){const m=new THREE.Mesh(new THREE.BoxGeometry(len,1.1,0.3),[null,null,null,null,adMats[i%3],adMats[i%3]].map(mm=>mm||new THREE.MeshLambertMaterial({color:0x111})));m.position.set(x,0.55,z);m.rotation.y=ry;scene.add(m);ads.push(adMats[i%3])}
@@ -326,13 +326,15 @@ function drawCard(c,u,opts){
     x.fillStyle='#1b2029';x.fillRect(cx-R,cy-R,2*R,2*R);
     x.fillStyle=T.c;x.beginPath();x.moveTo(cx-R*.78,cy-R*.4);x.lineTo(cx-R*.38,cy-R*.72);x.lineTo(cx-R*.16,cy-R*.56);x.lineTo(cx+R*.16,cy-R*.56);x.lineTo(cx+R*.38,cy-R*.72);x.lineTo(cx+R*.78,cy-R*.4);x.lineTo(cx+R*.56,cy-R*.02);x.lineTo(cx+R*.46,cy-R*.1);x.lineTo(cx+R*.46,cy+R*.8);x.lineTo(cx-R*.46,cy+R*.8);x.lineTo(cx-R*.46,cy-R*.1);x.lineTo(cx-R*.56,cy-R*.02);x.closePath();x.fill();
     x.save();x.clip();x.fillStyle=T.c2;for(let i=-3;i<=3;i++){x.fillRect(cx+i*R*.3-R*.07,cy-R,R*.14,2*R)}x.restore();
-    x.fillStyle='#fff';x.strokeStyle='#0008';x.lineWidth=6;x.font=`900 ${R*0.7}px "Barlow Condensed",sans-serif`;x.textAlign='center';x.textBaseline='middle';x.strokeText(opts.num||'',cx,cy+R*.3);x.fillText(opts.num||'',cx,cy+R*.3)}
-  else{x.fillStyle='#2a2f3a';x.fillRect(cx-R,cy-R,2*R,2*R);x.fillStyle='#fff';x.font=`900 ${R*0.9}px "Barlow Condensed",sans-serif`;x.textAlign='center';x.textBaseline='middle';
+    x.fillStyle='#fff';x.strokeStyle='#0008';x.lineWidth=6;x.font=`900 ${R*0.7}px Arial,Helvetica,sans-serif`;x.textAlign='center';x.textBaseline='middle';x.strokeText(opts.num||'',cx,cy+R*.3);x.fillText(opts.num||'',cx,cy+R*.3)}
+  else{x.fillStyle='#2a2f3a';x.fillRect(cx-R,cy-R,2*R,2*R);x.fillStyle='#fff';x.font=`900 ${R*0.9}px Arial,Helvetica,sans-serif`;x.textAlign='center';x.textBaseline='middle';
     const ini=u.name.trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toLocaleUpperCase('tr-TR');x.fillText(ini,cx,cy+4)}
   x.restore();
-  if(opts.num&&!u.isDefault){x.fillStyle=T.c;x.beginPath();x.arc(cx+R*0.72,cy-R*0.72,R*0.3,0,7);x.fill();x.strokeStyle='#fff';x.lineWidth=5;x.stroke();x.fillStyle='#000';x.font=`900 ${R*0.36}px "Barlow Condensed",sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(opts.num,cx+R*0.72,cy-R*0.72+2)}
-  if(opts.tag){x.fillStyle=T.c;const tw=160;x.fillRect(cx-tw/2,cy-R-54,tw,42);x.fillStyle='#000';x.font='900 30px "Barlow Condensed",sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(opts.tag,cx,cy-R-33)}
-  if(opts.name){x.font='800 44px "Barlow Condensed",sans-serif';x.textAlign='center';x.textBaseline='middle';let nm=u.name;while(x.measureText(nm).width>W-40&&nm.length>3)nm=nm.slice(0,-2)+'…';
+  if(opts.num&&!u.isDefault){x.fillStyle=T.c;x.beginPath();x.arc(cx+R*0.72,cy-R*0.72,R*0.3,0,7);x.fill();x.strokeStyle='#fff';x.lineWidth=5;x.stroke();x.fillStyle='#000';x.font=`900 ${R*0.36}px Arial,Helvetica,sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(opts.num,cx+R*0.72,cy-R*0.72+2)}
+  if(opts.tag){x.fillStyle=T.c;const tw=160;x.fillRect(cx-tw/2,cy-R-54,tw,42);x.fillStyle='#000';x.font='900 30px Arial,Helvetica,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(opts.tag,cx,cy-R-33)}
+  if(opts.name){let fs=46;x.textAlign='center';x.textBaseline='middle';let nm=u.name;
+    do{x.font=`700 ${fs}px Arial,Helvetica,sans-serif`;if(x.measureText(nm).width<=W-36)break;fs-=2}while(fs>32); // önce küçült, sonra kırp
+    while(x.measureText(nm).width>W-36&&nm.length>3)nm=nm.slice(0,-2)+'…';
     const w=x.measureText(nm).width+40,y=cy+R+44;x.fillStyle='#0b0e14e6';x.beginPath();x.roundRect(cx-w/2,y-28,w,56,8);x.fill();x.fillStyle=T.c;x.fillRect(cx-w/2,y+22,w,6);x.fillStyle='#fff';x.fillText(nm,cx,y)}
 }
 
@@ -390,8 +392,17 @@ const VIEWER_SLOT_ORDER=[9,8,10,6,5,7,1,4,2,3,0]; // santrfor, kanatlar, orta sa
 /* Taraftar koltukları: dört tribünün ön iki sırası, takımlar arasında sırayla dağıtılır (her tribüne gerçek insan düşsün) */
 const STAND_INFO={S:{n:[0,0,1],name:'GÜNEY'},N:{n:[0,0,-1],name:'KUZEY'},E:{n:[1,0,0],name:'DOĞU'},W:{n:[-1,0,0],name:'BATI'}};
 const fanSeats={gs:[],fb:[]};(()=>{for(const t of ['gs','fb']){
-  const groups=['S','N','E','W'].map(st=>seats.filter(s=>s.team===t&&s.stand===st&&s.row<2).sort((a,b)=>(a.row-b.row)||((st==='S'||st==='N')?Math.abs(a.x)-Math.abs(b.x):Math.abs(a.z)-Math.abs(b.z)))).filter(g=>g.length);
-  const out=[];let k=0;while(out.length<groups.reduce((s,g)=>s+g.length,0)){const g=groups[k%groups.length];const i=Math.floor(k/groups.length);if(g[i])out.push(g[i]);k++;if(k>5000)break}
+  // İsimler üst üste binmesin: yalnızca 1. ve 5. sıra, koltuklar arası en az FAN_GAP birim, 5. sıra yarım aralık kaydırılmış
+  const FAN_GAP=4.0;
+  const pick=(st,row)=>{const ax=(st==='S'||st==='N')?'x':'z';const lim=ax==='x'?PL/2+2:PW/2+2; // köşelerde iki tribün birbirine girmesin
+    const rs=seats.filter(s=>s.team===t&&s.stand===st&&s.row===row&&Math.abs(s[ax])<=lim).sort((a,b)=>Math.abs(a[ax])-Math.abs(b[ax]));
+    const picked=[];const off=row?FAN_GAP/2:0;
+    for(const s of rs){if(Math.abs(s[ax])<off)continue;if(picked.every(p=>Math.abs(p[ax]-s[ax])>=FAN_GAP))picked.push(s)}
+    return picked};
+  const out=[];
+  for(const row of [0,4]){ // önce bütün tribünlerin ön sırası dolar, 5. sıra yalnızca taşma için
+    const groups=['S','N','E','W'].map(st=>pick(st,row)).filter(g=>g.length);const total=groups.reduce((s,g)=>s+g.length,0);
+    let k=0,n=0;while(n<total&&k<5000){const g=groups[k%groups.length];const i=Math.floor(k/groups.length);if(g[i]){out.push(g[i]);n++}k++}}
   fanSeats[t]=out}})();
 
 function layout(){
@@ -522,7 +533,7 @@ const SHOTS={
     const fans=[...actors.values()].filter(a=>a.zone==='fan'&&a.stand===st);const I=STAND_INFO[st]||STAND_INFO.S;const n=I.n;const along=(st==='S'||st==='N')?'x':'z';
     const vals=fans.map(a=>a.pos[along]);const v0=(vals.length?Math.min(...vals):-8)-7,v1=(vals.length?Math.max(...vals):8)+7;
     const seatN=along==='x'?PW/2+6+RD/2:PL/2+9+RD/2;
-    return{name:'TRİBÜN · '+I.name+' · '+fans.length+' TARAFTAR',dur:5+Math.min(6,(v1-v0)/9),fn:(k,o)=>{const v=v0+(v1-v0)*ease(k);
+    return{name:'TRİBÜN · '+I.name+' · '+fans.length+' TARAFTAR',dur:4+Math.min(22,(v1-v0)/3.5),fn:(k,o)=>{const v=v0+(v1-v0)*ease(k);
       if(along==='x'){o.pos.set(v,4.2,n[2]*(seatN-12));o.look.set(v+2,2.4,n[2]*seatN)}else{o.pos.set(n[0]*(seatN-12),4.2,v);o.look.set(n[0]*seatN,2.4,v+2)}}}},
   benchCam:(a)=>({name:'YEDEKLER ISINIYOR',dur:5,fn:(k,o)=>{o.pos.set(a.pos.x+12-4*k,4,a.pos.z+15);o.look.set(a.pos.x,2.2,a.pos.z)}}),
 };
@@ -582,7 +593,7 @@ let goalBusy=false,lastCrowd=0;
 function handle(ev){
   if(!ev||!ev.user)return;const u=getUser(ev.user);
   switch(ev.type){
-    case 'join':if(!u.team)u.team=autoTeam();lower(u,'maça geldi, tribünde yerini aldı');layout();
+    case 'join':if(!u.team)u.team=autoTeam();lower(u,'maça geldi, tribünde yerini aldı',0);layout();
       {const a=actors.get(u.id);const now=performance.now()/1000;if(a&&a.zone==='fan'&&!goalBusy&&!queue.length&&now-lastCrowd>90){queue.push(SHOTS.crowd(u.team,a));lastCrowd=now}}break;
     case 'comment':{const t=parseTeam(ev.text);let changed=false;
       if(t&&u.team!==t){u.team=t;lower(u,TEAM[t].n+' tribününe geçti');changed=true}
@@ -645,9 +656,19 @@ function confetti(t){const G=$('#goal');for(let i=0;i<90;i++){const c=document.c
 
 /* ================= HUD ================= */
 function avHTML(u){const ini=u.name.trim().split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toLocaleUpperCase('tr-TR');return `${ini}${u.avatar?`<img src="${u.avatar}" alt="" onerror="this.remove()">`:''}`}
-let ltT=null;
-function lower(u,text){const lt=$('#lt');const T=TEAM[u.team||'gs'];lt.style.setProperty('--tc',T.c);$('#ltAv').innerHTML=avHTML(u);$('#ltName').textContent=u.name;$('#ltText').textContent=text;
-  lt.classList.remove('show');void lt.offsetWidth;lt.classList.add('show');clearTimeout(ltT);ltT=setTimeout(()=>lt.classList.remove('show'),6500)}
+/* Alt yazı kuyruğu: her isim en az LT_MIN ms ekranda kalır, okunabilsin.
+   Önemli olaylar (hediye, rol) sıraya girer; kalabalıkta "katıldı" yazıları atlanır, toplu gösterilir. */
+const LT_MIN=4000,LT_SHOW=5500;let ltQ=[],ltBusy=false,ltT=null,ltJoinSkip=0;
+function lower(u,text,prio){prio=prio??1;
+  if(prio===0){if(ltBusy||ltQ.length){ltJoinSkip++;return}}
+  if(ltQ.length>=6)ltQ=ltQ.filter(x=>x.prio>0);
+  ltQ.push({u:{...u},text,prio});if(!ltBusy)ltNext()}
+function ltNext(){const lt=$('#lt');const it=ltQ.shift();
+  if(!it){if(ltJoinSkip>0){const n=ltJoinSkip;ltJoinSkip=0;ltShow({name:`+${n} kişi`,team:null,avatar:null},'maça geldi, tribünde yerini aldı');ltBusy=true;ltT=setTimeout(()=>{ltBusy=false;ltNext()},LT_MIN);return}
+    ltBusy=false;ltT=setTimeout(()=>lt.classList.remove('show'),LT_SHOW-LT_MIN);return}
+  clearTimeout(ltT);ltBusy=true;ltShow(it.u,it.text);ltT=setTimeout(ltNext,LT_MIN)}
+function ltShow(u,text){const lt=$('#lt');const T=TEAM[u.team]||{c:'#ffe08a'};lt.style.setProperty('--tc',T.c);$('#ltAv').innerHTML=avHTML(u);$('#ltName').textContent=u.name;$('#ltText').textContent=text;
+  lt.classList.remove('show');void lt.offsetWidth;lt.classList.add('show')}
 /* ---- dönüşümlü bilgi penceresi ---- */
 let infoIdx=0;
 const INFO=[
@@ -665,7 +686,10 @@ setInterval(()=>{const el=$('#info');el.classList.add('fade');setTimeout(()=>{in
 function hud(){infoRender();
   const fansL=[...actors.values()].filter(a=>a.zone==='fan');if(fansL.length)$('#fstrip').innerHTML=fansL.map(a=>`<b style="color:${TEAM[a.u.team].c}">${a.u.name}</b>`).join('<i>•</i>');$('#sGs').textContent=S.goals.gs;$('#sFb').textContent=S.goals.fb;const g=sum('gs'),f=sum('fb'),tot=g+f;
   $('#tugG').style.width=(tot?g/tot*100:50)+'%';$('#potG').textContent='GS '+g.toLocaleString('tr-TR')+' JETON';$('#potF').textContent=f.toLocaleString('tr-TR')+' JETON FB';
-  $('#tick').innerHTML=(S.events.length?S.events:['Derbi başlıyor…']).map(e=>`<em>${e}</em><i>•</i>`).join('')}
+  $('#tick').innerHTML=(S.events.length?S.events:['Derbi başlıyor…']).map(e=>`<em>${e}</em><i>•</i>`).join('');
+  marqueeSpeed($('#tick'),80);marqueeSpeed($('#fstrip'),60)}
+/* kayan yazılar sabit hızda aksın (yazı uzadıkça hızlanmasın): px/sn */
+function marqueeSpeed(el,pxs){const w=el.scrollWidth;const d=Math.max(12,w/pxs);const cur=parseFloat(el.style.animationDuration)||0;if(Math.abs(cur-d)/d>0.15)el.style.animationDuration=d.toFixed(1)+'s'}
 function clock(){const s=Math.floor((Date.now()-S.start)/1000);const m=Math.floor(s/60);$('#clk').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');$('#half').textContent='DERBİ · '+(m<45?'1. YARI':m<90?'2. YARI':'UZATMALAR')}
 setInterval(clock,1000);
 
