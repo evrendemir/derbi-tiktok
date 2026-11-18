@@ -1,0 +1,60 @@
+# DERBİ CANLI – TikTok yayın oyunu
+=================================
+
+Dosyalar
+--------
+tiktok_canli.html  : 3B yayın sahnesi (dikey 1080x1920). Çift tıklayarak açılır, internet gerekir.
+bridge.py          : TikTok canlı yayınını dinleyip sahneye aktaran köprü.
+index.html         : İlk yatay deneme, artık kullanılmıyor.
+
+Tuşlar (sahne açıkken)
+----------------------
+d  : otomatik demo aç/kapat          h : kontrol panelini gizle/göster
+m  : sesi kapat/aç                   (ses ilk tıklamadan sonra başlar)
+Adres sonuna ?demo=1 → demo açık başlar, ?overlay=1 → panel gizli başlar (yayın için).
+
+İzleyici komutları (TikTok yorumuna yazılır)
+--------------------------------------------
+GS / FB            : takım seç
+hakem              : maçın hakemi ol
+hoca               : takımının teknik direktörü ol
+oyuncu / taraftar  : rolü bırak
+Hediye             : 1-99 jeton kulübe, 100+ ilk 11, tek seferde 500 = GOL
+Eşikler dosyanın başındaki CONFIG satırında: bench, player, goal.
+Kadrolar DEFAULT11 listesinde, isimler değiştirilebilir.
+
+KURULUM (bir kez, evdeki bilgisayarda)
+--------------------------------------
+1) Python kur: https://www.python.org/downloads/  (kurulumda "Add python to PATH" işaretle)
+2) Komut satırı (cmd) aç, şunu çalıştır:
+       pip install TikTokLive websockets
+
+TEST 1 – yayın açmadan, gerçek TikTok verisiyle
+-----------------------------------------------
+1) O an canlı yayında olan kalabalık bir hesap bul (ör. @kullaniciadi).
+2) cmd'de:
+       cd /d "%USERPROFILE%\Desktop\DERBI_DEMO"      (klasör neredeyse orası)
+       python bridge.py @kullaniciadi
+   "TikTok yayınına bağlanıldı" yazmalı.
+3) tiktok_canli.html'i çift tıkla. Sağ alttaki panelde nokta yeşil olmalı.
+4) Yayındaki gerçek insanlar fotoğraflarıyla tribüne dolar; yorum ve hediyeler sahaya yansır.
+   Hata çıkarsa cmd'deki kırmızı satırı kopyala, Claude'a gönder.
+
+TEST 2 – gerçek yayın (OBS ile)
+-------------------------------
+1) OBS kur: https://obsproject.com
+2) Ayarlar > Video: Tuval 1080x1920, Çıkış 1080x1920, 30 fps.
+3) Kaynak ekle > Tarayıcı:
+       URL: file:///C:/.../DERBI_DEMO/tiktok_canli.html?overlay=1   (dosyanın tam yolu)
+       Genişlik 1080, Yükseklik 1920, "Sesi OBS üzerinden kontrol et" işaretli.
+4) Yayın anahtarı: TikTok LIVE Center > Bilgisayardan yayın (hesabın yetkisi olmalı).
+   OBS Ayarlar > Yayın > Özel: Sunucu ve anahtarı yapıştır.
+5) Yayın açıkken cmd'de:
+       python bridge.py @kendi_kullanici_adin
+6) İlk denemede bir arkadaş "GS" yazsın ve 1 jetonluk gül göndersin.
+
+Notlar
+------
+- bridge.py resmi olmayan TikTokLive kütüphanesini kullanır; TikTok değişiklik yapınca güncelleme gerekebilir (pip install -U TikTokLive).
+- Profil fotoğrafları köprü tarafından indirilip sahneye gömülü gönderilir.
+- Veriler tarayıcıda saklanır; sıfırlamak için paneldeki "Sıfırla".
